@@ -3,7 +3,7 @@
     <div class="login-wrap">
       <kinesis-element :type="parallax">
         <div class="login-box">
-          <img src="~@/assets/images/logo-a.png" class="logo" alt="" />
+          <img src="~@/assets/logo/yd.png" class="logo" alt="" />
           <div class="login-form">
             <a-form
               :model="formState"
@@ -29,7 +29,12 @@
                 </a-form-item>
               </div>
               <div class="login-input">
-                <a-form-item required has-feedback label="Password" name="password">
+                <a-form-item
+                  required
+                  has-feedback
+                  label="Password"
+                  name="password"
+                >
                   <a-input
                     type="password"
                     class="login-text"
@@ -48,7 +53,7 @@
                   <a-button
                     type="primary"
                     class="login-btn"
-                    @click="login"
+                    @click="handlelogin"
                     :disabled="
                       formState.name === '' || formState.password === ''
                     "
@@ -64,13 +69,25 @@
   </kinesis-container>
 </template>
 <script lang="ts">
-import { reactive, ref, Ref, toRaw, UnwrapRef, defineComponent } from "vue";
+import {
+  reactive,
+  ref,
+  Ref,
+  toRaw,
+  UnwrapRef,
+  defineComponent,
+  onMounted,
+  computed,
+} from "vue";
 import {
   RuleObject,
   ValidateErrorEntity,
 } from "ant-design-vue/es/form/interface";
 import { UserOutlined, UnlockOutlined } from "@ant-design/icons-vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter, useRoute, Router } from "vue-router";
+import { login } from "@/api/services/user";
+import { message } from "ant-design-vue";
+import { useStore } from "vuex";
 interface FormState {
   name: string;
   password: string;
@@ -80,16 +97,16 @@ export default defineComponent({
     UserOutlined,
     UnlockOutlined,
   },
-  setup() {
-    const formRef = ref();
+  setup(props, { emit }) {
+    const store = useStore();
+    const formRef: Ref<any> = ref();
+    const router: Router = useRouter();
 
-    const router = useRouter();
-
+    // 表单配置
     const formState: UnwrapRef<FormState> = reactive({
       name: "",
       password: "",
-    })
-
+    });
     let validatePass = async (rule: RuleObject, value: string) => {
       if (value === "") {
         return Promise.reject("Please input the password");
@@ -97,7 +114,6 @@ export default defineComponent({
         return Promise.resolve();
       }
     };
-
     const layout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 14 },
@@ -106,20 +122,16 @@ export default defineComponent({
       name: [
         {
           required: true,
-          message: "Please input Activity name",
-          trigger: "blur",
-        },
-        {
           min: 3,
-          max: 5,
-          message: "Length should be 3 to 5",
-          trigger: "change",
+          max: 11,
+          message: "Length should be 3 to 11",
+          trigger: "blur",
         },
       ],
       password: [
         {
           required: true,
-          message: "Please input password",
+          message: "Length should be 6 to 18",
           trigger: "blur",
         },
         { validator: validatePass, trigger: "change" },
@@ -133,25 +145,47 @@ export default defineComponent({
       console.log(errors);
     };
 
-    const login = () => {
-      console.log("submit!", toRaw(formState));
-      // router.push({
-      //   name: "home",
-      // });
+    const save_loginStatus = (msg) => {
+      emit("setLoginStatu", msg);
     };
 
-    const tt: Ref<string> = ref("1");
+    const handlelogin = () => {
+      formRef.value
+        .validate()
+        .then(async () => {
+          const query = toRaw(formState);
+          let res = await login(query.name, query.password);
+          if (res.code === 200) {
+            window.localStorage.setItem("token", res.token);
+            window.localStorage.setItem("loginStatu", "true");
+            store.commit("SET_LOGINSTATU",true);
+            save_loginStatus(true);
+            setTimeout(() => {
+              router.push({
+                name: "home"
+              });
+            }, 1000);
+            message.success("登录成功");
+          } else {
+            return message.error("登录失败，请检查用户名和密码");
+          }
+        })
+        .catch(() => {
+          console.log("请正确输入信息");
+        });
+    };
+
     return {
-      tt,
-      login,
       layout,
       formState,
       rules,
       parallax: "depth",
+      handlelogin,
       handleFinish,
       handleFinishFailed,
+      formRef,
     };
-  },
+  }
 });
 </script>
 <style lang="scss" scoped>

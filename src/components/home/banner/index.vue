@@ -9,9 +9,10 @@
   </div>
 </template>
 <script lang="ts">
-import { UnwrapRef, reactive } from "vue";
+import { UnwrapRef, reactive, computed,Ref,ref } from "vue";
+import { getBanner } from "@/api/services/api";
 export default {
-  setup() {
+  setup(props,{emit}) {
     interface swiperObj {
       slidesPerView: number;
       spaceBetween: number;
@@ -35,10 +36,24 @@ export default {
       pagination: ".swiper-pagination",
     });
 
+    // 初始化banner数组
+    let banners:any[] = reactive([])
+    // 实时获取banner数组长度
+    let bannerInit = computed(()=>{
+      return banners.length
+    })
+    // let getbanner = async ()=>{
+
+    // }
+
     return {
       swiperOption,
+      bannerInit
     };
   },
+  methods:{
+    
+  }
 };
 </script>
 <style lang="scss" scoped>

@@ -21,7 +21,6 @@ export default {
   },
   setup() {
     const route: RouteLocationNormalized = useRoute();
-    console.log(route.meta);
   },
 };
 </script>

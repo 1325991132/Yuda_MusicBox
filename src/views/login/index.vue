@@ -15,7 +15,7 @@
               @finishFailed="handleFinishFailed"
             >
               <div class="login-input">
-                <a-form-item required name="name" label="Name" has-feedback>
+                <a-form-item required name="name" :label="label.username" has-feedback>
                   <a-input
                     placeholder="input username"
                     class="login-text"
@@ -32,7 +32,7 @@
                 <a-form-item
                   required
                   has-feedback
-                  label="Password"
+                  :label="label.password"
                   name="password"
                 >
                   <a-input
@@ -57,7 +57,7 @@
                     :disabled="
                       formState.name === '' || formState.password === ''
                     "
-                    >登录</a-button
+                    >{{ t("login.logIn") }}</a-button
                   >
                 </div>
               </div>
@@ -84,10 +84,11 @@ import {
   ValidateErrorEntity,
 } from "ant-design-vue/es/form/interface";
 import { UserOutlined, UnlockOutlined } from "@ant-design/icons-vue";
-import { useRouter, useRoute, Router } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { login } from "@/api/services/user";
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
 interface FormState {
   name: string;
   password: string;
@@ -98,10 +99,14 @@ export default defineComponent({
     UnlockOutlined,
   },
   setup(props, { emit }) {
+    const { t } = useI18n();
     const store = useStore();
     const formRef: Ref<any> = ref();
-    const router: Router = useRouter();
-
+    const router = useRouter();
+    const label = {
+      username: t("login.username"),
+      password: t("login.password"),
+    };
     // 表单配置
     const formState: UnwrapRef<FormState> = reactive({
       name: "",
@@ -158,11 +163,11 @@ export default defineComponent({
           if (res.code === 200) {
             window.localStorage.setItem("token", res.token);
             window.localStorage.setItem("loginStatu", "true");
-            store.commit("SET_LOGINSTATU",true);
+            store.commit("SET_LOGINSTATU", true);
             save_loginStatus(true);
             setTimeout(() => {
               router.push({
-                name: "home"
+                name: "home",
               });
             }, 1000);
             message.success("登录成功");
@@ -184,8 +189,10 @@ export default defineComponent({
       handleFinish,
       handleFinishFailed,
       formRef,
+      label,
+      t,
     };
-  }
+  },
 });
 </script>
 <style lang="scss" scoped>

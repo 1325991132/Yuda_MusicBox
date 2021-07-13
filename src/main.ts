@@ -6,15 +6,18 @@ import VueKinesis from "vue-kinesis";
 import 'common/styles/base.scss'
 
 import 'ant-design-vue/dist/antd.css';
-import Antd from './plugins/Ant'
-import swiper from '@/plugins/swiper'
+// import Antd from './plugins/Ant'
+// import swiper from '@/plugins/swiper'
+import { loadAllPlugins } from './plugins'
 // import Antd from 'ant-design-vue';
 
+const app = createApp(App)
+loadAllPlugins(app)
 
-createApp(App)
+app
 .use(store)
 .use(router)
-.use(Antd)
+// .use(Antd)
 .use(VueKinesis)
-.use(swiper)
+// .use(swiper)
 .mount('#app')

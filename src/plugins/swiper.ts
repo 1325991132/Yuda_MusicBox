@@ -24,5 +24,8 @@ const swiper = {
   }
 }
 
-export default swiper
+// export default swiper
+export default function loadComponent(app: any) {
+    app.use(swiper)
+}
 

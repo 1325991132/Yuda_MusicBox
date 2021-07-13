@@ -11,6 +11,6 @@ module.exports = {
             .set('components', resolve('./src/components'))
             .set('views', resolve('src/views'))
             .set('common', resolve('src/common'))
+            .set('vue-i18n', 'vue-i18n/dist/vue-i18n.cjs.js')
     }
 }
-

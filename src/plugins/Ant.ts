@@ -18,4 +18,7 @@ const Antd = {
         Vue.component(AutoComplete.name, AutoComplete)
     }
 }
-export default Antd
+// export default Antd
+export default function loadComponent(app: any) {
+    app.use(Antd)
+}

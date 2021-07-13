@@ -35,7 +35,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/api/services/instance.js"  ],
+, "src/api/services/instance.js", "src/utils/cookies.js"  ],
   "exclude": [
     "node_modules"
   ]

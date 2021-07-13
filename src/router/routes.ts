@@ -51,20 +51,25 @@ export const appRouter: Array<any> = [
         children: [
             {
                 path: 'home',
+                name: 'home',
                 meta: {
                     title: '首页',
                     keepAlive: true,
                     transition: 'fade'
                 },
-                name: 'home',
                 component: Home
-            }
+            },
+            {
+                path: '/calc',
+                name: 'calc',
+                meta: {
+                    title: 'calc',
+                    keepAlive: true,
+                    transition: 'fade'
+                },
+                component: () => import('@/views/calc/index.vue')
+            },
         ]
-    },
-    {
-        path: '/calc',
-        name: 'calc',
-        component: () => import('@/views/calc/index.vue')
     },
     {
         path: '/about',

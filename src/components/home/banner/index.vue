@@ -1,18 +1,41 @@
 
 <template>
   <div class="banner">
-    <swiper class="mySwiper" :options="swiperOption">
-      <swiper-slide>Slide 1</swiper-slide><swiper-slide>Slide 2</swiper-slide
-      ><swiper-slide>Slide 3</swiper-slide><swiper-slide>Slide 4</swiper-slide
-      ><swiper-slide>Slide 5</swiper-slide><swiper-slide>Slide 6</swiper-slide>
+    <swiper
+      class="swiper"
+      :slides-per-view="swiperOption.slidesPerView"
+      :space-between="swiperOption.spaceBetween"
+      :slides-per-group="swiperOption.slidesPerGroup"
+      :loop="swiperOption.loop"
+      :loop-fill-group-with-blank="swiperOption.loopFillGroupWithBlank"
+      :centered-slides="swiperOption.centeredSlides"
+      :pagination-clickable="swiperOption.paginationClickable"
+      :grab-cursor="swiperOption.grabCursor"
+    >
+      <swiper-slide
+        v-for="(banner, bannerIdx) in state.bannerList"
+        :key="bannerIdx"
+      >
+        <div class="img_wapper">
+          <img :src="banner.imageUrl" alt="" />
+        </div>
+      </swiper-slide>
     </swiper>
   </div>
 </template>
 <script lang="ts">
-import { UnwrapRef, reactive, computed,Ref,ref } from "vue";
+import {
+  UnwrapRef,
+  reactive,
+  computed,
+  Ref,
+  ref,
+  onMounted,
+  nextTick,
+} from "vue";
 import { getBanner } from "@/api/services/api";
 export default {
-  setup(props,{emit}) {
+  setup(props, { emit }) {
     interface swiperObj {
       slidesPerView: number;
       spaceBetween: number;
@@ -36,56 +59,63 @@ export default {
       pagination: ".swiper-pagination",
     });
 
-    // 初始化banner数组
-    let banners:any[] = reactive([])
-    // 实时获取banner数组长度
-    let bannerInit = computed(()=>{
-      return banners.length
-    })
-    // let getbanner = async ()=>{
+    const state = reactive({
+      bannerList: [], // 轮播图列表
+      bannerInit: computed(() => {
+        return state.bannerList.length;
+      }),
+      isLogin: false, // 是否已登录
+      loading: true,
+    });
 
-    // }
+    let getbanner = async () => {
+      let { banners: res } = await getBanner();
+      state.bannerList = res;
+    };
+
+    getbanner();
 
     return {
       swiperOption,
-      bannerInit
+      state,
     };
   },
-  methods:{
-    
-  }
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
-.swiper-container {
+.banner >>> .swiper-pagination {
   width: 100%;
-  height: 100%;
+  bottom: -20px;
+  .swiper-pagination-bullet {
+    width: 6px;
+    height: 6px;
+    background: #a3a3ac;
+    opacity: 0.8;
+    border-radius: 50%;
+    margin: 0 5px;
+    &.swiper-pagination-bullet-active {
+      opacity: 1;
+      width: 15px;
+      border-radius: 4px;
+      // background: $color-theme;
+    }
+  }
 }
-
-.swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: #fff;
-
-  /* Center slide text vertically */
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  -webkit-align-items: center;
-  align-items: center;
-}
-
-.swiper-slide img {
-  display: block;
+.banner {
+  display: none;
+  position: relative;
+  height: 200px;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  padding: 0 20px;
+  .img_wapper {
+    width: 100%;
+    border: solid 1px red;
+
+    img {
+      width: auto;
+      border-radius: 3px;
+    }
+  }
 }
 </style>

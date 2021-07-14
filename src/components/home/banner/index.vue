@@ -110,7 +110,6 @@ export default {
   padding: 0 20px;
   .img_wapper {
     width: 100%;
-    border: solid 1px red;
 
     img {
       width: auto;

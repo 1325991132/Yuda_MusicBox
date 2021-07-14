@@ -15,7 +15,12 @@
               @finishFailed="handleFinishFailed"
             >
               <div class="login-input">
-                <a-form-item required name="name" :label="label.username" has-feedback>
+                <a-form-item
+                  required
+                  name="name"
+                  :label="label.username"
+                  has-feedback
+                >
                   <a-input
                     placeholder="input username"
                     class="login-text"
@@ -85,7 +90,7 @@ import {
 } from "ant-design-vue/es/form/interface";
 import { UserOutlined, UnlockOutlined } from "@ant-design/icons-vue";
 import { useRouter, useRoute } from "vue-router";
-import { login } from "@/api/services/user";
+import { login, getUserDetail } from "@/api/services/user";
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
@@ -109,8 +114,8 @@ export default defineComponent({
     };
     // 表单配置
     const formState: UnwrapRef<FormState> = reactive({
-      name: "",
-      password: "",
+      name: "18501092671",
+      password: "wasd2671jkluio",
     });
     let validatePass = async (rule: RuleObject, value: string) => {
       if (value === "") {
@@ -161,6 +166,7 @@ export default defineComponent({
           const query = toRaw(formState);
           let res = await login(query.name, query.password);
           if (res.code === 200) {
+            my_getUserDetail(res.profile.userId);
             window.localStorage.setItem("token", res.token);
             window.localStorage.setItem("loginStatu", "true");
             store.commit("SET_LOGINSTATU", true);
@@ -180,6 +186,24 @@ export default defineComponent({
         });
     };
 
+    const my_getUserDetail = async (uid: any) => {
+      console.log("uid", uid);
+      try {
+        let res: any = await getUserDetail(uid);
+        if (res.code === 200) {
+          let userInfo = res.profile;
+          userInfo.level = res.level;
+          userInfo.listenSongs = res.listenSongs;
+          userInfo.createTime = res.createTime;
+          userInfo.createDays = res.createDays;
+          window.localStorage.setItem('userInfo',JSON.stringify(userInfo))
+          store.commit("SET_USERINFO", userInfo);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
     return {
       layout,
       formState,
@@ -188,6 +212,7 @@ export default defineComponent({
       handlelogin,
       handleFinish,
       handleFinishFailed,
+      my_getUserDetail,
       formRef,
       label,
       t,

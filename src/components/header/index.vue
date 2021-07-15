@@ -46,10 +46,10 @@
                 <el-dropdown-item icon="el-icon-user" command="personal"
                   >个人主页</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-medal"
+                <el-dropdown-item icon="el-icon-medal" command="level"
                   >我的等级</el-dropdown-item
                 >
-                <el-dropdown-item icon="el-icon-setting"
+                <el-dropdown-item icon="el-icon-setting" command="setting"
                   >个人设置</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -62,7 +62,7 @@
             </template>
           </el-dropdown>
         </div>
-        <div class="no-login flex-row" v-else>
+        <div class="no-login flex-row" @click="routerToLogin" v-else>
           <el-avatar
             class="avatar"
             shape="circle"
@@ -74,7 +74,6 @@
       </div>
       <div
         class="search-wrap"
-        @click="openSearchPop"
         :class="[state.searchOpenClass, state.searchCloseClass]"
       >
         <div class="overlay" @click="closeSearchPop"></div>
@@ -86,9 +85,11 @@
               </div>
               <div class="search-form">
                 <input
-                  type="text"
                   class="text"
+                  type="text"
                   v-model="state.keyword"
+                  @keyup.enter="search"
+                  @keyup.esc="closeSearchPop"
                   placeholder="请输入搜索关键词并按回车键…"
                 />
               </div>
@@ -104,26 +105,44 @@
 import { defineComponent, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
+import { message } from "ant-design-vue";
 import { useStore } from "vuex";
+// import { throttle } from "@/utils/index";
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
-    let state = reactive({
+    const state = reactive({
       loginState: true,
       searchOpenClass: "",
       searchCloseClass: "",
       keyword: "",
     });
-    let userInfo = computed(() => store.getters.userInfo).value; //获取vuex中的用户信息
+    let userInfo;
+    let temp_userInfo = computed(() => store.getters.userInfo).value; //获取vuex中的用户信息
+    if (temp_userInfo) {
+      userInfo = temp_userInfo;
+    } else {
+      state.loginState = false;
+    }
+
+    // 右上角个人信息选项
     const handleCommand = (command) => {
-      ElMessage(`click on item ${command}`);
+      // ElMessage(`click on item ${command}`);
+      message.info(`click on item ${command}`);
       if (command === "logout") {
-        router.replace({ name: "login" });
         window.localStorage.removeItem("loginStatu");
         window.localStorage.removeItem("token");
+        window.localStorage.removeItem("userInfo");
+        router.replace({ name: "login" });
       }
+    };
+
+    // 登录按钮
+    const routerToLogin = () => {
+      console.log(1411);
+      router.replace({ name: "login" });
     };
     const openSearchPop = (): void => {
       console.log("open");
@@ -135,10 +154,23 @@ export default defineComponent({
       state.searchOpenClass = "";
       state.searchCloseClass = "close";
     };
+    // 搜索
+    const search = () => {
+      if (state.keyword.split(" ").join("").length !== 0) {
+        closeSearchPop();
+        router.push({name:'search',query:{
+          keyword:state.keyword
+        }})
+        store.dispatch('saveSearchHistory',state.keyword)
+      }
+    };
     return {
       state,
       handleCommand,
       openSearchPop,
+      closeSearchPop,
+      routerToLogin,
+      search,
       userInfo,
     };
   },
@@ -163,6 +195,7 @@ $color-theme: #fa2800;
     a {
       width: 50px;
       height: 50px;
+      border-radius: 50%;
       display: block;
       background: #fff center no-repeat url(~@/assets/logo/yd3.png);
       background-size: 100%;
@@ -255,7 +288,7 @@ $color-theme: #fa2800;
     }
     .search-body {
       position: relative;
-      opacity: 1;
+      opacity: 0;
       width: 100%;
       max-width: 790px;
       animation-duration: 0.3s;
@@ -283,7 +316,7 @@ $color-theme: #fa2800;
             left: 0;
             right: 0;
             bottom: 0;
-            filter: blur(8px);
+            filter: blur(0.5rem);
             .layer {
               width: 100%;
               height: 100%;
@@ -307,7 +340,7 @@ $color-theme: #fa2800;
               font-size: 1rem;
               line-height: 1.5;
               padding: 0.625rem 0.75rem;
-              height: calc(1.5em + 1.71875rem + 2px);
+              height: calc(1.5rem + 1.71875rem + 2px);
               text-align: center;
               font-weight: normal;
               color: #fff;
@@ -317,12 +350,11 @@ $color-theme: #fa2800;
               border-radius: 5px;
               &:hover {
                 background-color: rgba(255, 255, 255, 0.04);
-                border-color: transparent;
+                border-color: #fff;
               }
               &:focus {
                 background-color: rgba(255, 255, 255, 0.04);
                 border-color: transparent;
-                color: #ff01ff;
               }
               &::placeholder {
                 color: #fff;
@@ -331,6 +363,46 @@ $color-theme: #fa2800;
             }
           }
         }
+      }
+    }
+    &.open {
+      z-index: 1000;
+      .overlay {
+        opacity: 1;
+        pointer-events: auto;
+        filter: bulr(10px);
+      }
+      .search-body {
+        pointer-events: auto;
+        animation-name: tips-open;
+      }
+    }
+    &.close {
+      .search-body {
+        animation-name: tips-close;
+      }
+    }
+
+    @keyframes tips-open {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 50px, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+    @keyframes tips-close {
+      0% {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 50px, 0);
+        transform: translate3d(0, 50px, 0);
       }
     }
   }

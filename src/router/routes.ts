@@ -1,5 +1,6 @@
 import Home from '@/views/home/index.vue';
 import Login from '@/views/login/index.vue';
+import Search from '@/views/search/index.vue';
 import error from '@/views/404/index.vue';
 // const Login = () => import('@/views/login/index.vue')
 import UserProfile from '../views/detail/index.vue';
@@ -69,6 +70,16 @@ export const appRouter: Array<any> = [
                 },
                 component: () => import('@/views/calc/index.vue')
             },
+            {
+                path: '/search',
+                name: 'search',
+                meta: {
+                    title: 'search',
+                    keepAlive: true,
+                    transition: 'fade'
+                },
+                component: Search
+            }
         ]
     },
     {

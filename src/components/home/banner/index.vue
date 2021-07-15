@@ -105,9 +105,9 @@ export default {
 .banner {
   display: none;
   position: relative;
-  height: 200px;
+  height: 12.5rem;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 1.25rem;
   .img_wapper {
     width: 100%;
 

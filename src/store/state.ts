@@ -1,6 +1,7 @@
 interface IState {
     loginStatu:null|boolean,
-    userInfo:any
+    userInfo:any,
+    searchHistory:Array<string>
 }
 
 const state:IState= {
@@ -8,6 +9,8 @@ const state:IState= {
     loginStatu: null,
     // 用户信息
     userInfo: null,
+    // 历史搜索
+    searchHistory:[]
 }
 
 export default state

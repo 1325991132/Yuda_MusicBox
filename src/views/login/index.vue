@@ -81,15 +81,13 @@ import {
   toRaw,
   UnwrapRef,
   defineComponent,
-  onMounted,
-  computed,
 } from "vue";
 import {
   RuleObject,
   ValidateErrorEntity,
 } from "ant-design-vue/es/form/interface";
 import { UserOutlined, UnlockOutlined } from "@ant-design/icons-vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { login, getUserDetail } from "@/api/services/user";
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";

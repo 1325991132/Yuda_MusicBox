@@ -1,11 +1,13 @@
 <template>
   <div id="nav">
-    <myHeader v-if="!$route.meta.isLogin"></myHeader>
+    <my-header v-if="!$route.meta.isLogin"></my-header>
     <router-view v-slot="{ Component }">
       <transition name="fade">
         <component :is="Component" />
       </transition>
     </router-view>
+    <player-bar v-if="!$route.meta.isLogin"></player-bar>
+    <my-footer v-if="!$route.meta.isLogin"></my-footer> 
     <div class="fly bg-fly-circle1"></div>
     <div class="fly bg-fly-circle2"></div>
     <div class="fly bg-fly-circle3"></div>
@@ -13,14 +15,19 @@
   </div>
 </template>
 <script lang='ts'>
-import { useRouter, useRoute, RouteLocationNormalized } from "vue-router";
+// import { useRouter, useRoute, RouteLocationNormalized } from "vue-router";
 import myHeader from "@/components/header/index.vue";
+import playerBar from '@/components/playerBar/index.vue';
+import myFooter from '@/components/footer/index.vue'
 export default {
   components: {
     myHeader,
+    playerBar,
+    myFooter
   },
-  setup() {
-    const route: RouteLocationNormalized = useRoute();
+  setup():any {
+    // const route: RouteLocationNormalized = useRoute();
+    return{}
   },
 };
 </script>
@@ -83,4 +90,5 @@ export default {
     transform: translateY(0px);
   }
 }
+
 </style>

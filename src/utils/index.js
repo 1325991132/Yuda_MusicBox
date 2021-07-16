@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default {
     // 节流函数--目前有问题，需要后续在组合式api中测试
     throttle(fn) {
@@ -29,4 +30,27 @@ export default {
         }
         return secondTime
     },
+    // 从1生成序号
+    formatZero(num, len) {
+        if (String(num).length > len) return num
+        return (Array(len).join(0) + num).slice(-len)
+    },
+    // 秒转成00:00
+    formatSecondTime(interval) {
+        interval = interval | 0
+        const m = (interval / 60) | 0
+        const s = interval % 60 | 0
+        return `${this.formatZero(m,2)}:${this.formatZero(s,2)}`
+    },
+    // 数组内容随机
+    shuffle(arr) {
+        var len = arr.length;
+        for (var i = 0; i < len - 1; i++) {
+            var index = parseInt(Math.random() * (len - i));
+            var temp = arr[index];
+            arr[index] = arr[len - i - 1];
+            arr[len - i - 1] = temp;
+        }
+        return arr;
+    }
 }

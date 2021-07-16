@@ -104,7 +104,7 @@
 <script lang="ts">
 import { defineComponent, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
-import { ElMessage } from "element-plus";
+// import { ElMessage } from "element-plus";
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";
 // import { throttle } from "@/utils/index";
@@ -158,10 +158,13 @@ export default defineComponent({
     const search = () => {
       if (state.keyword.split(" ").join("").length !== 0) {
         closeSearchPop();
-        router.push({name:'search',query:{
-          keyword:state.keyword
-        }})
-        store.dispatch('saveSearchHistory',state.keyword)
+        router.push({
+          name: "search",
+          query: {
+            keyword: state.keyword,
+          },
+        });
+        store.dispatch("saveSearchHistory", state.keyword);
       }
     };
     return {
@@ -226,6 +229,9 @@ $color-theme: #fa2800;
             opacity: 1;
           }
         }
+        &:hover{
+          color:$color-theme;
+        }
       }
     }
   }
@@ -250,6 +256,13 @@ $color-theme: #fa2800;
       width: 1px;
     }
     .no-login {
+      font-size: 14px;
+      cursor: pointer;
+      &:hover {
+        color: $color-theme;
+      }
+    }
+    .is-login{
       font-size: 14px;
       cursor: pointer;
       &:hover {
@@ -316,7 +329,7 @@ $color-theme: #fa2800;
             left: 0;
             right: 0;
             bottom: 0;
-            filter: blur(0.5rem);
+            filter: blur(8px);
             .layer {
               width: 100%;
               height: 100%;
@@ -350,7 +363,6 @@ $color-theme: #fa2800;
               border-radius: 5px;
               &:hover {
                 background-color: rgba(255, 255, 255, 0.04);
-                border-color: #fff;
               }
               &:focus {
                 background-color: rgba(255, 255, 255, 0.04);
@@ -370,7 +382,7 @@ $color-theme: #fa2800;
       .overlay {
         opacity: 1;
         pointer-events: auto;
-        filter: bulr(10px);
+        backdrop-filter: blur(10px);
       }
       .search-body {
         pointer-events: auto;

@@ -1338,6 +1338,11 @@ async@^2.6.2:
   dependencies:
     lodash "^4.17.14"
 
+async@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.nlark.com/async/download/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
+  integrity sha1-s6JoXF67ZB094C0WEALGD8n4VyA=
+
 at-least-node@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/at-least-node/download/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
@@ -5664,10 +5669,20 @@ sass-loader@^11.0.1:
     klona "^2.0.4"
     neo-async "^2.6.2"
 
+sass-resources-loader@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.nlark.com/sass-resources-loader/download/sass-resources-loader-2.2.3.tgz#1be92ea326a4a2d8d7c3483a01577a70df7d7fa1"
+  integrity sha1-G+kuoyakotjXw0g6AVd6cN99f6E=
+  dependencies:
+    async "^3.2.0"
+    chalk "^4.1.0"
+    glob "^7.1.6"
+    loader-utils "^2.0.0"
+
 sass@^1.32.7:
-  version "1.35.1"
-  resolved "https://registry.nlark.com/sass/download/sass-1.35.1.tgz?cache=0&sync_timestamp=1623791494201&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fsass%2Fdownload%2Fsass-1.35.1.tgz#90ecf774dfe68f07b6193077e3b42fb154b9e1cd"
-  integrity sha1-kOz3dN/mjwe2GTB347QvsVS54c0=
+  version "1.35.2"
+  resolved "https://registry.nlark.com/sass/download/sass-1.35.2.tgz#b732314fcdaf7ef8d0f1698698adc378043cb821"
+  integrity sha1-tzIxT82vfvjQ8WmGmK3DeAQ8uCE=
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
 

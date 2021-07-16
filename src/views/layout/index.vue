@@ -6,12 +6,15 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 import { onMounted } from "vue";
 export default {
   setup() {
     onMounted(() => {
       console.log("layout is ready");
     });
+    return{
+    }
   },
 };
 </script>

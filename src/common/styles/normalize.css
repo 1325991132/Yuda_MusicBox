@@ -43,6 +43,7 @@ h1 {
   margin: 0.67em 0;
 }
 
+
 /* Grouping content
    ========================================================================== */
 
@@ -77,6 +78,7 @@ pre {
 a {
   background-color: transparent;
 }
+
 
 /**
  * 1. Remove the bottom border in Chrome 57-
@@ -348,3 +350,5 @@ template {
 [hidden] {
   display: none;
 }
+
+

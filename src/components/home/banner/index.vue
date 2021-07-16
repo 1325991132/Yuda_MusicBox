@@ -28,14 +28,10 @@ import {
   UnwrapRef,
   reactive,
   computed,
-  Ref,
-  ref,
-  onMounted,
-  nextTick,
 } from "vue";
 import { getBanner } from "@/api/services/api";
 export default {
-  setup(props, { emit }) {
+  setup():any {
     interface swiperObj {
       slidesPerView: number;
       spaceBetween: number;

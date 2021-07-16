@@ -17,6 +17,8 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable */
+
 import { reactive, Ref, ref, UnwrapRef, defineComponent, toRefs, toRef } from "vue";
 interface FormState {
   name: string;

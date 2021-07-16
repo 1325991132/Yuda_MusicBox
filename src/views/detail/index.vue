@@ -3,6 +3,8 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable */
+
 import { defineComponent, h } from "vue";
 
 export default defineComponent({

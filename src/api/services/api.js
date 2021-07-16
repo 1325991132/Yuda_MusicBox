@@ -1,3 +1,4 @@
+/* eslint-disable */
 import api from './instance'
 /**
  * @method 获取轮播图

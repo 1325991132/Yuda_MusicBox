@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { App } from 'vue'
 
 // swiper 额外组件配置

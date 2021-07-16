@@ -33,7 +33,7 @@
 import { computed, defineComponent, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { search, getSongDetail } from "@/api/services/api";
-import Song, { createSong } from "@/model/song";
+import  { createSong } from "@/model/song";
 import artistList from "@/components/artistList/index.vue";
 
 export default defineComponent({
@@ -109,7 +109,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .search-wrap {
-  margin-top: -1.25rem;
+  // margin-top: -1.25rem;
+  margin-top: -1.5rem;
   .banner {
     width: 100%;
     height: 15.625rem;

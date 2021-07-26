@@ -1,7 +1,7 @@
 @import './normalize.css';
 /* qyd */
 // input
-
+$color-theme:red;
 input{
   font-family: PingFang SC, Arial, Microsoft YaHei, sans-serif;
 }
@@ -181,3 +181,34 @@ h6 {
 	}
 }
 
+/* element slider */
+::v-deep(.el-slider){
+  .el-slider__runway {
+    height: 3px;
+    margin: 0;
+    background: rgba(0,0,0,0.05);
+  }
+  
+  .el-slider__bar {
+    height: 3px;
+    border-radius: 3px;
+    background-color: #fa2800;
+  }
+  
+  .el-slider__button-wrapper {
+    width: 12px;
+    height: 12px;
+    top: -7.5px;
+  }
+  
+  .el-slider__button {
+    width: 12px;
+    height: 12px;
+    border: 2px solid #fa2800;
+  }
+  
+  .el-slider__button:hover {
+    cursor: pointer;
+  }
+}
+  

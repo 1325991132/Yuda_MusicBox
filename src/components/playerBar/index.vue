@@ -20,9 +20,16 @@
       </div>
       <div class="process-wrap" ref="process-wrap">
         <p class="current-time">{{ formatTime(state.currentTime) }}</p>
+        <process-bar></process-bar>
         <p class="duration-time">
           {{ formatTime(currentSong.duration) }}
         </p>
+      </div>
+      <div class="volume-wrap">
+        <i class="iconfont volume-icon niceshengyin1"></i>
+        <div class="process-bar">
+          <el-slider style="width: 100%" class="bar-inner"> </el-slider>
+        </div>
       </div>
       <audio
         ref="audio"
@@ -41,6 +48,7 @@
 import { defineComponent, computed, reactive, watch, ref, nextTick } from "vue";
 import { useStore } from "vuex";
 import utils from "@/utils";
+import processBar from "@/components/processBar/index.vue";
 
 export default defineComponent({
   setup() {
@@ -50,7 +58,7 @@ export default defineComponent({
     const state = reactive({
       songReady: false, //准备好歌曲了，可以播放
       currentTime: 0,
-      id:'',
+      id: "",
     });
     // 格式化时间
     const formatTime = (interval) => {
@@ -90,7 +98,7 @@ export default defineComponent({
       }
       state.songReady = false;
       nextTick(() => {
-        const audio:any = ref(null).value;
+        const audio: any = ref(null).value;
         if (audio) {
           audio.src = newSong.url;
           audio.play();
@@ -113,6 +121,9 @@ export default defineComponent({
         playing.value ? "nicezanting1" : "nicebofang2"
       ),
     };
+  },
+  components: {
+    processBar,
   },
 });
 </script>
@@ -199,5 +210,76 @@ export default defineComponent({
       font-size: 40px;
     }
   }
+  .process-wrap {
+    border: solid 2px yellow;
+    display: flex;
+    width: 40.625rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 5rem;
+    flex: 1;
+    p {
+      font-size: 0.875rem;
+    }
+  }
+  .volume-wrap {
+    width: 11.25rem;
+    margin: 0 5rem 0 2.5rem;
+    display: flex;
+    align-items: center;
+    .volume-icon {
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .process-bar {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      height: 2px;
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 2px;
+      cursor: pointer;
+      margin-left: 10px;
+      .bar-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        .progress {
+          width: 50px;
+          background: $color-theme;
+          height: 2px;
+          border-radius: 2px;
+        }
+        .progress-btn {
+          position: absolute;
+          z-index: 100;
+          right: -4px;
+          width: 10px;
+          height: 10px;
+          top: -4.5px;
+          background: $color-theme;
+          box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+          border-radius: 50%;
+          &::after {
+            position: absolute;
+            content: " ";
+            top: 50%;
+            left: 50%;
+            margin: -3px 0 0 -3px;
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+  }
 }
+
+
 </style>

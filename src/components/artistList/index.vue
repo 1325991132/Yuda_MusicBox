@@ -199,7 +199,7 @@ $color-theme: red;
           }
           .play-icon {
             height: 1rem;
-            max-width: 1.125rem;
+            max-width: 20px;
             overflow: hidden;
             display: none;
             .line {

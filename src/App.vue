@@ -6,8 +6,9 @@
         <component :is="Component" />
       </transition>
     </router-view>
+    <my-footer v-if="!$route.meta.isLogin"></my-footer>
     <player-bar v-if="!$route.meta.isLogin"></player-bar>
-    <my-footer v-if="!$route.meta.isLogin"></my-footer> 
+
     <div class="fly bg-fly-circle1"></div>
     <div class="fly bg-fly-circle2"></div>
     <div class="fly bg-fly-circle3"></div>
@@ -17,17 +18,17 @@
 <script lang='ts'>
 // import { useRouter, useRoute, RouteLocationNormalized } from "vue-router";
 import myHeader from "@/components/header/index.vue";
-import playerBar from '@/components/playerBar/index.vue';
-import myFooter from '@/components/footer/index.vue'
+import playerBar from "@/components/playerBar/index.vue";
+import myFooter from "@/components/footer/index.vue";
 export default {
   components: {
     myHeader,
     playerBar,
-    myFooter
+    myFooter,
   },
-  setup():any {
+  setup(): any {
     // const route: RouteLocationNormalized = useRoute();
-    return{}
+    return {};
   },
 };
 </script>
@@ -43,7 +44,11 @@ export default {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: linear-gradient(to right, rgba(190, 84, 239, 0.07) 0%, rgba(236, 33, 226, 0.04) 100%);
+  background: linear-gradient(
+    to right,
+    rgba(190, 84, 239, 0.07) 0%,
+    rgba(236, 33, 226, 0.04) 100%
+  );
   animation: move 2.5s linear infinite;
 }
 
@@ -53,7 +58,11 @@ export default {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: linear-gradient(to right, rgba(84, 130, 239, 0.08) 0%, rgba(48, 33, 236, 0.04) 100%);
+  background: linear-gradient(
+    to right,
+    rgba(84, 130, 239, 0.08) 0%,
+    rgba(48, 33, 236, 0.04) 100%
+  );
   animation: move 3s linear infinite;
 }
 
@@ -63,7 +72,11 @@ export default {
   width: 145px;
   height: 145px;
   border-radius: 50%;
-  background: linear-gradient(to right, rgba(115, 239, 84, 0.287) 0%, rgba(33, 236, 158, 0.04) 100%);
+  background: linear-gradient(
+    to right,
+    rgba(115, 239, 84, 0.287) 0%,
+    rgba(33, 236, 158, 0.04) 100%
+  );
   animation: move 2.5s linear infinite;
 }
 
@@ -73,7 +86,11 @@ export default {
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  background: linear-gradient(to right, rgba(239, 84, 200, 0.09) 0%, rgba(236, 33, 33, 0.04) 100%);
+  background: linear-gradient(
+    to right,
+    rgba(239, 84, 200, 0.09) 0%,
+    rgba(236, 33, 33, 0.04) 100%
+  );
   animation: move 3.5s linear infinite;
 }
 
@@ -90,5 +107,4 @@ export default {
     transform: translateY(0px);
   }
 }
-
 </style>

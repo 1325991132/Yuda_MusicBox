@@ -2,6 +2,9 @@
     <div class="footer">
         <div class="container">
             <p class="title">ydmusic</p>
+            <!-- <p class="desc">
+                ydmusic
+            </p> -->
         </div>
     </div>
 </template>
@@ -11,7 +14,6 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
     setup () {
-        
         return {}
     }
 })
@@ -20,7 +22,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .footer{
     width:100%;
-    height: 170px;
+    height:268px;
     background-color: #161e27;
     .container{
         padding:3rem;

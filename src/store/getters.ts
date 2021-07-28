@@ -1,6 +1,6 @@
 /* eslint-disable */
 // 登录状态
-export const loginStatu = state => {
+export const loginStatu:any = state => {
    const res_Statu = window.localStorage.getItem('loginStatu')
    if (res_Statu) {
       return state.loginStatu || JSON.parse(res_Statu)
@@ -9,7 +9,7 @@ export const loginStatu = state => {
 }
 
 // 用户信息
-export const userInfo = state => {
+export const userInfo:any = state => {
    const res_userInfo = window.localStorage.getItem('userInfo')
    if (res_userInfo) {
       return state.userInfo || JSON.parse(res_userInfo)
@@ -18,21 +18,21 @@ export const userInfo = state => {
 }
 
 // 播放状态
-export const playing = state => state.playing
+export const playing:any = state => state.playing
 
 // 当前播放的歌曲
-export const currentSong = state => {
+export const currentSong:any = state => {
    return state.playList[state.currentIndex] || {}
 }
 
 // 播放列表
-export const playList = state => state.playList
+export const playList:any = state => state.playList
 
 // 播放模式
-export const mode = state => state.mode
+export const mode:any = state => state.mode
 
 // 当前播放索引
-export const currentIndex = state => state.currentIndex
+export const currentIndex:any = state => state.currentIndex
 
 // 顺序列表
-export const sequenceList = state => state.sequenceList
+export const sequenceList:any = state => state.sequenceList

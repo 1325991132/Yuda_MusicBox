@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, reactive, watch, computed } from "vue";
+import { defineComponent, nextTick, ref, reactive, watch } from "vue";
 
 export default defineComponent({
   props: {

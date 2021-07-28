@@ -153,6 +153,11 @@ h6 {
   align-items: center;
 }
 
+.flex-between{
+  display: flex;
+  justify-content: space-between;
+}
+
 /* 过渡 */
 .transition {
   transition: all 0.15s ease-in-out;

@@ -45,6 +45,11 @@
           </el-slider>
         </div>
       </div>
+      <div class="tool">
+        <i class="iconfont" :class="modeIcon" @click="changeMode"></i>
+        <i class="iconfont nicegeci32" @click="openLyric"></i>
+        <i class="iconfont nicebofangliebiao24" @click="openPlaylist"></i>
+      </div>
       <audio
         ref="audio"
         :src="currentSong.url"
@@ -56,6 +61,27 @@
         :muted="state.isMuted"
         :volume="state.volume"
       ></audio>
+      <transition name="fade">
+        <div class="lyric-box shadow" v-if="state.showLyric">
+          <div class="title flex-between">歌词</div>
+          <div class="lyric" ref="lyricList">
+            <div class="lyric-wrapper">
+              <div v-if="state.currentLyric">
+                <p ref="lyricLine">有歌词</p>
+              </div>
+              <div class="no-lyric" v-else>暂无歌词，请您欣赏</div>
+            </div>
+          </div>
+          <div class="foot"></div>
+        </div>
+      </transition>
+      <transition name="fade">
+        <div class="lyric-box playlist-box shadow" v-if="state.showPlaylist">
+          <div class="title flex-between">播放列表</div>
+          <div class="list"></div>
+          <div class="foot"></div>
+        </div>
+      </transition>
     </div>
   </transition>
 </template>
@@ -65,27 +91,40 @@ import { defineComponent, computed, reactive, watch, ref, nextTick } from "vue";
 import { useStore } from "vuex";
 import utils from "@/utils";
 import processBar from "@/components/processBar/index.vue";
-import { currentIndex } from "@/store/getters";
+import { playMode } from "@/common/playConfig";
+import { getLyric } from "@/api/services/api";
+import Lyric from "lyric-parser";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
-    const playing = computed(() => store.getters.playing); //是否正在播放
+    const playing: any = computed(() => store.getters.playing); //是否正在播放
     const currentSong: any = computed(() => store.getters.currentSong); //当前歌曲
     const playList: any = computed(() => store.getters.playList); //列表
-    const currentIndex: any = computed(() => store.getters.currentIndex);
+    const currentIndex: any = computed(() => store.getters.currentIndex); //当前播放下标
+    const mode: any = computed(() => store.getters.mode); //当前播放模式
+    const sequenceList: any = computed(() => store.getters.sequenceList); //顺序播放列表
     const playIcon: any = computed(() =>
       playing.value ? "nicezanting1" : "nicebofang2"
-    );
+    ); //播放/暂停的图标
     const store = useStore();
-    const state = reactive({
+    const state: any = reactive({
       songReady: false, //准备好歌曲了，可以播放
       currentTime: 0,
+      currentLyric: null, //歌词
+      isPureMusic: false,
+      pureMusicLyric: "",
+      canLyricPlay: "",
       id: "",
       volumeNum: 50,
       volume: 0.5,
       isMuted: false, //是否静音
+      timer: null, //超时报错定时器
+      showLyric: false, //显示歌词
+      showPlaylist: false, //展开歌曲列表
     });
-    const audio: any = ref(null);
+    const audio: any = ref(null); //audio dom
+    const lyricLine: any = ref(null); //lyricLine dom
     // 格式化时间
     const formatTime = (interval) => {
       interval = interval | 0;
@@ -106,7 +145,22 @@ export default defineComponent({
 
     // 播放准备完成
     const audioReady = () => {
+      if (state.timer) {
+        clearTimeout(state.timer);
+      }
+      state.canLyricPlay = true;
       state.songReady = true;
+    };
+
+    // 歌曲错误
+    const audioError = () => {
+      console.log("报错了");
+      if (state.timer) {
+        clearTimeout(state.timer);
+      }
+      state.songReady = true;
+      message.error("该歌曲无音源，已为您播放下一首歌曲");
+      nextSong();
     };
 
     // 播放时间改变
@@ -126,7 +180,7 @@ export default defineComponent({
           index = playList.value.length - 1;
         }
         store.commit("SET_CURRENT_INDEX", index);
-        if (playing.value) {
+        if (!playing.value) {
           togglePlaying();
         }
       }
@@ -143,7 +197,7 @@ export default defineComponent({
           index = 0;
         }
         store.commit("SET_CURRENT_INDEX", index);
-        if (playing.value) {
+        if (!playing.value) {
           togglePlaying();
         }
       }
@@ -158,14 +212,41 @@ export default defineComponent({
 
     // 暂停
     const audioPaused = () => {
-      store.commit("SET_PLAYING_STATE", !playing.value);
+      store.commit("SET_PLAYING_STATE", false);
     };
 
-    // 歌曲错误
-    // const audioError = ()=> {
-    //   clearTimeout(.timer)
-    //   this.songReady = true
-    // },
+    // 播放模式
+    const modeIcon = computed(() => {
+      return mode.value == playMode.sequence
+        ? "nicexunhuanbofang24"
+        : mode.value === playMode.loop
+        ? "nicebofangqidanquxunhuan"
+        : "nicebofangqisuijibofang";
+    });
+
+    // 切换播放模式
+    const changeMode = () => {
+      const temp_mode = (mode.value + 1) % 3;
+      console.log("mode", temp_mode);
+      store.commit("SET_PLAY_MODE", temp_mode);
+      let list = null;
+      const copy_list = JSON.parse(JSON.stringify(sequenceList.value));
+      if (mode.value === playMode.random) {
+        list = utils.shuffle(copy_list);
+      } else {
+        list = copy_list;
+      }
+      resetCurrentIndex(list);
+      store.commit("SET_PLAYLIST", list);
+    };
+
+    // 按照打乱的列表设置index
+    const resetCurrentIndex = (list) => {
+      let index = list.findIndex((item) => {
+        return item.id === currentSong.value.id;
+      });
+      store.commit("SET_CURRENT_INDEX", index);
+    };
 
     // 播放暂停
     const togglePlaying = () => {
@@ -180,8 +261,7 @@ export default defineComponent({
     //切换播放状态执行
     watch(
       playing,
-      (n, o) => {
-        console.log(n, o);
+      (n) => {
         if (!state.songReady) return;
         if (audio.value) {
           n ? audio.value.play() : audio.value.pause();
@@ -196,6 +276,7 @@ export default defineComponent({
         return;
       }
       state.songReady = false;
+      state.canLyricPlay = false;
       nextTick(() => {
         if (audio.value) {
           audio.value.src = newSong.url;
@@ -203,34 +284,119 @@ export default defineComponent({
           state.id = newSong.id;
         }
       });
+      // 如果5s没播放，则认为超时，修改状态确保可以切换歌曲
+      if (state.timer) {
+        clearTimeout(state.timer);
+      }
+      state.timer = setTimeout(() => {
+        state.songReady = true;
+      }, 5000);
+      qyd_getLyric(newSong.id);
     });
 
+    //移动歌曲进度条
     const onPercentBarChange = (percent) => {
       const currentTime = currentSong.value.duration * percent;
       state.currentTime = audio.value.currentTime = currentTime;
+      if (!playing.value) {
+        togglePlaying();
+      }
     };
+
+    // 播放完成
+    const audioEnd = () => {
+      state.currentTime = 0;
+      if (mode.value === playMode.loop) {
+        loopSong();
+      } else {
+        nextSong();
+      }
+    };
+
+    // ---------------------------------------------------------
+    // 打开歌词
+    const openLyric = () => {
+      state.showPlaylist = false;
+      if (state.showLyric) {
+        state.showLyric = false;
+      } else {
+        state.showLyric = true;
+      }
+    };
+
+    // 获取歌词
+    const qyd_getLyric = async (id) => {
+      try {
+        const res = await getLyric(id);
+        console.log(res);
+        if (res.code === 200) {
+          let lyric = res.lrc.lyric;
+
+          state.currentLyric = new Lyric(lyric, lyricHandle);
+          console.log("state.currentLyric", state.currentLyric.lrc);
+
+          if (playing.value && state.canLyricPlay) {
+            state.currentLyric.seek(state.currentTime * 1000);
+          }
+          console.log('state.currentLyric1',state.currentLyric);
+          // nextTick(()=>{
+          //   console.log("lyricLine.value",audio.value);
+          // })
+
+          // qyd
+          // if(state.isPureMusic){
+          //   const timeExp = /\[(\d{2}):(\d{2}):(\d{2})]/g
+          //   state.pureMusicLyric = state.currentLyric.lrc
+          // }
+        }
+      } catch (err) {
+        state.currentLyric = null;
+      }
+    };
+
+    // 歌词的回调函数
+    const lyricHandle = ({ lineNum, txt }) => {
+      console.log("1111111111111");
+    };
+
+    // 展开播放列表
+    const openPlaylist = () => {
+      state.showLyric = false;
+      if (state.showPlaylist) {
+        state.showPlaylist = false;
+      } else {
+        state.showPlaylist = true;
+      }
+    };
+
     return {
       store,
       state,
-      formatTime,
-      audioReady,
+      formatTime, //格式化时间
+      modeIcon, //模式icon显示
+      audioReady, //音频准备好了
+      changeMode, //切换播放模式
       percent, //给进度条传的百分比
-      onPercentBarChange,
-      currentSong,
+      onPercentBarChange, //移动歌曲进度条
+      currentSong, //当前歌曲
       changeMuted, //点击喇叭，切换静音
       changeVolume, //修改声音
       audio, //audio DOM
       prevSong, //上一首
       nextSong, //下一首
-      playing,
+      playing, //是否正在播放
       playIcon, //图标
       updateTime, //播放时间改变
       togglePlaying, //播放暂停
       audioPaused, //暂停
-      playList,
-      mode: computed(() => store.getters.mode),
-      currentIndex,
-      sequenceList: computed(() => store.getters.sequenceList),
+      audioError, //歌曲错误
+      audioEnd, //播放结束后回调
+      playList, //当前播放列表
+      mode, //当前播放模式
+      currentIndex, //当前播放下标
+      sequenceList, //顺序播放列表
+      openLyric, //显示歌词
+      openPlaylist, //展开播放列表
     };
   },
   components: {
@@ -240,24 +406,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.fade-enter {
-  opacity: 0;
-  transform: translate3d(0, 30px, 0);
-}
-
-.fade-enter-active {
-  transition: all 0.5s;
-}
-
-.fade-leave-to {
-  opacity: 0;
-  transform: translate3d(0, 30px, 0);
-}
-
-.fade-leave-active {
-  transition: all 0.5s;
-}
-
 .player-bar {
   width: 100%;
   height: 4.5rem;
@@ -389,5 +537,48 @@ export default defineComponent({
       }
     }
   }
+  .tool {
+    .iconfont {
+      font-size: 1.5rem;
+      margin: 0 10px;
+      cursor: pointer;
+      &:active {
+        opacity: 0.7;
+      }
+    }
+  }
+  .lyric-box {
+    width: 22.5rem;
+    height: 36.25rem;
+    position: absolute;
+    right: 0;
+    bottom: 80px;
+    border-radius: 3px;
+    padding: 1.875rem;
+    overflow: hidden;
+    .title {
+      font-weight: 500;
+      font-size: 1rem;
+      margin: 10px 0 30px;
+    }
+  }
+}
+
+.fade-enter {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+}
+
+.fade-enter-active {
+  transition: all 0.5s;
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+}
+
+.fade-leave-active {
+  transition: all 0.5s;
 }
 </style>

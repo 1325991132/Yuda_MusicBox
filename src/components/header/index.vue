@@ -8,10 +8,10 @@
         <li>
           <router-link :to="{ name: 'home' }" tag="a">发现音乐</router-link>
         </li>
-        <li>
+        <!-- <li>
           <router-link :to="{ name: 'calc' }" tag="a">排行榜</router-link>
-        </li>
-        <li>
+        </li> -->
+        <!-- <li>
           <router-link :to="{ name: 'home' }" tag="a">歌单</router-link>
         </li>
         <li>
@@ -22,7 +22,7 @@
         </li>
         <li>
           <router-link :to="{ name: 'home' }" tag="a">MV</router-link>
-        </li>
+        </li> -->
       </ul>
       <div class="search" @click="openSearchPop">
         <i class="iconfont nicesearch-o"></i>
@@ -320,7 +320,7 @@ $color-theme: #fa2800;
           overflow: hidden;
           padding: 3rem;
           .bg-effect {
-            background: url(@/assets/images/personal.jpg);
+            background: url(@/assets/images/search_bg.jpg);
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;

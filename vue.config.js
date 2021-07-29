@@ -27,9 +27,9 @@ module.exports = {
                 .end()
         })
     },
-    devServer:{
-        port:8088,
-        open:true,
-        hotOnly:true
-    }
+    // devServer:{
+    //     port:8088,
+    //     open:true,
+    //     hotOnly:true
+    // }
 }

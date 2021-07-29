@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
     <div class="player-bar shadow flex-row" v-show="playList.length">
-      <!-- <span @click="t">test</span> -->
+      <span @click="t">test</span>
       <div class="avatar">
         <img :src="currentSong && currentSong.image" alt="nicemusic" />
       </div>
@@ -64,14 +64,28 @@
       <transition name="fade">
         <div class="lyric-box shadow" v-if="state.showLyric">
           <div class="title flex-between">歌词</div>
-          <div class="lyric" ref="lyricList">
+          <scroll
+            class="lyric"
+            ref="lyricList"
+            :data="state.currentLyric && state.currentLyric.lines"
+          >
             <div class="lyric-wrapper">
-              <div v-if="state.currentLyric">
-                <p ref="lyricLine">有歌词</p>
+              <div ref="lyric_box" v-if="state.currentLyric">
+                <!-- <p ref="lyricLine">有歌词</p> -->
+                <p
+                  ref="lyricLine"
+                  class="lyric-text"
+                  :class="state.currentLyricNum === index ? 'active' : ''"
+                  v-for="(item, index) of state.currentLyric.lines"
+                  :key="index"
+                >
+                  {{ item.txt }}
+                </p>
               </div>
               <div class="no-lyric" v-else>暂无歌词，请您欣赏</div>
             </div>
-          </div>
+          </scroll>
+
           <div class="foot"></div>
         </div>
       </transition>
@@ -95,6 +109,7 @@ import { playMode } from "@/common/playConfig";
 import { getLyric } from "@/api/services/api";
 import Lyric from "lyric-parser";
 import { message } from "ant-design-vue";
+import Scroll from "@/components/scroll/index.vue";
 
 export default defineComponent({
   setup() {
@@ -115,6 +130,8 @@ export default defineComponent({
       isPureMusic: false,
       pureMusicLyric: "",
       canLyricPlay: "",
+      currentLyricNum: "", //播放到第几行
+      playingLyric: "", //当前这一行歌词
       id: "",
       volumeNum: 50,
       volume: 0.5,
@@ -124,7 +141,9 @@ export default defineComponent({
       showPlaylist: false, //展开歌曲列表
     });
     const audio: any = ref(null); //audio dom
-    const lyricLine: any = ref(null); //lyricLine dom
+    const lyricLine: any = ref(null); //lyricLine dom 歌词
+    const lyricList: any = ref(null); // scroll dom 滚动区域
+
     // 格式化时间
     const formatTime = (interval) => {
       interval = interval | 0;
@@ -150,11 +169,13 @@ export default defineComponent({
       }
       state.canLyricPlay = true;
       state.songReady = true;
+      if (state.currentLyric) {
+        state.currentLyric.seek(state.currentTime * 1000);
+      }
     };
 
     // 歌曲错误
     const audioError = () => {
-      console.log("报错了");
       if (state.timer) {
         clearTimeout(state.timer);
       }
@@ -208,11 +229,17 @@ export default defineComponent({
       audio.value.currentTime = 0;
       audio.value.play();
       store.commit("SET_PLAYING_STATE", true);
+      if (state.currentLyric) {
+        state.currentLyric.seek(0);
+      }
     };
 
     // 暂停
     const audioPaused = () => {
       store.commit("SET_PLAYING_STATE", false);
+      if (state.currentLyric) {
+        state.currentLyric.stop();
+      }
     };
 
     // 播放模式
@@ -252,6 +279,9 @@ export default defineComponent({
     const togglePlaying = () => {
       if (!state.songReady) return;
       store.commit("SET_PLAYING_STATE", !playing.value);
+      if (state.currentLyric) {
+        state.currentLyric.togglePlay();
+      }
     };
 
     let percent: any = computed(() => {
@@ -277,9 +307,16 @@ export default defineComponent({
       }
       state.songReady = false;
       state.canLyricPlay = false;
+      if (state.currentLyric) {
+        state.currentLyric.stop();
+        state.currentLyric = null;
+        state.playingLyric = "";
+        state.currentLyricNum = 0;
+      }
       nextTick(() => {
         if (audio.value) {
           audio.value.src = newSong.url;
+          audio.value.volume = state.volume;
           audio.value.play();
           state.id = newSong.id;
         }
@@ -298,6 +335,9 @@ export default defineComponent({
     const onPercentBarChange = (percent) => {
       const currentTime = currentSong.value.duration * percent;
       state.currentTime = audio.value.currentTime = currentTime;
+      if (state.currentLyric) {
+        state.currentLyric.seek(state.currentTime * 1000);
+      }
       if (!playing.value) {
         togglePlaying();
       }
@@ -328,35 +368,46 @@ export default defineComponent({
     const qyd_getLyric = async (id) => {
       try {
         const res = await getLyric(id);
-        console.log(res);
         if (res.code === 200) {
           let lyric = res.lrc.lyric;
-
           state.currentLyric = new Lyric(lyric, lyricHandle);
-          console.log("state.currentLyric", state.currentLyric.lrc);
-
           if (playing.value && state.canLyricPlay) {
             state.currentLyric.seek(state.currentTime * 1000);
           }
-          console.log('state.currentLyric1',state.currentLyric);
-          // nextTick(()=>{
-          //   console.log("lyricLine.value",audio.value);
-          // })
-
-          // qyd
-          // if(state.isPureMusic){
-          //   const timeExp = /\[(\d{2}):(\d{2}):(\d{2})]/g
-          //   state.pureMusicLyric = state.currentLyric.lrc
-          // }
         }
       } catch (err) {
         state.currentLyric = null;
+        state.playingLyric = "";
       }
     };
 
+    const lyric_box: any = ref(null);
+    let tt: any = null;
     // 歌词的回调函数
     const lyricHandle = ({ lineNum, txt }) => {
-      console.log("1111111111111");
+      console.log("歌词-", lineNum, txt);
+      if (!lyric_box.value) {
+        return;
+      }
+      state.currentLyricNum = lineNum;
+      if (lineNum > 10) {
+        let lyricAll = lyric_box.value.querySelectorAll("p");
+        let lineEl = lyricAll[lineNum - 10];
+        tt = lyricAll[lineNum + 10];
+        if (lyric_box.value) {
+          nextTick(() => {
+            console.log("scrollToElement", lineEl);
+            lyricList.value.scrollToElement(lineEl, 1000);
+          });
+        }
+      } else {
+        if (lyricList.value) {
+          nextTick(() => {
+            lyricList.value.scrollTo(0, 0, 1000);
+          });
+        }
+      }
+      state.playingLyric = txt;
     };
 
     // 展开播放列表
@@ -369,9 +420,16 @@ export default defineComponent({
       }
     };
 
+    const t = () => {
+      console.log("执行滚动");
+      lyricList.value.scrollToElement(tt, 1000);
+    };
+
     return {
+      t,
       store,
       state,
+      lyric_box, //歌词box
       formatTime, //格式化时间
       modeIcon, //模式icon显示
       audioReady, //音频准备好了
@@ -382,6 +440,8 @@ export default defineComponent({
       changeMuted, //点击喇叭，切换静音
       changeVolume, //修改声音
       audio, //audio DOM
+      lyricLine, //lyricLine歌词 DOM
+      lyricList, //歌词滚动区域dom
       prevSong, //上一首
       nextSong, //下一首
       playing, //是否正在播放
@@ -401,6 +461,7 @@ export default defineComponent({
   },
   components: {
     processBar,
+    Scroll,
   },
 });
 </script>
@@ -552,7 +613,7 @@ export default defineComponent({
     height: 36.25rem;
     position: absolute;
     right: 0;
-    bottom: 80px;
+    bottom: 70px;
     border-radius: 3px;
     padding: 1.875rem;
     overflow: hidden;
@@ -560,6 +621,28 @@ export default defineComponent({
       font-weight: 500;
       font-size: 1rem;
       margin: 10px 0 30px;
+      overflow: hidden;
+    }
+    .lyric {
+      height: 26.875rem;
+      padding-bottom: 50px;
+      overflow: hidden;
+      width: 100%;
+      vertical-align: top;
+      .lyric-wrapper {
+        width: 100%;
+        margin: 0 auto;
+        overflow: hidden;
+        .lyric-text {
+          margin: 5px 0;
+          line-height: 24px;
+          font-size: 14px;
+          font-weight: 300;
+          &.active {
+            color: $color-theme;
+          }
+        }
+      }
     }
   }
 }

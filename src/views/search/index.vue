@@ -114,7 +114,7 @@ export default defineComponent({
   .banner {
     width: 100%;
     height: 15.625rem;
-    background: url("@/assets/images/personal.jpg");
+    background: url("@/assets/images/music_wall.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

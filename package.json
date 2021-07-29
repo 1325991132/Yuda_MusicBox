@@ -1,5 +1,5 @@
 {
-  "name": "vue3-test",
+  "name": "yd_music",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
     "@types/nprogress": "^0.2.0",
     "ant-design-vue": "^2.2.0-rc.1",
     "axios": "0.21.1",
+    "better-scroll": "^2.4.1",
     "element-plus": "^1.0.2-beta.55",
     "good-storage": "^1.1.1",
     "js-cookie": "^2.2.1",

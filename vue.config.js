@@ -2,7 +2,10 @@ const path = require('path');        //引入path模块
 function resolve(dir) {
     return path.join(__dirname, dir)  //path.join(__dirname)设置绝对路径
 }
+const __DEV__ = process.env.NODE_ENV === 'development'
 module.exports = {
+    outputDir:'dist',
+    productionSourceMap:process.env.NODE_ENV!=='production',
     chainWebpack: (config) => {
         config.resolve.alias
             //set第一个参数：设置的别名，第二个参数：设置的路径
@@ -11,8 +14,9 @@ module.exports = {
             .set('components', resolve('./src/components'))
             .set('views', resolve('src/views'))
             .set('common', resolve('src/common'))
-            .set('vue-i18n', 'vue-i18n/dist/vue-i18n.cjs.js')
-
+        if (__DEV__) {
+            config.resolve.alias.set('vue-i18n', 'vue-i18n/dist/vue-i18n.cjs.js')
+        }
         const oneOfsMap = config.module.rule('scss').oneOfs.store;
         oneOfsMap.forEach(item => {
             item
@@ -27,9 +31,9 @@ module.exports = {
                 .end()
         })
     },
-    // devServer:{
-    //     port:8088,
-    //     open:true,
-    //     hotOnly:true
-    // }
+    devServer: {
+        port: 8088,
+        open: true,
+        hotOnly: true
+    }
 }

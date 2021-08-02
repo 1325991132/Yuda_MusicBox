@@ -55,7 +55,6 @@ export default defineComponent({
     const _initScroll = () => {
       console.log("init start");
       if (!wrapper.value) return;
-      console.log("112233");
       scroll = new BScroll(wrapper.value, {
         probeType: props.probeType,
         click: props.click,
@@ -63,13 +62,6 @@ export default defineComponent({
         eventPassthrough:
           props.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V,
       });
-      //         scroll = new BScroll(wrapper, {
-      //     probeType: props.probeType,
-      //     click: props.click,
-      //     mouseWheel: true,
-      //     eventPassthrough:
-      //       props.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V,
-      //   });
       console.log("332211");
       console.log("scroll", scroll);
 
@@ -98,6 +90,7 @@ export default defineComponent({
 
     // 刷新scroll
     const refresh = () => {
+      console.log('refresh刷新')
       scroll && scroll.refresh();
     };
 
@@ -121,9 +114,10 @@ export default defineComponent({
 
     watch(
       () => props.data,
-      (n) => {
-        console.log("change props.data");
-        refresh();
+      () => {
+        setTimeout(() => {
+          refresh();
+        }, props.refreshDelay);//不加延时scroll标签会有无法滚动的问题
       }
     );
     return {

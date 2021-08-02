@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as types from './mutations-type'
 import { playMode } from '@/common/playConfig'
-import { saveSearch } from '@/common/cache'
+import { saveSearch,saveHistory } from '@/common/cache'
 import utils from '@/utils'
 
 // 保存搜索历史
@@ -30,6 +30,11 @@ export const selectPlay = function ({ commit, state }, { list, index }) {
 }
 
 // 暂停播放
-export const pausePlay = function({commit}){
-    commit(types.SET_PLAYING_STATE,false)
+export const pausePlay = function ({ commit }) {
+    commit(types.SET_PLAYING_STATE, false)
+}
+
+// 设置最近播放歌曲
+export const saveHistoryList = function ({ commit }, song) {
+    commit(types.SET_HISTORY_LIST, saveHistory(song))
 }

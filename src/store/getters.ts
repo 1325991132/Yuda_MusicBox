@@ -36,3 +36,6 @@ export const currentIndex:any = state => state.currentIndex
 
 // 顺序列表
 export const sequenceList:any = state => state.sequenceList
+
+// 近期播放列表
+export const historyList:any = state => state.historyList

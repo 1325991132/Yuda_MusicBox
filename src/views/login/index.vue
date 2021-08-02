@@ -74,14 +74,7 @@
   </kinesis-container>
 </template>
 <script lang="ts">
-import {
-  reactive,
-  ref,
-  Ref,
-  toRaw,
-  UnwrapRef,
-  defineComponent,
-} from "vue";
+import { reactive, ref, Ref, toRaw, UnwrapRef, defineComponent } from "vue";
 import {
   RuleObject,
   ValidateErrorEntity,
@@ -112,8 +105,10 @@ export default defineComponent({
     };
     // 表单配置
     const formState: UnwrapRef<FormState> = reactive({
-      name: "18501092671",
-      password: "wasd2671jkluio",
+      name: "",
+      password: "",
+      // name: "18501092671",
+      // password: "wasd2671jkluio",
     });
     let validatePass = async (rule: RuleObject, value: string) => {
       if (value === "") {
@@ -194,7 +189,7 @@ export default defineComponent({
           userInfo.listenSongs = res.listenSongs;
           userInfo.createTime = res.createTime;
           userInfo.createDays = res.createDays;
-          window.localStorage.setItem('userInfo',JSON.stringify(userInfo))
+          window.localStorage.setItem("userInfo", JSON.stringify(userInfo));
           store.commit("SET_USERINFO", userInfo);
         }
       } catch (e) {

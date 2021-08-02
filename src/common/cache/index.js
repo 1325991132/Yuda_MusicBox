@@ -57,3 +57,29 @@ export const clearSearch = () => {
     storage.remove(SEARCH_KEY)
     return []
 }
+
+// 添加最近播放列表
+export const saveHistory = (song)=>{
+    let songs = storage.get(HISTORY_KEY,[])
+    insertArray(songs,song,item=>{
+        return song.id === item.id
+    },HISTORY_MAX)
+    storage.get(HISTORY_KEY,songs)
+    return songs
+}
+
+// 删除最近播放列表
+export const deleteHistory = (song)=>{
+    let songs = storage.get(HISTORY_KEY,[])
+    deleteFromArray(songs,item=>{
+        return song.id === item.id
+    })
+    storage.set(HISTORY_KEY,songs)
+    return songs
+}
+
+// 清空最近播放列表
+export const clearHistory = ()=>{
+    storage.remove(HISTORY_KEY)
+    return []
+}

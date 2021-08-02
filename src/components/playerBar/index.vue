@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
     <div class="player-bar shadow flex-row" v-show="playList.length">
-      <span @click="t">test</span>
+      <!-- <span @click="t">test</span> -->
       <div class="avatar">
         <img :src="currentSong && currentSong.image" alt="nicemusic" />
       </div>
@@ -85,14 +85,17 @@
               <div class="no-lyric" v-else>暂无歌词，请您欣赏</div>
             </div>
           </scroll>
-
           <div class="foot"></div>
         </div>
       </transition>
       <transition name="fade">
         <div class="lyric-box playlist-box shadow" v-if="state.showPlaylist">
           <div class="title flex-between">播放列表</div>
-          <div class="list"></div>
+          <div class="list">
+            <div class="list">
+
+            </div>
+          </div>
           <div class="foot"></div>
         </div>
       </transition>
@@ -119,6 +122,7 @@ export default defineComponent({
     const currentIndex: any = computed(() => store.getters.currentIndex); //当前播放下标
     const mode: any = computed(() => store.getters.mode); //当前播放模式
     const sequenceList: any = computed(() => store.getters.sequenceList); //顺序播放列表
+    const historyList:any = computed(()=>store.getters.historyList);//历史播放列表
     const playIcon: any = computed(() =>
       playing.value ? "nicezanting1" : "nicebofang2"
     ); //播放/暂停的图标
@@ -192,6 +196,9 @@ export default defineComponent({
     // 上一首
     const prevSong = () => {
       console.log("prev song");
+      if (!state.songReady) {
+        return;
+      }
       if (playList.value.length === 1) {
         loopSong();
         return;
@@ -209,6 +216,9 @@ export default defineComponent({
 
     // 下一首
     const nextSong = () => {
+      if (!state.songReady) {
+        return;
+      }
       if (playList.value.length === 1) {
         loopSong();
         return;
@@ -307,6 +317,7 @@ export default defineComponent({
       }
       state.songReady = false;
       state.canLyricPlay = false;
+      console.log("statecurrentLyric", state.currentLyric);
       if (state.currentLyric) {
         state.currentLyric.stop();
         state.currentLyric = null;
@@ -390,10 +401,11 @@ export default defineComponent({
         return;
       }
       state.currentLyricNum = lineNum;
-      if (lineNum > 10) {
-        let lyricAll = lyric_box.value.querySelectorAll("p");
-        let lineEl = lyricAll[lineNum - 10];
-        tt = lyricAll[lineNum + 10];
+      if (lineNum > 8) {
+        let lyricAll = lyric_box.value.querySelectorAll("p"); //获取所有歌词
+
+        let lineEl = lyricAll[lineNum - 8];
+        tt = lyricAll[lineNum + 8];
         if (lyric_box.value) {
           nextTick(() => {
             console.log("scrollToElement", lineEl);

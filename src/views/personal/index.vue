@@ -1,14 +1,17 @@
 <template>
-    <div style="height:500px;width:100%;background:yellow;">
-        <h2>404</h2>
+    <div>
+        此界面为个人首页
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+
 export default defineComponent({
     setup () {
+        
+
         return {}
     }
 })

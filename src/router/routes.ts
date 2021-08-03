@@ -2,6 +2,7 @@ import Home from '@/views/home/index.vue';
 import Login from '@/views/login/index.vue';
 import Search from '@/views/search/index.vue';
 import error from '@/views/404/index.vue';
+import Personal from '@/views/personal/index.vue'
 // const Login = () => import('@/views/login/index.vue')
 import UserProfile from '../views/detail/index.vue';
 import Layout from '@/views/layout/index.vue'
@@ -79,6 +80,16 @@ export const appRouter: Array<any> = [
                     transition: 'fade'
                 },
                 component: Search
+            },
+            {
+                path: '/personal',
+                name: 'personal',
+                meta: {
+                    title: 'personal',
+                    keepAlive: true,
+                    transition: 'fade'
+                },
+                component: Personal
             }
         ]
     },

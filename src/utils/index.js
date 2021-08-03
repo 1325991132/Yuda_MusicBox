@@ -15,7 +15,6 @@ export default {
     },
     // 转换成秒
     formatSecond(time) {
-        // console.log('time is', time)
         // 取整
         time = ~~time
         var secondTime

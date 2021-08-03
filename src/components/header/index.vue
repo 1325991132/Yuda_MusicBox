@@ -130,6 +130,11 @@ export default defineComponent({
     // 右上角个人信息选项
     const handleCommand = (command) => {
       // ElMessage(`click on item ${command}`);
+      if(command === "personal"){
+        router.push({ name: "personal" })
+        message.success(`welecome to your home`);
+        return
+      }
       message.info(`click on item ${command}`);
       if (command === "logout") {
         window.localStorage.removeItem("loginStatu");

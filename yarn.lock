@@ -2091,6 +2091,11 @@ core-js@^3.12.1:
   resolved "https://registry.nlark.com/core-js/download/core-js-3.15.2.tgz?cache=0&sync_timestamp=1624966012065&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcore-js%2Fdownload%2Fcore-js-3.15.2.tgz#740660d2ff55ef34ce664d7e2455119c5bdd3d61"
   integrity sha1-dAZg0v9V7zTOZk1+JFURnFvdPWE=
 
+core-js@^3.8.1:
+  version "3.16.0"
+  resolved "https://registry.nlark.com/core-js/download/core-js-3.16.0.tgz?cache=0&sync_timestamp=1627616581381&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcore-js%2Fdownload%2Fcore-js-3.16.0.tgz#1d46fb33720bc1fa7f90d20431f36a5540858986"
+  integrity sha1-HUb7M3ILwfp/kNIEMfNqVUCFiYY=
+
 core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.nlark.com/core-util-is/download/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -6745,6 +6750,11 @@ vue-axios@3.2.3:
   resolved "https://registry.npm.taobao.org/vue-axios/download/vue-axios-3.2.3.tgz#b50d3f082a13a646aa47643398c261623082f1de"
   integrity sha1-tQ0/CCoTpkaqR2QzmMJhYjCC8d4=
 
+vue-count-to@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.npm.taobao.org/vue-count-to/download/vue-count-to-1.0.13.tgz#3e7573ea6e64c2b2972f64e0a2ab2e23c7590ff3"
+  integrity sha1-PnVz6m5kwrKXL2TgoqsuI8dZD/M=
+
 vue-eslint-parser@^7.0.0, vue-eslint-parser@^7.6.0:
   version "7.6.0"
   resolved "https://registry.nlark.com/vue-eslint-parser/download/vue-eslint-parser-7.6.0.tgz#01ea1a2932f581ff244336565d712801f8f72561"
@@ -6812,6 +6822,15 @@ vue-types@^3.0.0:
   integrity sha1-7BbgXUEsA4Ji/B76TOuWR+f7YB0=
   dependencies:
     is-plain-object "3.0.1"
+
+vue3-count-to@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.nlark.com/vue3-count-to/download/vue3-count-to-1.0.10.tgz#3d68d51b6f05b660e45fa859015a01cbaf1b7ad2"
+  integrity sha1-PWjVG28FtmDkX6hZAVoBy68betI=
+  dependencies:
+    core-js "^3.8.1"
+    lodash-es "^4.17.15"
+    vue-count-to "^1.0.13"
 
 vue@^3.0.4:
   version "3.1.1"

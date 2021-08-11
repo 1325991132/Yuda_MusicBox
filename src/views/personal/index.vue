@@ -24,13 +24,18 @@
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
-          <PieChart />
+          <PieChart width="100%" height="300px"/>
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
-          <BarChart />
+          <BarChart width="100%" height="300px" />
         </div>
+      </el-col>
+    </el-row>
+    <el-row :gutter="8">
+      <el-col>
+        
       </el-col>
     </el-row>
   </div>
@@ -89,5 +94,17 @@ export default defineComponent({
   padding: 32px;
   position: relative;
   border: solid 1px #ff002223;
+  .chart-wrapper {
+    background: #fff;
+    padding: 16px 16px 0;
+    margin-bottom: 32px;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width:1024px) {
+  .chart-wrapper {
+    padding: 8px;
+  }
 }
 </style>

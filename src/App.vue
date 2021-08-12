@@ -1,12 +1,17 @@
 <template>
   <div id="nav">
-    <my-header v-if="!$route.meta.isLogin"></my-header>
+    <my-header
+      v-if="$route.meta.isLogin ? false : $route.meta.is404 ? false : true"
+    ></my-header>
     <router-view v-slot="{ Component }">
       <transition name="fade">
         <component :is="Component" />
       </transition>
     </router-view>
-    <my-footer v-if="!$route.meta.isLogin"></my-footer>
+    <my-footer
+      v-if="$route.meta.isLogin ? false : $route.meta.is404 ? false : true"
+    ></my-footer>
+
     <player-bar v-if="!$route.meta.isLogin"></player-bar>
 
     <div class="fly bg-fly-circle1"></div>

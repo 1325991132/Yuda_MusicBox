@@ -6,7 +6,7 @@
       </div>
       <ul class="nav flex-row">
         <li>
-          <router-link :to="{ name: 'home' }" tag="a">发现音乐</router-link>
+          <router-link :to="{ name: 'home' }" tag="a">发现</router-link>
         </li>
         <!-- <li>
           <router-link :to="{ name: 'calc' }" tag="a">排行榜</router-link>

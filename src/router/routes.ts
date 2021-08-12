@@ -16,7 +16,8 @@ export const pageError: any = {
     name: '404',
     meta: {
         title: '404-您访问的页面不存在',
-        transition: 'fade'
+        transition: 'fade',
+        is404:true
     },
     component: error
 }

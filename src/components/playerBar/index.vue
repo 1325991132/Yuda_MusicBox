@@ -1,7 +1,6 @@
 <template>
   <transition name="fade">
     <div class="player-bar shadow flex-row" v-show="playList.length">
-      <!-- <span @click="t">test</span> -->
       <div class="avatar">
         <img :src="currentSong && currentSong.image" alt="nicemusic" />
       </div>
@@ -71,7 +70,6 @@
           >
             <div class="lyric-wrapper">
               <div ref="lyric_box" v-if="state.currentLyric">
-                <!-- <p ref="lyricLine">有歌词</p> -->
                 <p
                   ref="lyricLine"
                   class="lyric-text"
@@ -90,10 +88,44 @@
       </transition>
       <transition name="fade">
         <div class="lyric-box playlist-box shadow" v-if="state.showPlaylist">
-          <div class="title flex-between">播放列表</div>
+          <div class="title flex-between">
+            播放列表<i
+              class="iconfont nicelajitong"
+              alt="清空"
+              title="清空"
+              @click="clearHistory"
+            ></i>
+          </div>
           <div class="list">
-            <div class="list">
-
+            <div
+              class="item flex-row"
+              v-for="(item, index) in historyList"
+              :key="index"
+              :class="currentSong.id == item.id && playing ? 'playing' : ''"
+            >
+              <div class="index-container flex-center">
+                <span class="num">{{ utils.formatZero(index + 1, 2) }}</span>
+                <div class="play-icon">
+                  <div class="line" style="animation-delay: -1.2s"></div>
+                  <div class="line" style="animation-delay: -1s"></div>
+                  <div class="line" style="animation-delay: -1.5s"></div>
+                  <div class="line" style="animation-delay: -0.9s"></div>
+                  <div class="line" style="animation-delay: -0.6s"></div>
+                </div>
+                <i
+                  class="iconfont nicebofang2 play-btn"
+                  @click="playSong(index)"
+                ></i>
+                <i
+                  class="iconfont nicezanting1 pause-btn"
+                  @click="pauseSong"
+                ></i>
+              </div>
+              <p class="ellipsis">{{ item.name }}</p>
+              <i
+                class="iconfont niceIcon_cloose"
+                @click="deleteHistoryItem(item)"
+              ></i>
             </div>
           </div>
           <div class="foot"></div>
@@ -122,7 +154,10 @@ export default defineComponent({
     const currentIndex: any = computed(() => store.getters.currentIndex); //当前播放下标
     const mode: any = computed(() => store.getters.mode); //当前播放模式
     const sequenceList: any = computed(() => store.getters.sequenceList); //顺序播放列表
-    const historyList:any = computed(()=>store.getters.historyList);//历史播放列表
+    const historyList: any = computed(() => store.getters.historyList); //历史播放列表
+    const clearHistoryList: any = () => {
+      store.dispatch("clearHistoryList");
+    };
     const playIcon: any = computed(() =>
       playing.value ? "nicezanting1" : "nicebofang2"
     ); //播放/暂停的图标
@@ -329,6 +364,8 @@ export default defineComponent({
           audio.value.src = newSong.url;
           audio.value.volume = state.volume;
           audio.value.play();
+          store.dispatch("saveHistoryList", newSong);
+          console.log("historyList", historyList.value);
           state.id = newSong.id;
         }
       });
@@ -364,7 +401,6 @@ export default defineComponent({
       }
     };
 
-    // ---------------------------------------------------------
     // 打开歌词
     const openLyric = () => {
       state.showPlaylist = false;
@@ -432,15 +468,29 @@ export default defineComponent({
       }
     };
 
-    const t = () => {
-      console.log("执行滚动");
-      lyricList.value.scrollToElement(tt, 1000);
+    // 播放歌曲
+    const playSong = (index) => {
+      store.dispatch("selectPlay", { list: historyList.value, index });
+    };
+    // 停止播放歌曲
+    const pauseSong = () => {
+      store.dispatch("pausePlay");
+    };
+
+    // 移除最近播放单曲
+    const deleteHistoryItem = (item) => {
+      store.dispatch("deleteHistoryList", item);
+    };
+
+    // 清空历史播放列表
+    const clearHistory = () => {
+      clearHistoryList();
     };
 
     return {
-      t,
       store,
       state,
+      utils,
       lyric_box, //歌词box
       formatTime, //格式化时间
       modeIcon, //模式icon显示
@@ -467,8 +517,13 @@ export default defineComponent({
       mode, //当前播放模式
       currentIndex, //当前播放下标
       sequenceList, //顺序播放列表
+      historyList, //历史播放列表
       openLyric, //显示歌词
       openPlaylist, //展开播放列表
+      clearHistory, //清空播放列表
+      playSong, //播放歌曲
+      pauseSong, //停止播放歌曲
+      deleteHistoryItem, // 移除最近播放单曲
     };
   },
   components: {
@@ -621,7 +676,7 @@ export default defineComponent({
     }
   }
   .lyric-box {
-    width: 22.5rem;
+    width: 360px;
     height: 36.25rem;
     position: absolute;
     right: 0;
@@ -652,6 +707,109 @@ export default defineComponent({
           font-weight: 300;
           &.active {
             color: $color-theme;
+          }
+        }
+      }
+    }
+  }
+  .playlist-box {
+    width: 460px;
+    .list {
+      overflow-y: auto;
+      max-height: calc(100% - 90px);
+      .item {
+        padding: 8px 0;
+        height: 40px;
+        .index-container {
+          margin-right: 20px;
+          flex-shrink: 0;
+          width: 30px;
+          .num {
+            font-size: 14px;
+            color: #4a4a4a;
+          }
+          .play-icon {
+            display: none;
+            height: 16px;
+            min-width: 18px;
+            overflow: hidden;
+            .line {
+              width: 2px;
+              height: 16px;
+              margin-left: 2px;
+              background-color: $color-theme;
+              animation: play 0.9s linear infinite alternate;
+            }
+          }
+          .play-btn {
+            color: $color-theme;
+            font-size: 30px;
+            display: none;
+            text-align: left;
+            cursor: pointer;
+          }
+          .pause-btn {
+            color: $color-theme;
+            font-size: 30px;
+            display: none;
+            text-align: left;
+            cursor: pointer;
+          }
+        }
+        p {
+          cursor: pointer;
+          flex: 1;
+          margin-right: 20px;
+          text-align: left;
+          &.active {
+            color: $color-theme;
+          }
+        }
+        i {
+          font-size: 20px;
+          cursor: pointer;
+          &:hover {
+            color: $color-theme;
+          }
+        }
+        &.playing {
+          p,
+          i {
+            color: $color-theme;
+          }
+          .index-container {
+            .play-btn {
+              display: none;
+            }
+            .play-icon {
+              display: flex;
+            }
+            .num {
+              display: none;
+            }
+          }
+        }
+        &:hover {
+          .index-container {
+            .num {
+              display: none;
+            }
+            .play-btn {
+              display: block;
+            }
+          }
+          &.playing {
+            .index-container {
+              .play-btn {
+                display: none;
+              }
+              .play-icon {
+                display: none;
+              }
+              .pause-btn {
+                display: block;
+              }
+            }
           }
         }
       }

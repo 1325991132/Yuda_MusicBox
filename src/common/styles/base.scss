@@ -216,4 +216,20 @@ h6 {
     cursor: pointer;
   }
 }
-  
+
+/*—滚动条默认显示样式–*/
+
+::-webkit-scrollbar {
+  width: 0px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ababab;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #fff;
+}

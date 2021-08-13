@@ -5,21 +5,21 @@
       <span></span>
       <span></span>
       <span></span>
-      TO SEARCH
+      TO SEARCH MUSIC
     </a>
     <a @click.prevent="routerTo('search')" href="#">
       <span></span>
       <span></span>
       <span></span>
       <span></span>
-      TO SEARCH
+      TO SEARCH MUSIC
     </a>
     <a @click.prevent="routerTo('search')" href="#">
       <span></span>
       <span></span>
       <span></span>
       <span></span>
-      TO SEARCH
+      TO SEARCH MUSIC
     </a>
   </div>
 </template>
@@ -35,7 +35,7 @@ export default defineComponent({
       router.push({
         name: routerName,
         query: {
-          keyword: "",
+          keyword: "周杰伦",
         },
       });
     };

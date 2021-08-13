@@ -6,7 +6,7 @@
       <h2>占位Demo，具体内容敬请期待</h2>
       <lightBtn class="lightBtn" />
   </div>
-  <Bear style="margin-top:-50px;"/>
+  <Bear style="margin-top:-50px;margin-bottom:-50px;"/>
 
 </template>
 

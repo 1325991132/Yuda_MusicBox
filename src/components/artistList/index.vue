@@ -1,7 +1,7 @@
 <template>
   <div class="artist-box">
     <div class="tool-head">
-      <div class="item play-item">
+      <div class="item play-item" @click="playAllSong">
         <i class="iconfont niceOutlined_Play"></i>播放全部
       </div>
     </div>
@@ -100,8 +100,11 @@ export default defineComponent({
   setup(props: any) {
     const store = useStore();
     const playSong = (item, index) => {
-      let songs: any = toRaw(props.songs);
-      store.dispatch("selectPlay", { list: songs, index });
+      store.dispatch("selectPlay", { list: toRaw(props.songs), index });
+    };
+
+    const playAllSong = () => {
+      store.dispatch("playAll", { list: toRaw(props.songs) });
     };
     // 停止播放歌曲
     const pauseSong = () => {
@@ -110,6 +113,7 @@ export default defineComponent({
     return {
       playSong,
       pauseSong,
+      playAllSong,
       currentSong: computed(() => store.getters.currentSong),
       playing: computed(() => store.getters.playing),
       utils,

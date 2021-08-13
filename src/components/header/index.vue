@@ -129,7 +129,6 @@ export default defineComponent({
 
     // 右上角个人信息选项
     const handleCommand = (command) => {
-      // ElMessage(`click on item ${command}`);
       if(command === "personal"){
         router.push({ name: "personal" })
         message.success(`welecome to your home`);
@@ -146,7 +145,6 @@ export default defineComponent({
 
     // 登录按钮
     const routerToLogin = () => {
-      console.log(1411);
       router.replace({ name: "login" });
     };
     const openSearchPop = (): void => {

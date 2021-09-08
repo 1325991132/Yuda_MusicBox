@@ -197,13 +197,13 @@ export default defineComponent({
       let cursorPos = { x: 0, y: 0 };
 
       // get window size
-      let windowWidth = window.innerWidth;
-      let windowHeight = window.innerHeight;
+      // let windowWidth = window.innerWidth;
+      // let windowHeight = window.innerHeight;
 
-      function setWindowSize() {
-        windowWidth = window.innerWidth;
-        windowHeight = window.innerHeight;
-      }
+      // function setWindowSize() {
+      //   windowWidth = window.innerWidth;
+      //   windowHeight = window.innerHeight;
+      // }
 
       function mousemove(e) {
         cursorPos = { x: e.clientX, y: e.clientY };
@@ -241,7 +241,7 @@ export default defineComponent({
         if (nose) followCursor(nose, 1, 1);
       };
 
-      window.addEventListener("resize", setWindowSize);
+      // window.addEventListener("resize", setWindowSize);
       window.addEventListener("mousemove", mousemove);
       window.addEventListener("touchmove", touchmove);
     });

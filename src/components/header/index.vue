@@ -129,10 +129,16 @@ export default defineComponent({
 
     // 右上角个人信息选项
     const handleCommand = (command) => {
-      if(command === "personal"){
-        router.push({ name: "personal" })
+      if (!state.loginState) return message.info(`请您登录`); router.replace({ name: "login" });
+      if (command === "personal") {
+        router.push({
+          name: "personal",
+          query: {
+            id: userInfo.userId,
+          },
+        });
         message.success(`welecome to your home`);
-        return
+        return;
       }
       message.info(`click on item ${command}`);
       if (command === "logout") {
@@ -232,8 +238,8 @@ $color-theme: #fa2800;
             opacity: 1;
           }
         }
-        &:hover{
-          color:$color-theme;
+        &:hover {
+          color: $color-theme;
         }
       }
     }
@@ -265,7 +271,7 @@ $color-theme: #fa2800;
         color: $color-theme;
       }
     }
-    .is-login{
+    .is-login {
       font-size: 14px;
       cursor: pointer;
       &:hover {

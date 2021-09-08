@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent } from "vue";
 import Banner from "@/components/home/banner/index.vue";
 import Bear from '@/components/demo/bear/index.vue';
 import lightBtn from '@/components/demo/lightBtn/index.vue';

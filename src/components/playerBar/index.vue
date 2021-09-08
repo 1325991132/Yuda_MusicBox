@@ -429,7 +429,7 @@ export default defineComponent({
     };
 
     const lyric_box: any = ref(null);
-    let tt: any = null;
+    // let tt: any = null;
     // 歌词的回调函数
     const lyricHandle = ({ lineNum, txt }) => {
       console.log("歌词-", lineNum, txt);
@@ -441,7 +441,7 @@ export default defineComponent({
         let lyricAll = lyric_box.value.querySelectorAll("p"); //获取所有歌词
 
         let lineEl = lyricAll[lineNum - 8];
-        tt = lyricAll[lineNum + 8];
+        // tt = lyricAll[lineNum + 8];
         if (lyric_box.value) {
           nextTick(() => {
             console.log("scrollToElement", lineEl);

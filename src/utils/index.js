@@ -39,7 +39,7 @@ export default {
         interval = interval | 0
         const m = (interval / 60) | 0
         const s = interval % 60 | 0
-        return `${this.formatZero(m,2)}:${this.formatZero(s,2)}`
+        return `${this.formatZero(m, 2)}:${this.formatZero(s, 2)}`
     },
     // 数组内容随机
     shuffle(arr) {
@@ -51,5 +51,24 @@ export default {
             arr[len - i - 1] = temp;
         }
         return arr;
-    }
+    },
+    // 获取是几几后
+    getAstro(timestamp) {
+        let newDate = new Date()
+        newDate.setTime(timestamp)
+        let birthday = newDate.toLocaleDateString(timestamp)
+        let birthdayArr = birthday.split('/')
+        let year = birthdayArr[0].substring(birthdayArr[0].length - 2) + '后'
+        let month = birthdayArr[1]
+        let day = birthdayArr[2]
+        return (
+            year +
+            ' - ' +
+            '魔羯水瓶双鱼白羊金牛双子巨蟹狮子处女天秤天蝎射手魔羯'.substr(
+                month * 2 - (day < '102223444433'.charAt(month - 1) - -19) * 2,
+                2
+            ) +
+            '座'
+        )
+    },
 }

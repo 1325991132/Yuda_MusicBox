@@ -1,33 +1,124 @@
 <template>
   <div class="personal-wrap">
     <div class="banner layer"></div>
-    <div class="presonal-main container">
-      <span>{{ userProfile.value.nickname }}</span>
+    <div class="personal-main container">
+      <div class="left">
+        <div class="user-box shadow">
+          <div class="background layer" ref="background"></div>
+          <div class="card flex-row">
+            <div class="avatar">
+              <img
+                ref="avatar"
+                src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+              />
+            </div>
+            <div class="info flex-between">
+              <p class="name">{{ state.userProfile.nickname || "--" }}</p>
+              <button class="sign-btn sign-btn-active">已签到</button>
+            </div>
+          </div>
+          <p class="desc" v-if="state.userDetail.signature">
+            {{ state.userDetail.signature }}
+          </p>
+          <p class="desc" v-else>这个人比较懒，什么都没有写...</p>
+          <div class="profile">
+            <div class="tag">
+              等级：
+              <i
+                class="iconfont lv-icon"
+                :class="`nicelevel-${state.userDetail.level + 1}`"
+              ></i>
+            </div>
+            <div class="tag">
+              年龄：
+              <span>{{ age }}</span>
+              <i
+                v-if="state.userProfile.gender === 1"
+                class="iconfont niceCRM_icon_nanxing sex-icon men"
+              ></i>
+              <i
+                v-if="state.userProfile.gender === 2"
+                class="iconfont niceCRM_icon_nvxing sex-icon women"
+              ></i>
+            </div>
+            <div class="tag">
+              地区：
+              <span>{{ state.provinceName }} - {{ state.cityName }}</span>
+            </div>
+            <ul class="follow">
+              <li>
+                动态<span>{{ state.userProfile.eventCount }}</span>
+              </li>
+              <li>
+                关注<span>{{ state.userProfile.newFollows }}</span>
+              </li>
+              <li>
+                粉丝<span>{{ state.userProfile.followeds }}</span>
+              </li>
+            </ul>
+            <div class="foot flex-center">
+              <router-link tag="a" to="/">个人设置</router-link>
+              <router-link tag="a" to="/">我的等级</router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="my module shadow">
+          <div class="card-header flex-row">
+            <span>我创建的歌单</span>
+          </div>
+          <song-sheet :sheetList="state.myList" :num="state.num"></song-sheet>
+        </div>
+        <div class="my collect module shadow">
+          <div class="card-header flex-row">
+            <span>我收藏的歌单</span>
+          </div>
+          <song-sheet :sheetList="state.collectList" :num="state.num"></song-sheet>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "vue";
-import { getUserDetail } from "@/api/services/user";
+import { defineComponent, reactive, onMounted, ref, computed } from "vue";
+import { getUserDetail,getUserArtist } from "@/api/services/user";
 import { useRoute } from "vue-router";
-import storage from "good-storage";
+import songSheet from "@/components/songSheet/index.vue"
+import utils from "@/utils";
+// import storage from "good-storage";
 import axios from "axios";
+import { useStore } from "vuex";
 
 export default defineComponent({
+  components:{songSheet},
   setup() {
+    const store = useStore();
+    const userInfo: any = computed(() => store.getters.userInfo);
     const route = useRoute();
-    const userProfile: any = reactive({});
+    const background: any = ref(null);
+    const avatar: any = ref(null);
     const state: any = reactive({
       provinceName: "",
       cityName: "",
+      myList: [],
+      collectList: [],
+      songs: [],
+      num: 2,
+      type: 1,
+      userDetail: {},
+      userProfile: {},
+      isPerson: true,
     });
+    const age = computed(() => utils.getAstro(userInfo.value.birthday));
+    // 获取省市
     const getArea = () => {
       axios
         .get("https://restapi.amap.com/v3/config/district", {
           params: {
             key: "0f57ee7d5045187c48cd268f9d19d815",
-            keywords: userProfile.province,
+            keywords: state.userProfile.province,
             subdistrict: 1,
             extensions: "base",
           },
@@ -38,36 +129,81 @@ export default defineComponent({
             let subDistricts = response.data.districts[0].districts;
             state.provinceName = districts.name;
             subDistricts.map((item) => {
-              if (item.adcode == userProfile.city) {
+              if (item.adcode == state.userProfile.city) {
                 state.cityName = item.name;
               }
             });
           }
+          // console.log(state)
         })
         .catch(function (error) {
           console.log(error);
         });
     };
 
+    const qydgetUserArtist = async () =>{
+      try{
+        let res = await getUserArtist(state.userProfile.userId)
+        if(res.code === 200){
+          let list = res.playlist
+          let myList:any = []
+          let collectList:any = []
+          list.map(item => {
+            if (item.userId === state.userProfile.userId) {
+              myList.push(item)
+            } else {
+              collectList.push(item)
+            }
+          })
+          console.log(res)
+          state.myList = myList
+          state.collectList = collectList
+        }
+      }catch(err){
+        console.log(err)
+      }
+    }
     // 获取用户信息
-    const qydgetUserDetail = () => {
-      let local = storage.get("userInfo", {});
-      userProfile.value = local;
+    const qydgetUserDetail = async (uid) => {
+      try {
+        let res: any = await getUserDetail(uid);
+        if (res.code === 200) {
+          state.userDetail = res;
+          state.userProfile = res.profile;
+          _initialize();
+        }
+        setDom();
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    // 给背景和头像赋值
+    const setDom = () => {
+      background.value.style.background = `url(${state.userProfile.backgroundUrl})`;
+      avatar.value.src = state.userProfile.avatarUrl;
     };
 
     // 初始化
     const _initialize = () => {
       getArea();
+      qydgetUserArtist();
     };
 
     onMounted(() => {
       let userid = route.query.id;
-      console.log(1, userid);
-      qydgetUserDetail();
+      if (userid) {
+        qydgetUserDetail(userid);
+      } else {
+        qydgetUserDetail(userInfo.value.userId);
+      }
     });
     return {
-      userProfile,
+      state,
       getArea,
+      background, //图片
+      avatar, //头像
+      age,
     };
   },
 });
@@ -101,6 +237,7 @@ export default defineComponent({
           height: 140px;
           position: relative;
           border-radius: 5px 5px 0 0;
+          background: url(@/assets/images/search_bg.jpg);
           background-size: cover;
           &::before {
             border-radius: 5px 5px 0 0;

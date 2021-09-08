@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import BScroll from "better-scroll";
 export default defineComponent({
   props: {

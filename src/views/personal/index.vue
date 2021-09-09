@@ -56,10 +56,10 @@
                 粉丝<span>{{ state.userProfile.followeds }}</span>
               </li>
             </ul>
-            <div class="foot flex-center">
+            <!-- <div class="foot flex-center">
               <router-link tag="a" to="/">个人设置</router-link>
               <router-link tag="a" to="/">我的等级</router-link>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -74,7 +74,10 @@
           <div class="card-header flex-row">
             <span>我收藏的歌单</span>
           </div>
-          <song-sheet :sheetList="state.collectList" :num="state.num"></song-sheet>
+          <song-sheet
+            :sheetList="state.collectList"
+            :num="state.num"
+          ></song-sheet>
         </div>
       </div>
     </div>
@@ -83,16 +86,16 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted, ref, computed } from "vue";
-import { getUserDetail,getUserArtist } from "@/api/services/user";
+import { getUserDetail, getUserArtist } from "@/api/services/user";
 import { useRoute } from "vue-router";
-import songSheet from "@/components/songSheet/index.vue"
+import songSheet from "@/components/songSheet/index.vue";
 import utils from "@/utils";
 // import storage from "good-storage";
 import axios from "axios";
 import { useStore } from "vuex";
 
 export default defineComponent({
-  components:{songSheet},
+  components: { songSheet },
   setup() {
     const store = useStore();
     const userInfo: any = computed(() => store.getters.userInfo);
@@ -141,28 +144,28 @@ export default defineComponent({
         });
     };
 
-    const qydgetUserArtist = async () =>{
-      try{
-        let res = await getUserArtist(state.userProfile.userId)
-        if(res.code === 200){
-          let list = res.playlist
-          let myList:any = []
-          let collectList:any = []
-          list.map(item => {
+    const qydgetUserArtist = async () => {
+      try {
+        let res = await getUserArtist(state.userProfile.userId);
+        if (res.code === 200) {
+          let list = res.playlist;
+          let myList: any = [];
+          let collectList: any = [];
+          list.map((item) => {
             if (item.userId === state.userProfile.userId) {
-              myList.push(item)
+              myList.push(item);
             } else {
-              collectList.push(item)
+              collectList.push(item);
             }
-          })
-          console.log(res)
-          state.myList = myList
-          state.collectList = collectList
+          });
+          state.myList = myList;
+          state.collectList = collectList;
+          // console.log(state.myList,state.collectList)
         }
-      }catch(err){
-        console.log(err)
+      } catch (err) {
+        console.log(err);
       }
-    }
+    };
     // 获取用户信息
     const qydgetUserDetail = async (uid) => {
       try {
@@ -406,7 +409,7 @@ export default defineComponent({
       }
     }
     .right {
-      width: 350px;
+      width: 50rem;
       flex-shrink: 0;
       border-radius: 5px;
       background: #fff;

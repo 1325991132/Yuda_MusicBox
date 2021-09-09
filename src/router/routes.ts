@@ -92,7 +92,16 @@ export const appRouter: Array<any> = [
                     transition: 'fade'
                 },
                 component: Personal
-            }
+            },
+            {
+                path: 'playlist-detail',
+                meta: {
+                  title: '详情',
+                  keepAlive: true
+                },
+                name: 'playlistDetail',
+                component: () => import('@/views/playlist/detail/index.vue')
+              }
         ]
     },
     {

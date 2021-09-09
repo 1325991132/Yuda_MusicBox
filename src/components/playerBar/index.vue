@@ -432,7 +432,6 @@ export default defineComponent({
     // let tt: any = null;
     // 歌词的回调函数
     const lyricHandle = ({ lineNum, txt }) => {
-      console.log("歌词-", lineNum, txt);
       if (!lyric_box.value) {
         return;
       }

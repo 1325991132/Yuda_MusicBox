@@ -124,7 +124,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 $color-theme: red;
-
 .artist-box {
   width: 100%;
   .tool-head {

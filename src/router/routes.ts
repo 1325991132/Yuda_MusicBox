@@ -101,7 +101,25 @@ export const appRouter: Array<any> = [
                 },
                 name: 'playlistDetail',
                 component: () => import('@/views/playlist/detail/index.vue')
-              }
+              },
+              {
+                path: 'playlist',
+                meta: {
+                  title: '歌单',
+                  keepAlive: true
+                },
+                name: 'playlist',
+                component: () => import('@/views/playlist/index.vue')
+              },
+              {
+                path: 'rank',
+                meta: {
+                  title: '排行榜',
+                  keepAlive: true
+                },
+                name: 'rank',
+                component: () => import('@/views/rank/index.vue')
+              },
         ]
     },
     {

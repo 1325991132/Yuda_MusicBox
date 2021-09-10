@@ -71,4 +71,21 @@ export default {
             '座'
         )
     },
+    // 日期格式化
+    dateFormat(str, type) {
+        let date = new Date(str)
+        let year = date.getFullYear()
+        let month = this.formatZero(date.getMonth() + 1, 2)
+        let day = this.formatZero(date.getDate(), 2)
+        let hour = this.formatZero(date.getHours(), 2)
+        let minute = this.formatZero(date.getMinutes(), 2)
+        let seconds = this.formatZero(date.getSeconds(), 2)
+        if (type == 'YYYY-MM-DD') {
+            return `${year}-${month}-${day}`
+        } else if (type == 'YYYY-MM-DD HH:MM:SS') {
+            return `${year}-${month}-${day} ${hour}:${minute}:${seconds}`
+        } else if (type == 'MM/DD  HH:MM:SS') {
+            return `${month}/${day} ${hour}:${minute}:${seconds}`
+        }
+    },
 }

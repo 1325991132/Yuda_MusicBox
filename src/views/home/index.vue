@@ -1,26 +1,29 @@
 <template>
-  <div style="display: none">
+  <div >
     <Banner></Banner>
+    <RecommendSongs></RecommendSongs>
   </div> 
-  <div class="lightBtnWrapper">
+  <!-- <div class="lightBtnWrapper">
       <h2>占位Demo，具体内容敬请期待</h2>
       <lightBtn class="lightBtn" />
-  </div>
-  <Bear style="margin-top:-50px;margin-bottom:-50px;"/>
+  </div> -->
+  <!-- <Bear style="margin-top:-50px;margin-bottom:-50px;"/> -->
 
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import Banner from "@/components/home/banner/index.vue";
-import Bear from '@/components/demo/bear/index.vue';
-import lightBtn from '@/components/demo/lightBtn/index.vue';
+import RecommendSongs from 'components/home/recommend-songs/index.vue'
+// import Bear from '@/components/demo/bear/index.vue';
+// import lightBtn from '@/components/demo/lightBtn/index.vue';
 
 export default defineComponent({
   components: {
     Banner,
-    lightBtn,
-    Bear
+    RecommendSongs
+    // lightBtn,
+    // Bear
   },
   setup() {
    

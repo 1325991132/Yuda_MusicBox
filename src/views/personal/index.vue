@@ -14,7 +14,7 @@
             </div>
             <div class="info flex-between">
               <p class="name">{{ state.userProfile.nickname || "--" }}</p>
-              <button class="sign-btn sign-btn-active">已签到</button>
+              <!-- <button class="sign-btn sign-btn-active">已签到</button> -->
             </div>
           </div>
           <p class="desc" v-if="state.userDetail.signature">

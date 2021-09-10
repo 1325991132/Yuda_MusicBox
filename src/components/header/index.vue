@@ -9,11 +9,12 @@
           <router-link :to="{ name: 'home' }" tag="a">发现</router-link>
         </li>
         <!-- <li>
-          <router-link :to="{ name: 'calc' }" tag="a">排行榜</router-link>
+          <router-link :to="{ name: 'playlist' }" tag="a">歌单</router-link>
         </li> -->
-        <!-- <li>
-          <router-link :to="{ name: 'home' }" tag="a">歌单</router-link>
+        <li>
+          <router-link :to="{ name: 'rank' }" tag="a">排行榜</router-link>
         </li>
+        <!-- 
         <li>
           <router-link :to="{ name: 'home' }" tag="a">歌手</router-link>
         </li>

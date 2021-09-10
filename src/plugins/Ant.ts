@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Button, Input, Steps, Form, FormItem, Select, Alert, Row, Radio, DatePicker, Col, Checkbox, Switch, AutoComplete } from 'ant-design-vue'
+import { Button, Input, Steps, Form, FormItem, Select, Alert, Row, Radio, DatePicker, Col, Checkbox, Switch, AutoComplete,Modal,Skeleton } from 'ant-design-vue'
 
 const Antd = {
     install(Vue: any) {
@@ -17,6 +17,8 @@ const Antd = {
         Vue.component(Checkbox.name, Checkbox)
         Vue.component(Switch.name, Switch)
         Vue.component(AutoComplete.name, AutoComplete)
+        Vue.component(Modal.name, Modal)
+        Vue.component(Skeleton.name, Skeleton)
     }
 }
 // export default Antd

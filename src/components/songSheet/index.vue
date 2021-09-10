@@ -11,8 +11,8 @@
         <div class="cover">
           <div class="image">
             <el-image
-              :key="item.coverImgUrl + '?param=300y300'"
-              :src="item.coverImgUrl + '?param=300y300'"
+              :key="item.coverImgUrl? item.coverImgUrl+ '?param=300y300':item.picUrl"
+              :src="item.coverImgUrl? item.coverImgUrl+ '?param=300y300':item.picUrl"
               lazy
             >
               <template #placeholder>

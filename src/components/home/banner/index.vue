@@ -1,60 +1,40 @@
-
 <template>
-  <div class="banner">
+  <div class="banner container">
     <swiper
-      class="swiper"
-      :slides-per-view="swiperOption.slidesPerView"
-      :space-between="swiperOption.spaceBetween"
-      :slides-per-group="swiperOption.slidesPerGroup"
-      :loop="swiperOption.loop"
-      :loop-fill-group-with-blank="swiperOption.loopFillGroupWithBlank"
-      :centered-slides="swiperOption.centeredSlides"
-      :pagination-clickable="swiperOption.paginationClickable"
-      :grab-cursor="swiperOption.grabCursor"
+      v-if="bannersInit"
+      :slidesPerView="3"
+      :spaceBetween="30"
+      :slidesPerGroup="3"
+      :loop="true"
+      :loopFillGroupWithBlank="true"
+      :pagination="{
+        clickable: true,
+      }"
+      :navigation="true"
+      class="mySwiper"
     >
-      <swiper-slide
-        v-for="(banner, bannerIdx) in state.bannerList"
-        :key="bannerIdx"
-      >
-        <div class="img_wapper">
-          <img :src="banner.imageUrl" alt="" />
-        </div>
+      <swiper-slide v-for="item of state.bannerList" :key="item.imageUrl">
+        <img :src="item.imageUrl" :alt="item.typeTitle" />
       </swiper-slide>
     </swiper>
+    <div class="swiper-pagination"></div>
   </div>
 </template>
+
 <script lang="ts">
-import {
-  UnwrapRef,
-  reactive,
-  computed,
-} from "vue";
+import {reactive,computed} from 'vue'
+import { Swiper, SwiperSlide } from "swiper/vue";
+
+import SwiperCore, {
+  Pagination,Navigation
+} from 'swiper';
+
+import "swiper/swiper-bundle.css"; // css 模块
+
 import { getBanner } from "@/api/services/api";
 export default {
-  setup():any {
-    interface swiperObj {
-      slidesPerView: number;
-      spaceBetween: number;
-      slidesPerGroup: number;
-      loop: boolean;
-      loopFillGroupWithBlank: boolean;
-      centeredSlides: boolean;
-      paginationClickable: boolean;
-      grabCursor: boolean;
-      pagination: string;
-    }
-    const swiperOption: UnwrapRef<swiperObj> = reactive({
-      slidesPerView: 3,
-      spaceBetween: 30,
-      slidesPerGroup: 3,
-      loop: true,
-      loopFillGroupWithBlank: true,
-      centeredSlides: true,
-      paginationClickable: true,
-      grabCursor: true,
-      pagination: ".swiper-pagination",
-    });
-
+  setup(): any {
+    SwiperCore.use([Pagination,Navigation]);
     const state = reactive({
       bannerList: [], // 轮播图列表
       bannerInit: computed(() => {
@@ -69,18 +49,37 @@ export default {
       state.bannerList = res;
     };
 
+    const bannersInit = computed(() => {
+      return state.bannerList.length;
+    });
     getbanner();
 
     return {
-      swiperOption,
       state,
+      bannersInit,
     };
   },
-  methods: {},
 };
 </script>
 <style lang="scss" scoped>
-.banner >>> .swiper-pagination {
+.banner {
+  display: block;
+  position: relative;
+  height: 11.5rem;
+  width: 100%;
+  padding: 0 1.25rem;
+  .swiper-container {
+    height: 100%;
+  }
+  .swiper-slide {
+    height: 100%;
+    img {
+      height: 100%;
+      border-radius: 3px;
+    }
+  }
+}
+.swiper-pagination {
   width: 100%;
   bottom: -20px;
   .swiper-pagination-bullet {
@@ -94,23 +93,11 @@ export default {
       opacity: 1;
       width: 15px;
       border-radius: 4px;
-      // background: $color-theme;
+      background: $color-theme;
     }
   }
 }
-.banner {
-  display: none;
-  position: relative;
-  height: 12.5rem;
-  width: 100%;
-  padding: 0 1.25rem;
-  .img_wapper {
-    width: 100%;
 
-    img {
-      width: auto;
-      border-radius: 3px;
-    }
-  }
-}
+
+
 </style>

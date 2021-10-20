@@ -130,7 +130,10 @@ export default defineComponent({
 
     // 右上角个人信息选项
     const handleCommand = (command) => {
-      if (!state.loginState) return message.info(`请您登录`); router.replace({ name: "login" });
+      if (!state.loginState) {
+        router.replace({ name: "login" });
+        return message.info(`请您登录`);
+      }
       if (command === "personal") {
         router.push({
           name: "personal",
@@ -147,6 +150,8 @@ export default defineComponent({
         window.localStorage.removeItem("token");
         window.localStorage.removeItem("userInfo");
         router.replace({ name: "login" });
+      }else{
+        router.push({ name: "comingSoon" ,query:{}});
       }
     };
 

@@ -7,6 +7,7 @@ import Personal from '@/views/personal/index.vue'
 // const Login = () => import('@/views/login/index.vue')
 import UserProfile from '../views/detail/index.vue';
 import Layout from '@/views/layout/index.vue'
+import ComingSoon from '@/views/test/comingSoon.vue';
 
 
 /**
@@ -62,6 +63,16 @@ export const appRouter: Array<any> = [
                     transition: 'fade'
                 },
                 component: Home
+            },
+            {
+                path: '/comingSoon',
+                name: 'comingSoon',
+                meta: {
+                    title: '首页',
+                    keepAlive: true,
+                    transition: 'fade'
+                },
+                component: ComingSoon
             },
             {
                 path: '/calc',

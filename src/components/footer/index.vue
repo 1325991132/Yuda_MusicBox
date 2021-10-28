@@ -1,32 +1,69 @@
 <template>
-    <div class="footer">
-        <div class="container">
-            <p class="title">ydmusic</p>
-            <!-- <p class="desc">
-                ydmusic
-            </p> -->
+  <div class="footer">
+    <div class="container">
+      <div class="logo">
+        <div class="a1">
+          <el-backtop @click="test">
+            <i class="el-icon-top" style="color: #dd4f42"></i>
+          </el-backtop>
         </div>
+        <a class="a2" href="https://music.163.com/" target="_blank"></a>
+      </div>
+      <span style="color: #ccc"
+        >WELCOME!&nbsp;&nbsp;本网站的音乐资源均来自网易云音乐</span
+      >
     </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
-    setup () {
-        return {}
-    }
-})
+  setup() {
+    const test = () => {
+        console.log(111)
+    };
+    return {
+      test,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
-.footer{
-    width:100%;
-    height:268px;
-    background-color: #161e27;
-    .container{
-        padding:3rem;
-    }
+.footer {
+  width: 100%;
+  height: 268px;
+  background-color: #161e27;
+  .container {
+    padding-top: 3rem;
+  }
 }
 
+.logo {
+  width: 200px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  .a1 {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: block;
+    background: #fff center no-repeat url(~@/assets/logo/yd.png);
+    background-size: 100%;
+  }
+
+  .a2 {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: block;
+    background: #fff center no-repeat url(~@/assets/logo/wyy.png);
+    background-size: 100%;
+  }
+}
 </style>

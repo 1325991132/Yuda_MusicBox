@@ -45,6 +45,9 @@
         </div>
       </div>
       <div class="tool">
+        <span class="iconfont" @click="downloadMusic"
+          ><i class="el-icon-download" :style="{ transform: 'scale(0.8)' }"></i
+        ></span>
         <i class="iconfont" :class="modeIcon" @click="changeMode"></i>
         <i class="iconfont nicegeci32" @click="openLyric"></i>
         <i class="iconfont nicebofangliebiao24" @click="openPlaylist"></i>
@@ -145,6 +148,8 @@ import { getLyric } from "@/api/services/api";
 import Lyric from "lyric-parser";
 import { message } from "ant-design-vue";
 import Scroll from "@/components/scroll/index.vue";
+import axios from "axios";
+import FileSaver from "file-saver";
 
 export default defineComponent({
   setup() {
@@ -327,6 +332,39 @@ export default defineComponent({
       if (state.currentLyric) {
         state.currentLyric.togglePlay();
       }
+    };
+
+    // 下载
+    // const downloadMusic = async () => {
+    //   console.log("currentSong", currentSong.value.id);
+    //   let url = `/api?id=${currentSong.value.id}.mp3`;
+    //   let fileName = currentSong.value.name+'.mp3';
+    //   axios({
+    //     method: "get",
+    //     url: url,
+    //     responseType: "blob",
+    //   })
+    //     .then(function (response) {
+    //       var f = new Blob([response.data], {
+    //         type: "application/octet-stream",
+    //       });
+    //       FileSaver(f, fileName);
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+    // };
+    const downloadMusic = async () => {
+      console.log("currentSong", currentSong.value.id);
+      let url = `https://music.163.com/song/media/outer/url?id=${currentSong.value.id}.mp3`;
+      let fileName = currentSong.value.name+'.mp3';
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.setAttribute('target','_blank')
+      link.href = url
+      link.setAttribute('download',fileName)
+      togglePlaying()
+      link.click()
     };
 
     let percent: any = computed(() => {
@@ -523,6 +561,7 @@ export default defineComponent({
       playSong, //播放歌曲
       pauseSong, //停止播放歌曲
       deleteHistoryItem, // 移除最近播放单曲
+      downloadMusic, //下载
     };
   },
   components: {

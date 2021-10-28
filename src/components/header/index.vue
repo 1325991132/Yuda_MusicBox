@@ -150,8 +150,8 @@ export default defineComponent({
         window.localStorage.removeItem("token");
         window.localStorage.removeItem("userInfo");
         router.replace({ name: "login" });
-      }else{
-        router.push({ name: "comingSoon" ,query:{}});
+      } else {
+        router.push({ name: "comingSoon", query: {} });
       }
     };
 

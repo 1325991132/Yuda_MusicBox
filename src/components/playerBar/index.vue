@@ -148,8 +148,6 @@ import { getLyric } from "@/api/services/api";
 import Lyric from "lyric-parser";
 import { message } from "ant-design-vue";
 import Scroll from "@/components/scroll/index.vue";
-import axios from "axios";
-import FileSaver from "file-saver";
 
 export default defineComponent({
   setup() {
@@ -335,25 +333,6 @@ export default defineComponent({
     };
 
     // 下载
-    // const downloadMusic = async () => {
-    //   console.log("currentSong", currentSong.value.id);
-    //   let url = `/api?id=${currentSong.value.id}.mp3`;
-    //   let fileName = currentSong.value.name+'.mp3';
-    //   axios({
-    //     method: "get",
-    //     url: url,
-    //     responseType: "blob",
-    //   })
-    //     .then(function (response) {
-    //       var f = new Blob([response.data], {
-    //         type: "application/octet-stream",
-    //       });
-    //       FileSaver(f, fileName);
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // };
     const downloadMusic = async () => {
       console.log("currentSong", currentSong.value.id);
       let url = `https://music.163.com/song/media/outer/url?id=${currentSong.value.id}.mp3`;

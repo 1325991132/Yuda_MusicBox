@@ -13,6 +13,7 @@
           <th class="th-artist">歌手</th>
           <th class="th-album">专辑</th>
           <th class="th-duration">时长</th>
+          <th class="th-info">选项</th>
         </tr>
       </thead>
       <tbody>
@@ -73,11 +74,31 @@
           <td>
             <div class="duration-container">
               <p>{{ utils.formatSecondTime(item.duration) }}</p>
-              <!-- <div class="song-tools">
-                <i class="iconfont niceicon-heart" title="喜欢"></i>
-                <i class="iconfont nicexiazai" title="下载"></i>
-                <i class="iconfont nicedot" title="更多"></i>
-              </div> -->
+            </div>
+          </td>
+          <td>
+            <div class="info-container">
+              <div class="song-tools">
+                <i
+                  class="iconfont icon-heart"
+                  @click="likeThisSong(item.id, true)"
+                  v-if="likeSongsList.indexOf(item.id)==-1"
+                  title="您暂未喜欢此音乐"
+                ></i>
+                <i
+                  class="iconfont icon-heart1"
+                  @click="likeThisSong(item.id, false)"
+                  v-else
+                  title="您喜欢了此音乐"
+                ></i>
+                <!-- <i
+                  class="el-icon-download"
+                  style="margin-left: 5px"
+                  title="下载"
+                ></i> -->
+                <!-- <i class="iconfont niceicon-heart" title="喜欢"></i> -->
+                <!-- <i class="iconfont nicedot" title="更多"></i> -->
+              </div>
             </div>
           </td>
         </tr>
@@ -86,10 +107,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, toRaw, computed } from "vue";
+<script >
+import { defineComponent, toRaw, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import utils from "@/utils/index.js";
+import { likeSong } from "@/api/services/api";
+import { getLikeList } from "@/api/services/user";
 
 export default defineComponent({
   props: {
@@ -97,8 +120,11 @@ export default defineComponent({
       type: Array,
     },
   },
-  setup(props: any) {
+  setup(props) {
     const store = useStore();
+    const likeSongsList = computed(() => store.getters.likeSongsList); //获取喜欢列表
+
+    console.log('likeSongsList',likeSongsList)
     const playSong = (item, index) => {
       store.dispatch("selectPlay", { list: toRaw(props.songs), index });
     };
@@ -110,6 +136,29 @@ export default defineComponent({
     const pauseSong = () => {
       store.dispatch("pausePlay");
     };
+
+    // 获取喜欢列表
+    const qydgetUserLike = async (id) => {
+      try {
+        let res = await getLikeList(id);
+        if (res.code !== 200) return
+        store.commit("SET_LIKE_SONGS", res.ids);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    // 喜欢这首歌
+    const likeThisSong = async (id, like) => {
+      console.log(id, like);
+      const res = await likeSong(id, like);
+      console.log(res);
+      qydgetUserLike(id)
+    };
+
+
+
+
     return {
       playSong,
       pauseSong,
@@ -117,6 +166,8 @@ export default defineComponent({
       currentSong: computed(() => store.getters.currentSong),
       playing: computed(() => store.getters.playing),
       utils,
+      likeThisSong,
+      likeSongsList,//喜欢列表id
     };
   },
 });
@@ -179,6 +230,9 @@ $color-theme: red;
           width: 15%;
           text-align: right;
           padding-right: 40px;
+        }
+        &.th-info {
+          width: 8%;
         }
       }
     }
@@ -274,6 +328,19 @@ $color-theme: red;
           position: relative;
           p {
             padding-right: 15px;
+          }
+        }
+        .info-container {
+          .song-tools {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            .iconfont {
+              font-size: 14px;
+              cursor: pointer;
+              color: #ff410f;
+            }
           }
         }
         &.playing {

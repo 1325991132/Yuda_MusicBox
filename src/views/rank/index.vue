@@ -11,11 +11,10 @@
   </div>
 </template>
 
-
 <script>
 import { getToplist } from "@/api/services/api";
 import { computed, onMounted, reactive, toRefs } from "@vue/runtime-core";
-import songSheet from '@/components/songSheet/index.vue'
+import songSheet from "@/components/songSheet/index.vue";
 export default {
   setup() {
     const state = reactive({
@@ -26,32 +25,32 @@ export default {
       try {
         let res = await getToplist();
         if (res.code === 200) {
-          state.ranks = res.list
-          console.log('state.ranks',state.ranks)
-          state.fullscreenLoading = false
+          state.ranks = res.list;
+          console.log("state.ranks", state.ranks);
+          state.fullscreenLoading = false;
         }
       } catch (err) {
         console.log(err);
       }
     };
-    const featureList =  computed(()=> {
-      return state.ranks.slice(0, 4)
-    })
-    const globalList =  computed(()=> {
-      return state.ranks.slice(4, state.ranks.length)
-    })
+    const featureList = computed(() => {
+      return state.ranks.slice(0, 4);
+    });
+    const globalList = computed(() => {
+      return state.ranks.slice(4, state.ranks.length);
+    });
     onMounted(() => {
-      qydgetToplist()
+      qydgetToplist();
     });
     return {
       ...toRefs(state),
       featureList,
-      globalList
+      globalList,
     };
   },
-  components:{
-    songSheet
-  }
+  components: {
+    songSheet,
+  },
 };
 </script>
 

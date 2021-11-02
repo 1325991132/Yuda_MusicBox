@@ -6,23 +6,23 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, inject, reactive, Ref, ref } from "vue";
 export default {
   props: ["name","value"],
   emits: ["listchange"],
-  setup(props: any, context: any) {
+  setup(props, context) {
     console.log("我接受到的名称为", props.name,props.value);
-    let msg_from_father: any = inject("name");
-    let changeName: any = inject("changeName");
+    let msg_from_father = inject("name");
+    let changeName = inject("changeName");
     const handleClickProp = () => {
       changeName("qyd");
       // msg_from_father.value = 'qud123'
     };
 
     const { emit } = context;
-    const incident: Ref<string> = ref("");
-    const add_incident = (): void => {
+    const incident = ref("");
+    const add_incident = ()=> {
       emit("listchange", incident.value);
       incident.value = "";
     };

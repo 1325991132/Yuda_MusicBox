@@ -19,7 +19,7 @@ const mutations = {
 
     // 播放状态
     [types.SET_PLAYING_STATE](state, flag) {
-        console.log('播放状态',flag)
+        console.log('播放状态', flag)
         state.playing = flag
     },
 
@@ -48,9 +48,14 @@ const mutations = {
         state.searchHistory = history
     },
 
-    // 收藏列表
+    // 历史列表
     [types.SET_HISTORY_LIST](state, list) {
         state.historyList = list
+    },
+
+    // 喜欢列表
+    [types.SET_LIKE_SONGS](state, list) {
+        state.likeSongs = list
     }
 }
 

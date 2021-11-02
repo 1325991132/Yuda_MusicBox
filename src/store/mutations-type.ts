@@ -27,3 +27,6 @@ export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
 
 // 设置收藏列表
 export const SET_HISTORY_LIST = 'SET_HISTORY_LIST'
+
+// 设置喜欢列表
+export const SET_LIKE_SONGS = 'SET_LIKE_SONGS'

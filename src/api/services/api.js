@@ -283,3 +283,10 @@ export const getAlbumData = id => api.get(`/album?id=${id}`, {})
  * @method 获取专辑评论
  */
 export const getAlbumComment = params => api.get(`/comment/album`, { params })
+
+/**
+ * @method 喜欢该音乐
+ * &like true喜欢、false不喜欢
+ */
+export const likeSong = (id,like) => api.get(`/like?id=${id}&like=${like}`,{})
+

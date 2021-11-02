@@ -272,12 +272,12 @@ h6 {
 /*—滚动条默认显示样式–*/
 
 ::-webkit-scrollbar {
-  width: 0px;
+  width: 2px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ababab;
+  background: #dfdfdf;
   border-radius: 10px;
 }
 

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="logo">
         <div class="a1">
-          <el-backtop @click="test" bottom="100">
+          <el-backtop @click="test" :bottom="100">
             <i class="el-icon-top" style="color: #dd4f42"></i>
           </el-backtop>
         </div>
@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script >
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({

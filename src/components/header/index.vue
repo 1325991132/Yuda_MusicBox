@@ -2,7 +2,7 @@
   <div class="header shadow">
     <div class="container flex-row">
       <div class="logo">
-        <router-link :to="{ name: 'home' }" tag="a"></router-link>
+        <router-link :to="{ name: 'home' }" title="YUDA_MUSIC" tag="a"></router-link>
       </div>
       <ul class="nav flex-row">
         <li>
@@ -102,13 +102,13 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 // import { ElMessage } from "element-plus";
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";
-// import { throttle } from "@/utils/index";
+import { getLikeList } from "@/api/services/user";
 
 export default defineComponent({
   setup() {
@@ -122,8 +122,21 @@ export default defineComponent({
     });
     let userInfo;
     let temp_userInfo = computed(() => store.getters.userInfo).value; //获取vuex中的用户信息
+    
+    // 获取用户的喜欢歌单，准备后续使用
+    const qydgetUserLike = async (id) => {
+      try {
+        let res = await getLikeList(id);
+        if (res.code !== 200) return
+        store.commit("SET_LIKE_SONGS", res.ids);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     if (temp_userInfo) {
       userInfo = temp_userInfo;
+      qydgetUserLike(userInfo.userId);
     } else {
       state.loginState = false;
     }
@@ -159,12 +172,12 @@ export default defineComponent({
     const routerToLogin = () => {
       router.replace({ name: "login" });
     };
-    const openSearchPop = (): void => {
+    const openSearchPop = () => {
       console.log("open");
       state.searchOpenClass = "open";
       state.searchCloseClass = "";
     };
-    const closeSearchPop = (): void => {
+    const closeSearchPop = () => {
       console.log("close");
       state.searchOpenClass = "";
       state.searchCloseClass = "close";

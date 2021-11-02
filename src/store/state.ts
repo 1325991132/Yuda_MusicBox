@@ -10,7 +10,8 @@ interface IState {
     currentIndex: number,
     playing: boolean,
     singer: any,
-    historyList: Array<any>
+    historyList: Array<any>,
+    likeSongs:Array<any>
 }
 
 const state: IState = {
@@ -33,7 +34,9 @@ const state: IState = {
     // 歌手信息
     singer: {},
     // 历史播放列表
-    historyList: []
+    historyList: [],
+    // 喜欢的音乐列表
+    likeSongs:[]
 }
 
 export default state

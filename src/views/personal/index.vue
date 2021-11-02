@@ -50,7 +50,9 @@
                 动态<span>{{ state.userProfile.eventCount }}</span>
               </li>
               <li>
-                关注<span>{{ state.userProfile.newFollows }}</span>
+                关注<span @click="getFollows(limitStep, state.page.follow)">{{
+                  state.userProfile.newFollows
+                }}</span>
               </li>
               <li>
                 粉丝<span>{{ state.userProfile.followeds }}</span>
@@ -81,13 +83,65 @@
         </div>
       </div>
     </div>
+    <a-modal
+      v-model:visible="state.modalVisible"
+      :closable="null"
+      centered
+      @ok="state.modalVisible = false"
+      :footer="null"
+    >
+      <ul
+        class="userFollowWrapper"
+        ref="userFollowWrapper"
+        v-if="state.followList.length > 0"
+      >
+        <li
+          class="followItem"
+          @click="chooseFollower(item.userId)"
+          v-for="item in state.followList"
+          :key="item"
+        >
+          <div class="itemWrapper">
+            <div class="avatarWrapper">
+              <img class="avatarImg" ref="avatar" :src="item.avatarUrl" />
+            </div>
+            <div class="infoWrapper">
+              <p class="nickName">
+                {{ item.nickname }}
+              </p>
+              <span class="info ellipsis">{{ item.signature }}</span>
+            </div>
+          </div>
+        </li>
+        <a-spin :spinning="state.page.spinning">
+          <li
+            class="loadAfter"
+            v-if="state.userProfile.newFollows > state.followList.length"
+          >
+            <span @click="loadAfter">点击此处加载更多...</span>
+          </li>
+        </a-spin>
+      </ul>
+      <p v-else style="color: #aaa">该用户没有关注任何人哦~</p>
+    </a-modal>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, onMounted, ref, computed } from "vue";
-import { getUserDetail, getUserArtist } from "@/api/services/user";
-import { useRoute } from "vue-router";
+<script>
+import {
+  defineComponent,
+  reactive,
+  onMounted,
+  ref,
+  computed,
+  nextTick,
+} from "vue";
+import {
+  getUserDetail,
+  getUserArtist,
+  getUserFollows,
+} from "@/api/services/user";
+import { useRoute, useRouter } from "vue-router";
 import songSheet from "@/components/songSheet/index.vue";
 import utils from "@/utils";
 // import storage from "good-storage";
@@ -98,11 +152,12 @@ export default defineComponent({
   components: { songSheet },
   setup() {
     const store = useStore();
-    const userInfo: any = computed(() => store.getters.userInfo);
+    const userInfo = computed(() => store.getters.userInfo);
     const route = useRoute();
-    const background: any = ref(null);
-    const avatar: any = ref(null);
-    const state: any = reactive({
+    const router = useRouter();
+    const background = ref(null);
+    const avatar = ref(null);
+    const state = reactive({
       provinceName: "",
       cityName: "",
       myList: [],
@@ -113,8 +168,21 @@ export default defineComponent({
       userDetail: {},
       userProfile: {},
       isPerson: true,
+      modalVisible: false,
+      followList: [], //关注列表,
+      page: {
+        follow: 0, //关注列表页
+        followeds: 0, //粉丝列表页
+        spinning: false,
+      },
     });
+    const userIdNow = ref("");
+    const limitStep = 20;
     const age = computed(() => utils.getAstro(userInfo.value.birthday));
+    const userFollowWrapper = ref(null); //关注列表dom元素
+    onMounted(() => {
+      console.log("userFollowWrapper", userFollowWrapper);
+    });
     // 获取省市
     const getArea = () => {
       axios
@@ -149,8 +217,8 @@ export default defineComponent({
         let res = await getUserArtist(state.userProfile.userId);
         if (res.code === 200) {
           let list = res.playlist;
-          let myList: any = [];
-          let collectList: any = [];
+          let myList = [];
+          let collectList = [];
           list.map((item) => {
             if (item.userId === state.userProfile.userId) {
               myList.push(item);
@@ -169,7 +237,7 @@ export default defineComponent({
     // 获取用户信息
     const qydgetUserDetail = async (uid) => {
       try {
-        let res: any = await getUserDetail(uid);
+        let res = await getUserDetail(uid);
         if (res.code === 200) {
           state.userDetail = res;
           state.userProfile = res.profile;
@@ -196,17 +264,60 @@ export default defineComponent({
     onMounted(() => {
       let userid = route.query.id;
       if (userid) {
+        userIdNow.value = userid;
         qydgetUserDetail(userid);
       } else {
+        userIdNow.value = userid;
         qydgetUserDetail(userInfo.value.userId);
       }
     });
+
+    const getFollows = async (limit, page) => {
+      const res = await getUserFollows(userIdNow.value, limit, page);
+      console.log(res);
+      if (res.code !== 200) return;
+      state.followList = res.follow;
+      state.modalVisible = true;
+      // await nextTick();
+      // userFollowWrapper.value.addEventListener("scroll", () => {
+      //   console.log(userFollowWrapper.value.scrollTop);
+      // });
+    };
+    const loadAfter = async () => {
+      state.page.follow += limitStep;
+      state.page.spinning = true;
+      const res = await getUserFollows(
+        userIdNow.value,
+        limitStep,
+        state.page.follow
+      );
+      if (res.code !== 200) return;
+      state.page.spinning = false;
+      state.followList = utils.uniqueArr(
+        [...state.followList, ...res.follow],
+        "userId"
+      );
+      console.log("state.followList", state.followList);
+    };
+    const chooseFollower = (uid) => {
+      router.push({
+        name: "personal",
+        query: {
+          id: uid,
+        },
+      });
+    };
     return {
       state,
       getArea,
       background, //图片
       avatar, //头像
       age,
+      getFollows, //获取用户关注列表
+      chooseFollower,
+      userFollowWrapper, //关注列表的dom
+      loadAfter, //加载更多
+      limitStep, //粉丝、关注列表每次请求的数量
     };
   },
 });
@@ -348,6 +459,7 @@ export default defineComponent({
             font-size: 14px;
             color: #958ebb;
             span {
+              cursor: pointer;
               display: block;
             }
           }
@@ -455,5 +567,67 @@ export default defineComponent({
       }
     }
   }
+}
+// 弹框内部样式
+.userFollowWrapper {
+  max-height: 500px;
+  overflow: hidden;
+  transition: all 0.1s ease-in-out;
+
+  .followItem {
+    margin-top: 10px;
+
+    .itemWrapper {
+      cursor: pointer;
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      border: solid 1px #ccc;
+      border-radius: 10px;
+
+      .avatarWrapper {
+        width: 100px;
+        padding: 10px;
+        .avatarImg {
+          width: 100px;
+          height: 100px;
+          border-radius: 10px;
+        }
+      }
+
+      .infoWrapper {
+        width: 250px;
+        margin-left: 50px;
+        .nickName {
+          font-weight: 600;
+          font-size: 16px;
+        }
+        .info {
+          display: inline-block;
+          width: 100%;
+          margin-top: 20px;
+        }
+      }
+    }
+  }
+  .loadAfter {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    span {
+      color: #fa2800;
+      cursor: pointer;
+    }
+  }
+  &:hover {
+    padding-right: 5px;
+    overflow: auto;
+  }
+}
+
+::v-deep(.ant-spin-dot-item) {
+  background: #fa2800;
 }
 </style>

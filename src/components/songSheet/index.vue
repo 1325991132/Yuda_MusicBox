@@ -43,7 +43,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { computed } from "@vue/runtime-core";
 import { watch, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -61,7 +61,7 @@ export default {
     const router = useRouter();
     console.log(props.num);
     console.log("props.sheetList", props.sheetList);
-    const prop_sheetList: any = ref([]);
+    const prop_sheetList = ref([]);
 
     watch(
       () => props.sheetList,

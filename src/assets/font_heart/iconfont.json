@@ -1,0 +1,23 @@
+{
+  "id": "2909924",
+  "name": "no name",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "974263",
+      "name": "heart",
+      "font_class": "heart",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "7945727",
+      "name": "heart",
+      "font_class": "heart1",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    }
+  ]
+}

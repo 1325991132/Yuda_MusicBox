@@ -5,7 +5,7 @@ import store from './store'
 import VueKinesis from "vue-kinesis";
 import 'common/styles/base.scss'
 import '@/common/styles/iconfont.css';
-
+import '@/assets/font_heart/iconfont.css';
 import 'ant-design-vue/dist/antd.css';
 import { loadAllPlugins } from './plugins'
 

@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script >
 import {reactive,computed} from 'vue'
 import { Swiper, SwiperSlide } from "swiper/vue";
 
@@ -33,7 +33,7 @@ import "swiper/swiper-bundle.css"; // css 模块
 
 import { getBanner } from "@/api/services/api";
 export default {
-  setup(): any {
+  setup() {
     SwiperCore.use([Pagination,Navigation]);
     const state = reactive({
       bannerList: [], // 轮播图列表

@@ -48,6 +48,20 @@
         <span class="iconfont" @click="downloadMusic"
           ><i class="el-icon-download" :style="{ transform: 'scale(0.8)' }"></i
         ></span>
+        <i
+          class="iconfont icon-heart"
+          style="font-size:16px;color:red;"
+          @click="likeThisSong(currentSong.id, true)"
+          v-if="likeSongsList.indexOf(currentSong.id) == -1"
+          title="您暂未喜欢此音乐"
+        ></i>
+        <i
+          style="font-size:16px;color:red;"
+          class="iconfont icon-heart1"
+          @click="likeThisSong(currentSong.id, false)"
+          v-else
+          title="您喜欢了此音乐"
+        ></i>
         <i class="iconfont" :class="modeIcon" @click="changeMode"></i>
         <i class="iconfont nicegeci32" @click="openLyric"></i>
         <i class="iconfont nicebofangliebiao24" @click="openPlaylist"></i>
@@ -138,34 +152,36 @@
   </transition>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, computed, reactive, watch, ref, nextTick } from "vue";
 import { useStore } from "vuex";
 import utils from "@/utils";
 import processBar from "@/components/processBar/index.vue";
 import { playMode } from "@/common/playConfig";
-import { getLyric } from "@/api/services/api";
+import { getLyric, likeSong } from "@/api/services/api";
+import { getLikeList } from "@/api/services/user";
 import Lyric from "lyric-parser";
 import { message } from "ant-design-vue";
 import Scroll from "@/components/scroll/index.vue";
 
 export default defineComponent({
   setup() {
-    const playing: any = computed(() => store.getters.playing); //是否正在播放
-    const currentSong: any = computed(() => store.getters.currentSong); //当前歌曲
-    const playList: any = computed(() => store.getters.playList); //列表
-    const currentIndex: any = computed(() => store.getters.currentIndex); //当前播放下标
-    const mode: any = computed(() => store.getters.mode); //当前播放模式
-    const sequenceList: any = computed(() => store.getters.sequenceList); //顺序播放列表
-    const historyList: any = computed(() => store.getters.historyList); //历史播放列表
-    const clearHistoryList: any = () => {
+    const playing = computed(() => store.getters.playing); //是否正在播放
+    const currentSong = computed(() => store.getters.currentSong); //当前歌曲
+    const playList = computed(() => store.getters.playList); //列表
+    const currentIndex = computed(() => store.getters.currentIndex); //当前播放下标
+    const mode = computed(() => store.getters.mode); //当前播放模式
+    const sequenceList = computed(() => store.getters.sequenceList); //顺序播放列表
+    const historyList = computed(() => store.getters.historyList); //历史播放列表
+    const likeSongsList = computed(() => store.getters.likeSongsList); //获取喜欢列表
+    const clearHistoryList = () => {
       store.dispatch("clearHistoryList");
     };
-    const playIcon: any = computed(() =>
+    const playIcon = computed(() =>
       playing.value ? "nicezanting1" : "nicebofang2"
     ); //播放/暂停的图标
     const store = useStore();
-    const state: any = reactive({
+    const state = reactive({
       songReady: false, //准备好歌曲了，可以播放
       currentTime: 0,
       currentLyric: null, //歌词
@@ -182,9 +198,9 @@ export default defineComponent({
       showLyric: false, //显示歌词
       showPlaylist: false, //展开歌曲列表
     });
-    const audio: any = ref(null); //audio dom
-    const lyricLine: any = ref(null); //lyricLine dom 歌词
-    const lyricList: any = ref(null); // scroll dom 滚动区域
+    const audio = ref(null); //audio dom
+    const lyricLine = ref(null); //lyricLine dom 歌词
+    const lyricList = ref(null); // scroll dom 滚动区域
 
     // 格式化时间
     const formatTime = (interval) => {
@@ -336,17 +352,17 @@ export default defineComponent({
     const downloadMusic = async () => {
       console.log("currentSong", currentSong.value.id);
       let url = `https://music.163.com/song/media/outer/url?id=${currentSong.value.id}.mp3`;
-      let fileName = currentSong.value.name+'.mp3';
-      let link = document.createElement('a')
-      link.style.display = 'none'
-      link.setAttribute('target','_blank')
-      link.href = url
-      link.setAttribute('download',fileName)
-      togglePlaying()
-      link.click()
+      let fileName = currentSong.value.name + ".mp3";
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.setAttribute("target", "_blank");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      togglePlaying();
+      link.click();
     };
 
-    let percent: any = computed(() => {
+    let percent = computed(() => {
       return state.currentTime / currentSong.value.duration;
     });
 
@@ -445,8 +461,8 @@ export default defineComponent({
       }
     };
 
-    const lyric_box: any = ref(null);
-    // let tt: any = null;
+    const lyric_box = ref(null);
+    // let tt = null;
     // 歌词的回调函数
     const lyricHandle = ({ lineNum, txt }) => {
       if (!lyric_box.value) {
@@ -503,6 +519,26 @@ export default defineComponent({
       clearHistoryList();
     };
 
+    // 获取喜欢列表
+    const qydgetUserLike = async (id) => {
+      try {
+        let res = await getLikeList(id);
+        if (res.code !== 200) return
+        store.commit("SET_LIKE_SONGS", res.ids);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    // 喜欢这首歌
+    const likeThisSong = async (id, like) => {
+      console.log(id, like);
+      const res = await likeSong(id, like);
+      console.log(res);
+      qydgetUserLike(id)
+    };
+
+
     return {
       store,
       state,
@@ -541,6 +577,8 @@ export default defineComponent({
       pauseSong, //停止播放歌曲
       deleteHistoryItem, // 移除最近播放单曲
       downloadMusic, //下载
+      likeThisSong, //喜欢该歌曲
+      likeSongsList,//喜欢列表ids数组
     };
   },
   components: {

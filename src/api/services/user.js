@@ -31,3 +31,18 @@ export const getUserRecord = (uid, type) =>
  */
 
 export const getUserArtist = uid => api.get(`/user/playlist?uid=${uid}`, {})
+
+
+/**
+ * @method 获取用户关注列表
+ * @params uid 用户 id
+ * @params limit 返回数量
+ * @params offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
+ */
+ export const getUserFollows = (uid,limit=30,offset=0) => api.get(`/user/follows?uid=${uid}&limit=${limit}&offset=${offset}`, {})
+
+
+ /**
+ * @method 获取喜欢列表
+ */
+  export const getLikeList = uid => api.get(`/likelist?uid=${uid}`,{})

@@ -2,8 +2,9 @@
   <div id="nav">
     <my-header
       v-if="$route.meta.isLogin ? false : $route.meta.is404 ? false : true"
-    ></my-header>
-    <router-view v-slot="{ Component }">
+    >
+    </my-header>
+    <router-view v-slot="{ Component }" :key="$route.query.id?$route.path+$route.query.id:$route.path">
       <transition name="fade">
         <component :is="Component" />
       </transition>
@@ -11,7 +12,6 @@
     <my-footer
       v-if="$route.meta.isLogin ? false : $route.meta.is404 ? false : true"
     ></my-footer>
-
     <player-bar v-if="!$route.meta.isLogin"></player-bar>
 
     <div class="fly bg-fly-circle1"></div>
@@ -20,8 +20,9 @@
     <div class="fly bg-fly-circle4"></div>
   </div>
 </template>
-<script lang='ts'>
+<script>
 // import { useRouter, useRoute, RouteLocationNormalized } from "vue-router";
+
 import myHeader from "@/components/header/index.vue";
 import playerBar from "@/components/playerBar/index.vue";
 import myFooter from "@/components/footer/index.vue";
@@ -31,7 +32,7 @@ export default {
     playerBar,
     myFooter,
   },
-  setup(): any {
+  setup() {
     // const route: RouteLocationNormalized = useRoute();
     return {};
   },

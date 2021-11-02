@@ -24,13 +24,13 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 export default defineComponent({
   setup() {
     const router = useRouter();
-    const routerTo: any = (routerName) => {
+    const routerTo = (routerName) => {
       console.log(routerName);
       router.push({
         name: routerName,

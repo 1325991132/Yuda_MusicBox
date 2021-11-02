@@ -142,5 +142,19 @@ export default {
           xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
           xmlhttp.send(requestData)
         }
+      },
+
+      // 数据套对象的情况下结合id去重
+      uniqueArr(arr,idStr){
+        if(!Array.isArray(arr)) return new Error('输入不为一个数组')
+        let hash = {}
+        let resArr = []
+        arr.forEach(item=>{
+          if(!hash[item[idStr]]){
+            hash[item[idStr]] = true
+            resArr.push(item)
+          }
+        })
+        return resArr
       }
 }

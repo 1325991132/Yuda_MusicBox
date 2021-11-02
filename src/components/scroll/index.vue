@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, onMounted, ref, watch } from "vue";
 import BScroll from "better-scroll";
 export default defineComponent({
@@ -45,8 +45,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const DIRECTION_H = "horizontal";
     const DIRECTION_V = "vertical";
-    const wrapper: any = ref(null);
-    let scroll: any = null;
+    const wrapper = ref(null);
+    let scroll = null;
     onMounted(() => {
       setTimeout(() => {
         _initScroll();
@@ -103,11 +103,11 @@ export default defineComponent({
       scroll && scroll.enable();
     };
     // 相对于当前位置偏移滚动 x,y 的距离
-    const scrollTo: any = function () {
+    const scrollTo = function () {
       scroll && scroll.scrollTo.apply(scroll, arguments);
     };
     //滚动到指定的目标元素
-    const scrollToElement: any = function () {
+    const scrollToElement = function () {
       console.log("scroll -----", scroll);
       scroll && scroll.scrollToElement.apply(scroll, arguments);
     };

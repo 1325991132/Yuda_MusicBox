@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, nextTick, ref, reactive, watch } from "vue";
 
 export default defineComponent({
@@ -22,9 +22,9 @@ export default defineComponent({
     percent: { type: Number, default: 0 }, // 父组件传值过来的进度条位置百分比数值
   },
   setup(props, { emit }) {
-    const progressBar: any = ref(null);
-    const progress: any = ref(null);
-    const touch: any = reactive({
+    const progressBar = ref(null);
+    const progress = ref(null);
+    const touch = reactive({
       initiated: false,
       startX: 0,
       left: 0,

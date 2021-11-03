@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { defineComponent, nextTick, ref, reactive, watch } from "vue";
+import { defineComponent, nextTick, ref, reactive, watch, onMounted } from "vue";
 
 export default defineComponent({
   props: {
@@ -30,6 +30,7 @@ export default defineComponent({
       left: 0,
     });
     const progressBtnWidth = 12;
+    let progressCanChange = false;
 
     const setProgressOffset = (percent) => {
       if (percent >= 0 && !touch.initiated) {
@@ -38,11 +39,17 @@ export default defineComponent({
         _offset(offsetWidth);
       }
     };
+
+    onMounted(()=>{
+      progressCanChange = true
+    })
     // 百分比
     watch(
       () => props.percent,
       (newVal) => {
-        setProgressOffset(newVal)
+        if(progressCanChange){
+          setProgressOffset(newVal)
+        }
       },
       { immediate: true } //首次立即执行
     );

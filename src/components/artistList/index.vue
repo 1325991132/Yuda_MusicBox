@@ -108,7 +108,7 @@
 </template>
 
 <script >
-import { defineComponent, toRaw, computed, onMounted } from "vue";
+import { defineComponent, toRaw, computed } from "vue";
 import { useStore } from "vuex";
 import utils from "@/utils/index.js";
 import { likeSong } from "@/api/services/api";

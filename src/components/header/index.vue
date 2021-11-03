@@ -122,6 +122,7 @@ export default defineComponent({
     });
     let userInfo;
     let temp_userInfo = computed(() => store.getters.userInfo).value; //获取vuex中的用户信息
+    store.commit("SET_PLAYLIST", []);//登录时初始化播放列表，隐藏playBar
     
     // 获取用户的喜欢歌单，准备后续使用
     const qydgetUserLike = async (id) => {

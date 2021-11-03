@@ -3,7 +3,7 @@
     <div class="login-wrap">
       <kinesis-element :type="parallax">
         <div class="login-box">
-          <img src="~@/assets/logo/yd.png" class="logo" alt="" />
+          <img src="~@/assets/logo/yd.png" class="logo" @click="test" alt="" />
           <div class="login-form">
             <a-form
               :model="formState"
@@ -22,6 +22,7 @@
                   has-feedback
                 >
                   <a-input
+                    id="nameIptDom"
                     placeholder="input username"
                     class="login-text"
                     v-model:value="formState.name"
@@ -74,7 +75,15 @@
   </kinesis-container>
 </template>
 <script lang="ts">
-import { reactive, ref, Ref, toRaw, UnwrapRef, defineComponent } from "vue";
+import {
+  reactive,
+  ref,
+  Ref,
+  toRaw,
+  UnwrapRef,
+  defineComponent,
+  onMounted,
+} from "vue";
 import {
   RuleObject,
   ValidateErrorEntity,
@@ -94,6 +103,14 @@ export default defineComponent({
     UserOutlined,
     UnlockOutlined,
   },
+  directives: {
+    focus: {
+      // 指令的定义
+      mounted(el) {
+        el.focus();
+      },
+    },
+  },
   setup(props, { emit }) {
     const { t } = useI18n();
     const store = useStore();
@@ -103,13 +120,28 @@ export default defineComponent({
       username: t("login.username"),
       password: t("login.password"),
     };
+
     // 表单配置
     const formState: UnwrapRef<FormState> = reactive({
       name: "",
       password: "",
-      // name: "18501092671",
-      // password: "wasd2671jkluio",
     });
+
+
+    const test = ()=>{
+      setTimeout(()=>{
+        console.log(1)
+      },3000)
+    }
+    
+
+    onMounted(()=>{
+      let name:any = document.getElementById('name')
+        name.focus()
+    })
+
+    
+
     let validatePass = async (rule: RuleObject, value: string) => {
       if (value === "") {
         return Promise.reject("Please input the password");
@@ -209,6 +241,7 @@ export default defineComponent({
       formRef,
       label,
       t,
+      test
     };
   },
 });

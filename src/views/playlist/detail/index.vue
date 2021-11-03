@@ -9,7 +9,7 @@
             :src="
               detail.coverImgUrl
                 ? detail.coverImgUrl + '?param=200y200'
-                : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+                : ''
             "
           />
         </div>
@@ -106,7 +106,7 @@ import {
   getSongDetail,
 } from "@/api/services/api";
 import ArtistList from "@/components/artistList/index.vue";
-import { message, modal } from "ant-design-vue";
+import { message } from "ant-design-vue";
 import { createSong } from "@/model/song";
 import utils from "@/utils";
 export default {

@@ -134,7 +134,6 @@ import {
   onMounted,
   ref,
   computed,
-  nextTick,
 } from "vue";
 import {
   getUserDetail,

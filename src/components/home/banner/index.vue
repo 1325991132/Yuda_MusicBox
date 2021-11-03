@@ -23,7 +23,7 @@
 
 <script >
 import {reactive,computed} from 'vue'
-import { Swiper, SwiperSlide } from "swiper/vue";
+// import { Swiper, SwiperSlide } from "swiper/vue";
 
 import SwiperCore, {
   Pagination,Navigation

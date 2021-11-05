@@ -3,9 +3,10 @@
     <div class="login-wrap">
       <kinesis-element :type="parallax">
         <div class="login-box">
-          <img src="~@/assets/logo/yd.png" class="logo" @click="test" alt="" />
+          <img src="~@/assets/logo/yd.png" class="logo" alt="" />
           <div class="login-form">
             <a-form
+              hideRequiredMark
               :model="formState"
               :rules="rules"
               ref="formRef"
@@ -23,10 +24,13 @@
                 >
                   <a-input
                     id="nameIptDom"
-                    placeholder="input username"
+                    :placeholder="
+                      pswLogin ? '用户名或者手机号码' : '请输入手机号码'
+                    "
                     class="login-text"
                     v-model:value="formState.name"
                     autocomplete="off"
+                    :maxlength="20"
                   >
                     <template #prefix>
                       <user-outlined type="user" />
@@ -39,20 +43,71 @@
                   required
                   has-feedback
                   :label="label.password"
-                  name="password"
+                  :name="'password'"
+                  v-if="pswLogin"
                 >
                   <a-input
                     type="password"
                     class="login-text"
                     v-model:value="formState.password"
-                    placeholder="input password"
+                    placeholder="请输入密码"
                     autocomplete="off"
+                    :maxlength="20"
                   >
                     <template #prefix>
                       <UnlockOutlined />
                     </template>
                   </a-input>
                 </a-form-item>
+                <div v-else style="position: reactive">
+                  <a-form-item
+                    has-feedback
+                    :label="label.ctcode"
+                    :wrapperCol="{ span: 8 }"
+                    :name="'ctcode'"
+                  >
+                    <a-input
+                      type="ctcode"
+                      class="login-text"
+                      v-model:value="formState.ctcode"
+                      placeholder="验证码"
+                      oninput="value = value.replace(/[^\d]/g , '') "
+                      autocomplete="off"
+                      :maxlength="4"
+                    >
+                      <template #prefix>
+                        <MessageOutlined />
+                      </template>
+                    </a-input>
+                  </a-form-item>
+                  <a-button
+                    @click="getUserCtcode"
+                    v-show="!showSendCtcodeLoading"
+                    style="
+                      position: absolute;
+                      right: 0;
+                      top: 0;
+                      font-size: 10px;
+                      padding: 0 10px;
+                      width: 95px;
+                    "
+                    >发送验证码</a-button
+                  >
+                  <a-button
+                    @click="getUserCtcode"
+                    v-show="showSendCtcodeLoading"
+                    style="
+                      position: absolute;
+                      right: 0;
+                      top: 0;
+                      font-size: 10px;
+                      padding: 0 10px;
+                      width: 95px;
+                    "
+                    loading
+                    >{{ timeForYZM }}</a-button
+                  >
+                </div>
               </div>
               <div class="login-footer">
                 <div class="login-btn-wrap">
@@ -61,13 +116,20 @@
                     class="login-btn"
                     @click="handlelogin"
                     :disabled="
-                      formState.name === '' || formState.password === ''
+                      formState.name === '' ||
+                      (formState.password === '' && formState.ctcode === '')
                     "
                     >{{ t("login.logIn") }}</a-button
                   >
+                  <a-button class="ctcode-btn" ghost @click="changeLoginType">{{
+                    pswLogin ? t("login.ctcodeLogin") : t("login.pswLogin")
+                  }}</a-button>
                 </div>
               </div>
             </a-form>
+          </div>
+          <div class="fixedMsg">
+            <p>@请使用网易云音乐账号登录</p>
           </div>
         </div>
       </kinesis-element>
@@ -88,20 +150,32 @@ import {
   RuleObject,
   ValidateErrorEntity,
 } from "ant-design-vue/es/form/interface";
-import { UserOutlined, UnlockOutlined } from "@ant-design/icons-vue";
+import {
+  UserOutlined,
+  UnlockOutlined,
+  MessageOutlined,
+} from "@ant-design/icons-vue";
 import { useRouter } from "vue-router";
-import { login, getUserDetail } from "@/api/services/user";
+import {
+  login,
+  getUserDetail,
+  getCtcode,
+  checkCtcode,
+  captchalogin
+} from "@/api/services/user";
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
 interface FormState {
   name: string;
   password: string;
+  ctcode: string;
 }
 export default defineComponent({
   components: {
     UserOutlined,
     UnlockOutlined,
+    MessageOutlined,
   },
   directives: {
     focus: {
@@ -119,58 +193,91 @@ export default defineComponent({
     const label = {
       username: t("login.username"),
       password: t("login.password"),
+      ctcode: t("login.ctcode"),
     };
-
+    let pswLogin: Ref<boolean> = ref(false); //是否密码登录
+    let showSendCtcodeLoading: Ref<boolean> = ref(false); //是否显示验证码上的loading
+    const changeLoginType = () => {
+      pswLogin.value = !pswLogin.value;
+    };
     // 表单配置
     const formState: UnwrapRef<FormState> = reactive({
       name: "",
       password: "",
+      ctcode: "",
     });
 
+    onMounted(() => {
+      let name: any = document.getElementById("name");
+      name.focus();
+    });
 
-    const test = ()=>{
-      setTimeout(()=>{
-        console.log(1)
-      },3000)
+    const checkPhone = ()=>{
+      if(pswLogin.value) return
+      let RE = new RegExp(/^(?:(?:\+|00)86)?1[3-9]\d{9}$/);
+      if(!RE.test(formState.name)){
+        message.error("手机号格式有误")
+        return false
+      }
+      return true
     }
-    
-
-    onMounted(()=>{
-      let name:any = document.getElementById('name')
-        name.focus()
-    })
-
-    
 
     let validatePass = async (rule: RuleObject, value: string) => {
       if (value === "") {
-        return Promise.reject("Please input the password");
+        return Promise.reject("密码不能为空");
       } else {
         return Promise.resolve();
       }
     };
     const layout = {
       labelCol: { span: 8 },
-      wrapperCol: { span: 14 },
+      wrapperCol: { span: 16 },
     };
     const rules = {
       name: [
         {
           required: true,
-          min: 3,
-          max: 11,
-          message: "Length should be 3 to 11",
+          min: 1,
+          max: 20,
+          message: "请输入正确的账号",
           trigger: "blur",
         },
       ],
       password: [
         {
           required: true,
-          message: "Length should be 6 to 18",
+          max: 20,
+          message: "密码不能为空",
           trigger: "blur",
         },
         { validator: validatePass, trigger: "change" },
       ],
+    };
+
+    const TIME_COUNT = 60;
+    const timeForYZM: Ref<number> = ref(TIME_COUNT);
+
+    // 获取用户验证码
+    const getUserCtcode = async () => {
+      if(!checkPhone()) return
+      const res = await getCtcode(formState.name);
+      if(!res.data) return
+      message.success('验证码已发送，请尽快填写')
+      let timer: any = null;
+      if (!timer) {
+        showSendCtcodeLoading.value = true;
+        timeForYZM.value = TIME_COUNT;
+        timer = setInterval(() => {
+          if (timeForYZM.value > 0 && timeForYZM.value <= TIME_COUNT) {
+            timeForYZM.value--;
+          } else {
+            if (timer) clearInterval(timer);
+            timer = null;
+            showSendCtcodeLoading.value = false;
+            timeForYZM.value = TIME_COUNT;
+          }
+        }, 1000);
+      }
     };
 
     const handleFinish = (values: FormState) => {
@@ -185,11 +292,19 @@ export default defineComponent({
     };
 
     const handlelogin = () => {
+      checkPhone()
       formRef.value
         .validate()
         .then(async () => {
+          let res:any = null
           const query = toRaw(formState);
-          let res = await login(query.name, query.password);
+          if (!pswLogin.value) {
+            const ctres = await checkCtcode(query.name, query.ctcode);
+            console.log("res.data", ctres.data);
+            if(!ctres.data) return message.error('验证码不正确')
+          }
+          console.log(query.name, query.ctcode,!pswLogin.value)
+          res =!pswLogin.value?await captchalogin(query.name, query.ctcode):await login(query.name, query.password)
           if (res.code === 200) {
             my_getUserDetail(res.profile.userId);
             window.localStorage.setItem("token", res.token);
@@ -203,6 +318,7 @@ export default defineComponent({
             }, 1000);
             message.success("登录成功");
           } else {
+            console.log(res)
             return message.error("登录失败，请检查用户名和密码");
           }
         })
@@ -241,7 +357,12 @@ export default defineComponent({
       formRef,
       label,
       t,
-      test
+      changeLoginType, //更改登录模式
+      pswLogin, //使用密码登录
+      getUserCtcode,
+      showSendCtcodeLoading, //显示获取验证码的按钮Loading
+      timeForYZM, //验证码倒计时
+      checkPhone,//使用验证码登录时，blur事件触发后会校验一次手机号码
     };
   },
 });
@@ -299,7 +420,7 @@ $light_gray: #eee;
         padding-top: 10px;
         .login-btn-wrap {
           width: 100%;
-          display: block;
+          display: flex;
           position: relative;
           z-index: 1;
           overflow: hidden;
@@ -307,14 +428,36 @@ $light_gray: #eee;
           .login-btn {
             font-size: 15px;
             line-height: 1.5;
-            width: 100%;
+            flex-grow: 8;
             height: 42px;
             border-radius: 3px;
             background: #5dd5c8;
             border: 0;
             color: #fff;
           }
+          .ctcode-btn {
+            flex-grow: 1;
+            font-size: 12px;
+            line-height: 1.5;
+            height: 42px;
+            border-radius: 3px;
+            margin-left: 10px;
+            border: 0;
+            border: #ccc 1px solid;
+            color: #666;
+            width: 60px;
+          }
         }
+      }
+    }
+    .fixedMsg {
+      position: absolute;
+      bottom: 4px;
+      right: 10px;
+      color: #f0f0f0;
+      p {
+        font-size: 4px;
+        cursor: default;
       }
     }
   }

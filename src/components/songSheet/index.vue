@@ -59,15 +59,13 @@ export default {
   },
   setup(props) {
     const router = useRouter();
-    console.log(props.num);
-    console.log("props.sheetList", props.sheetList);
     const prop_sheetList = ref([]);
 
     watch(
       () => props.sheetList,
       (n) => {
         prop_sheetList.value = n;
-        console.log(prop_sheetList.value);
+        // console.log(prop_sheetList.value);//推荐歌单
       }
     );
 

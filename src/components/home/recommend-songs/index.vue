@@ -19,7 +19,7 @@ export default {
         try{
             let res = await getPersonalized(state.limit)
             state.personalizeds = res.result
-            console.log('res.result',res.result)
+            // console.log('res.result',res.result)//推荐歌单列表
         }catch(err){
             console.log(err)
         }

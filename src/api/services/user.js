@@ -11,6 +11,36 @@ export const login = (phone, password) =>
   })
 
 /**
+* @method 验证码登录
+* @params phone 用户id captcha 验证码
+*/
+export const captchalogin = (phone, password) =>
+  api.get(`/login/cellphone?phone=${phone}&captcha=${password}`, {
+    withCredentials: true
+  })
+
+/**
+ * @method 获取验证码
+ * @params phone 用户id
+ */
+export const getCtcode = (phone) =>
+  api.get(`/captcha/sent?phone=${phone}`, {
+    withCredentials: true
+  })
+
+
+/**
+ * @method 验证验证码
+ * @params phone 用户id
+ */
+export const checkCtcode = (phone, captcha) =>
+  api.get(`/captcha/verify?phone=${phone}&captcha=${captcha}`, {
+    withCredentials: true
+  })
+
+
+
+/**
  * @method 获取用户详情
  * @params uid 用户id
  */
@@ -39,10 +69,10 @@ export const getUserArtist = uid => api.get(`/user/playlist?uid=${uid}`, {})
  * @params limit 返回数量
  * @params offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
  */
- export const getUserFollows = (uid,limit=30,offset=0) => api.get(`/user/follows?uid=${uid}&limit=${limit}&offset=${offset}`, {})
+export const getUserFollows = (uid, limit = 30, offset = 0) => api.get(`/user/follows?uid=${uid}&limit=${limit}&offset=${offset}`, {})
 
 
- /**
- * @method 获取喜欢列表
- */
-  export const getLikeList = uid => api.get(`/likelist?uid=${uid}`,{})
+/**
+* @method 获取喜欢列表
+*/
+export const getLikeList = uid => api.get(`/likelist?uid=${uid}`, {})

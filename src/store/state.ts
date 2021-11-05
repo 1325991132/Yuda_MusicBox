@@ -11,7 +11,8 @@ interface IState {
     playing: boolean,
     singer: any,
     historyList: Array<any>,
-    likeSongs:Array<any>
+    likeSongs:Array<any>,
+    userDevice:string
 }
 
 const state: IState = {
@@ -36,7 +37,9 @@ const state: IState = {
     // 历史播放列表
     historyList: [],
     // 喜欢的音乐列表
-    likeSongs:[]
+    likeSongs:[],
+    // 用户使用设备
+    userDevice:"window"
 }
 
 export default state

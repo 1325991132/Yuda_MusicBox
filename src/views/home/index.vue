@@ -6,7 +6,7 @@
 
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 import Banner from "@/components/home/banner/index.vue";
 import RecommendSongs from 'components/home/recommend-songs/index.vue'

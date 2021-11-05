@@ -1,20 +1,22 @@
 <template>
   <div class="layout">
     <div class="fluid">
-      <router-view ></router-view>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 <script>
 /* eslint-disable */
 import { onMounted } from "vue";
+import utils from '@/utils'
+import { useStore } from "vuex";
 export default {
   setup() {
+    const store = useStore();
     onMounted(() => {
-      console.log("layout is ready");
+      store.commit("SET_USER_DEVICE", utils.checkUserDevice());
     });
-    return{
-    }
+    return {};
   },
 };
 </script>
@@ -29,5 +31,11 @@ export default {
   .fluid {
     padding: 20px 0;
   }
+ @media only screen and (max-width: 768px) {
+    min-width: 375px;
+    width:100vw;
+    overflow: hidden;
+  }
 }
+
 </style>

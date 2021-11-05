@@ -30,3 +30,6 @@ export const SET_HISTORY_LIST = 'SET_HISTORY_LIST'
 
 // 设置喜欢列表
 export const SET_LIKE_SONGS = 'SET_LIKE_SONGS'
+
+// 设置用户设备类型
+export const SET_USER_DEVICE = 'SET_USER_DEVICE'

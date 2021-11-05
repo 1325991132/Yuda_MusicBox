@@ -128,7 +128,7 @@
               </div>
             </a-form>
           </div>
-          <div class="fixedMsg">
+          <div class="fixedMsg" v-if="parallax.length>0">
             <p>@请使用网易云音乐账号登录</p>
           </div>
         </div>
@@ -166,6 +166,7 @@ import {
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
+import utils from '@/utils/index.js';
 interface FormState {
   name: string;
   password: string;
@@ -197,6 +198,7 @@ export default defineComponent({
     };
     let pswLogin: Ref<boolean> = ref(false); //是否密码登录
     let showSendCtcodeLoading: Ref<boolean> = ref(false); //是否显示验证码上的loading
+    let parallax:Ref<string> = ref("depth")
     const changeLoginType = () => {
       pswLogin.value = !pswLogin.value;
     };
@@ -208,6 +210,8 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      if(utils.checkUserDevice() !== 'window')  parallax.value = ""
+      store.commit("SET_USER_DEVICE", utils.checkUserDevice());
       let name: any = document.getElementById("name");
       name.focus();
     });
@@ -349,7 +353,7 @@ export default defineComponent({
       layout,
       formState,
       rules,
-      parallax: "depth",
+      parallax,
       handlelogin,
       handleFinish,
       handleFinishFailed,

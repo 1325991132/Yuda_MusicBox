@@ -2,9 +2,9 @@
   <div class="banner container">
     <swiper
       v-if="bannersInit"
-      :slidesPerView="3"
-      :spaceBetween="30"
-      :slidesPerGroup="3"
+      :slidesPerView="slidesPerView"
+      :spaceBetween="spaceBetween"
+      :slidesPerGroup="slidesPerView"
       :loop="true"
       :loopFillGroupWithBlank="true"
       :pagination="{
@@ -22,19 +22,23 @@
 </template>
 
 <script >
-import {reactive,computed} from 'vue'
+import { reactive, computed, onMounted, ref, nextTick } from "vue";
 // import { Swiper, SwiperSlide } from "swiper/vue";
 
-import SwiperCore, {
-  Pagination,Navigation
-} from 'swiper';
+import SwiperCore, { Pagination, Navigation } from "swiper";
 
 import "swiper/swiper-bundle.css"; // css 模块
 
 import { getBanner } from "@/api/services/api";
+import { useStore } from "vuex";
 export default {
   setup() {
-    SwiperCore.use([Pagination,Navigation]);
+    const store = useStore();
+    const spaceBetween = ref(30);
+    const slidesPerView = ref(3);
+    const getUserDevice = computed(() => store.getters.getUserDevice); //获取用户设备
+
+    SwiperCore.use([Pagination, Navigation]);
     const state = reactive({
       bannerList: [], // 轮播图列表
       bannerInit: computed(() => {
@@ -46,7 +50,11 @@ export default {
 
     let getbanner = async () => {
       let { banners: res } = await getBanner();
-      state.bannerList = res;
+      if (res.length > 9) {
+        state.bannerList = res.filter((item, index) => index < 9);
+      } else {
+        state.bannerList = res;
+      }
     };
 
     const bannersInit = computed(() => {
@@ -54,28 +62,75 @@ export default {
     });
     getbanner();
 
+    onMounted(() => {
+      nextTick(() => {
+        if (getUserDevice.value !== "window") {
+          spaceBetween.value = 5;
+          slidesPerView.value = 1;
+        }
+      });
+    });
+
     return {
       state,
       bannersInit,
+      spaceBetween,
+      slidesPerView,
     };
   },
 };
 </script>
 <style lang="scss" scoped>
-.banner {
-  display: block;
-  position: relative;
-  height: 11.5rem;
-  width: 100%;
-  padding: 0 1.25rem;
-  .swiper-container {
-    height: 100%;
-  }
-  .swiper-slide {
-    height: 100%;
-    img {
+  @media only screen and (min-width: 769px) {
+  .banner {
+    display: block;
+    position: relative;
+    height: 11.5rem;
+    width: 100%;
+    padding: 0 1.25rem;
+    .swiper-container {
       height: 100%;
-      border-radius: 3px;
+    }
+    .swiper-slide {
+      height: 100%;
+      img {
+        height: 100%;
+        border-radius: 3px;
+      }
+    }
+  }
+}
+ @media only screen and (max-width: 768px) {
+  .banner {
+    display: block;
+    position: relative;
+    height: 9rem;
+    width: 100%;
+    padding: 0 0.75rem;
+    .swiper-container {
+      height: 100%;
+      border-radius: 10px;
+    }
+    .swiper-slide {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      border-radius: 10px;
+      img {
+        width: 100%;
+        border-radius: 3px;
+      }
+    }
+    ::v-deep(.swiper-pagination-bullet) {
+      display: none;
+    }
+
+    ::v-deep(.swiper-button-next) {
+      display: none;
+    }
+
+    ::v-deep(.swiper-button-prev) {
+      display: none;
     }
   }
 }
@@ -97,7 +152,4 @@ export default {
     }
   }
 }
-
-
-
 </style>

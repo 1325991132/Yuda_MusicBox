@@ -56,6 +56,11 @@ const mutations = {
     // 喜欢列表
     [types.SET_LIKE_SONGS](state, list) {
         state.likeSongs = list
+    },
+
+    // 用户设备
+    [types.SET_USER_DEVICE](state,userDevice){
+        state.userDevice = userDevice
     }
 }
 

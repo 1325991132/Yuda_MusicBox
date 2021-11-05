@@ -156,5 +156,22 @@ export default {
           }
         })
         return resArr
+      },
+
+      // 检测当前机型
+      checkUserDevice(){
+        var u = navigator.userAgent;
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        var isAndroid = u.indexOf("Android") > -1 || u.indexOf("Adr") > -1; //android终端
+        if (isiOS) {
+          console.log("ios");
+          return 'ios'
+        } else if (isAndroid) {
+          console.log("android");
+          return 'android'
+        }else{
+          console.log("window");
+          return 'window'
+        }
       }
 }

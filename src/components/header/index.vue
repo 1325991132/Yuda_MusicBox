@@ -2,7 +2,11 @@
   <div class="header shadow">
     <div class="container flex-row">
       <div class="logo">
-        <router-link :to="{ name: 'home' }" title="YUDA_MUSIC" tag="a"></router-link>
+        <router-link
+          :to="{ name: 'home' }"
+          title="YUDA_MUSIC"
+          tag="a"
+        ></router-link>
       </div>
       <ul class="nav flex-row">
         <li>
@@ -122,13 +126,13 @@ export default defineComponent({
     });
     let userInfo;
     let temp_userInfo = computed(() => store.getters.userInfo).value; //获取vuex中的用户信息
-    store.commit("SET_PLAYLIST", []);//登录时初始化播放列表，隐藏playBar
-    
+    store.commit("SET_PLAYLIST", []); //登录时初始化播放列表，隐藏playBar
+
     // 获取用户的喜欢歌单，准备后续使用
     const qydgetUserLike = async (id) => {
       try {
         let res = await getLikeList(id);
-        if (res.code !== 200) return
+        if (res.code !== 200) return;
         store.commit("SET_LIKE_SONGS", res.ids);
       } catch (err) {
         console.log(err);
@@ -155,7 +159,6 @@ export default defineComponent({
             id: userInfo.userId,
           },
         });
-        message.success(`welecome to your home`);
         return;
       }
       message.info(`click on item ${command}`);
@@ -219,51 +222,102 @@ $color-theme: #fa2800;
   top: 0;
   left: 0;
   z-index: 200;
-  .logo {
-    width: 145px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    a {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: block;
-      background: #fff center no-repeat url(~@/assets/logo/yd3.png);
-      background-size: 100%;
-    }
-  }
-  .nav {
-    flex: 1;
-    li {
-      font-size: 14px;
-      height: 100%;
-      padding: 0 15px;
+  @media only screen and (min-width: 769px) {
+    .logo {
+      width: 145px;
+      height: 70px;
+      display: flex;
+      align-items: center;
       a {
-        position: relative;
-        transition: all 0.4s;
-        &.router-link-active {
-          color: $color-theme;
-          &::after {
-            content: "";
-            position: absolute;
-            background: $color-theme;
-            left: 0;
-            right: 0;
-            bottom: -12px;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            margin: 0 auto;
-            opacity: 1;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: block;
+        background: #fff center no-repeat url(~@/assets/logo/yd3.png);
+        background-size: 100%;
+      }
+    }
+    .nav {
+      flex: 1;
+      li {
+        font-size: 14px;
+        height: 100%;
+        padding: 0 15px;
+        a {
+          position: relative;
+          transition: all 0.4s;
+          &.router-link-active {
+            color: $color-theme;
+            &::after {
+              content: "";
+              position: absolute;
+              background: $color-theme;
+              left: 0;
+              right: 0;
+              bottom: -12px;
+              width: 4px;
+              height: 4px;
+              border-radius: 50%;
+              margin: 0 auto;
+              opacity: 1;
+            }
           }
-        }
-        &:hover {
-          color: $color-theme;
+          &:hover {
+            color: $color-theme;
+          }
         }
       }
     }
   }
+  // phone
+  @media only screen and (max-width: 768px) {
+    .logo {
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      a {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: block;
+        background: #fff center no-repeat url(~@/assets/logo/yd3.png);
+        background-size: 100%;
+      }
+    }
+    .nav {
+      width: 40%;
+      li {
+        font-size: 1rem;
+        width: 4rem;
+        text-align: center;
+        a {
+          position: relative;
+          transition: all 0.4s;
+          &.router-link-active {
+            color: $color-theme;
+            &::after {
+              content: "";
+              position: absolute;
+              background: $color-theme;
+              left: 0;
+              right: 0;
+              bottom: -12px;
+              width: 0px;
+              height: 0px;
+              border-radius: 50%;
+              margin: 0 auto;
+              opacity: 1;
+            }
+          }
+          &:hover {
+            color: $color-theme;
+          }
+        }
+      }
+    }
+  }
+
   .search {
     height: 100%;
     display: flex;
@@ -274,33 +328,72 @@ $color-theme: #fa2800;
       cursor: pointer;
     }
   }
-  .userbox {
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
-    position: relative;
-    .line {
-      height: 22px;
-      background-color: #e1e1e1;
-      width: 1px;
-    }
-    .no-login {
-      font-size: 14px;
-      cursor: pointer;
-      &:hover {
-        color: $color-theme;
+
+  @media only screen and (min-width: 769px) {
+    .userbox {
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      position: relative;
+      .line {
+        height: 22px;
+        background-color: #e1e1e1;
+        width: 1px;
+      }
+      .no-login {
+        font-size: 14px;
+        cursor: pointer;
+        &:hover {
+          color: $color-theme;
+        }
+      }
+      .is-login {
+        font-size: 14px;
+        cursor: pointer;
+        &:hover {
+          color: $color-theme;
+        }
+      }
+      .avatar {
+        margin-left: 20px;
+        margin-right: 15px;
       }
     }
-    .is-login {
-      font-size: 14px;
-      cursor: pointer;
-      &:hover {
-        color: $color-theme;
+  }
+
+ @media only screen and (max-width: 768px) {
+    .userbox {
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      position: relative;
+      .line {
+        height: 22px;
+        background-color: #e1e1e1;
+        width: 1px;
+        margin-right: 15px;
       }
-    }
-    .avatar {
-      margin-left: 20px;
-      margin-right: 15px;
+      .no-login {
+        font-size: 14px;
+        cursor: pointer;
+        &:hover {
+          color: $color-theme;
+        }
+      }
+      .is-login {
+        font-size: 14px;
+        cursor: pointer;
+        &:hover {
+          color: $color-theme;
+        }
+      }
+      .avatar {
+        display: none;
+        margin-left: 20px;
+        margin-right: 15px;
+        width:50px;
+        height:50px;
+      }
     }
   }
 

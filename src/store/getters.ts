@@ -42,3 +42,6 @@ export const historyList: any = state => state.historyList
 
 // 喜欢列表
 export const likeSongsList: any = state => state.likeSongs
+
+// 获取用户设备类型
+export const getUserDevice:any = state => state.userDevice

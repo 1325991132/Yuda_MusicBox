@@ -5,21 +5,21 @@
       <span></span>
       <span></span>
       <span></span>
-      TO SEARCH MUSIC
+      SEARCH MUSIC
     </a>
     <a @click.prevent="routerTo('search')" href="#">
       <span></span>
       <span></span>
       <span></span>
       <span></span>
-      TO SEARCH MUSIC
+      SEARCH MUSIC
     </a>
     <a @click.prevent="routerTo('search')" href="#">
       <span></span>
       <span></span>
       <span></span>
       <span></span>
-      TO SEARCH MUSIC
+      SEARCH MUSIC
     </a>
   </div>
 </template>

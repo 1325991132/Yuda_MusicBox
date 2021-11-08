@@ -30,7 +30,7 @@
                     class="login-text"
                     v-model:value="formState.name"
                     autocomplete="off"
-                    :maxlength="20"
+                    :maxlength="26"
                   >
                     <template #prefix>
                       <user-outlined type="user" />
@@ -128,7 +128,7 @@
               </div>
             </a-form>
           </div>
-          <div class="fixedMsg" v-if="parallax.length>0">
+          <div class="fixedMsg" v-if="parallax.length > 0">
             <p>@请使用网易云音乐账号登录</p>
           </div>
         </div>
@@ -145,6 +145,8 @@ import {
   UnwrapRef,
   defineComponent,
   onMounted,
+  computed,
+  nextTick,
 } from "vue";
 import {
   RuleObject,
@@ -161,12 +163,12 @@ import {
   getUserDetail,
   getCtcode,
   checkCtcode,
-  captchalogin
+  captchalogin,
 } from "@/api/services/user";
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
-import utils from '@/utils/index.js';
+import utils from "@/utils/index.js";
 interface FormState {
   name: string;
   password: string;
@@ -198,7 +200,8 @@ export default defineComponent({
     };
     let pswLogin: Ref<boolean> = ref(false); //是否密码登录
     let showSendCtcodeLoading: Ref<boolean> = ref(false); //是否显示验证码上的loading
-    let parallax:Ref<string> = ref("depth")
+
+    let parallax: Ref<string> = ref("depth");
     const changeLoginType = () => {
       pswLogin.value = !pswLogin.value;
     };
@@ -210,21 +213,21 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      if(utils.checkUserDevice() !== 'window')  parallax.value = ""
+      if (utils.checkUserDevice() !== "window") parallax.value = "";
       store.commit("SET_USER_DEVICE", utils.checkUserDevice());
       let name: any = document.getElementById("name");
       name.focus();
     });
 
-    const checkPhone = ()=>{
-      if(pswLogin.value) return
+    const checkPhone = () => {
+      if (pswLogin.value) return;
       let RE = new RegExp(/^(?:(?:\+|00)86)?1[3-9]\d{9}$/);
-      if(!RE.test(formState.name)){
-        message.error("手机号格式有误")
-        return false
+      if (!RE.test(formState.name)) {
+        message.error("手机号格式有误");
+        return false;
       }
-      return true
-    }
+      return true;
+    };
 
     let validatePass = async (rule: RuleObject, value: string) => {
       if (value === "") {
@@ -237,6 +240,7 @@ export default defineComponent({
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
+
     const rules = {
       name: [
         {
@@ -257,16 +261,25 @@ export default defineComponent({
         { validator: validatePass, trigger: "change" },
       ],
     };
+    const getUserDevice = computed(() => store.getters.getUserDevice); //获取用户设备
+    onMounted(() => {
+      nextTick(() => {
+        if (getUserDevice.value !== "window") {
+          rules.name[0].message = "";
+          rules.password[0].message = "";
+        }
+      });
+    });
 
     const TIME_COUNT = 60;
     const timeForYZM: Ref<number> = ref(TIME_COUNT);
 
     // 获取用户验证码
     const getUserCtcode = async () => {
-      if(!checkPhone()) return
+      if (!checkPhone()) return;
       const res = await getCtcode(formState.name);
-      if(!res.data) return
-      message.success('验证码已发送，请尽快填写')
+      if (!res.data) return;
+      message.success("验证码已发送，请尽快填写");
       let timer: any = null;
       if (!timer) {
         showSendCtcodeLoading.value = true;
@@ -296,19 +309,21 @@ export default defineComponent({
     };
 
     const handlelogin = () => {
-      checkPhone()
+      checkPhone();
       formRef.value
         .validate()
         .then(async () => {
-          let res:any = null
+          let res: any = null;
           const query = toRaw(formState);
           if (!pswLogin.value) {
             const ctres = await checkCtcode(query.name, query.ctcode);
             console.log("res.data", ctres.data);
-            if(!ctres.data) return message.error('验证码不正确')
+            if (!ctres.data) return message.error("验证码不正确");
           }
-          console.log(query.name, query.ctcode,!pswLogin.value)
-          res =!pswLogin.value?await captchalogin(query.name, query.ctcode):await login(query.name, query.password)
+          console.log(query.name, query.ctcode, !pswLogin.value);
+          res = !pswLogin.value
+            ? await captchalogin(query.name, query.ctcode)
+            : await login(query.name, query.password);
           if (res.code === 200) {
             my_getUserDetail(res.profile.userId);
             window.localStorage.setItem("token", res.token);
@@ -322,7 +337,7 @@ export default defineComponent({
             }, 1000);
             message.success("登录成功");
           } else {
-            console.log(res)
+            console.log(res);
             return message.error("登录失败，请检查用户名和密码");
           }
         })
@@ -366,7 +381,7 @@ export default defineComponent({
       getUserCtcode,
       showSendCtcodeLoading, //显示获取验证码的按钮Loading
       timeForYZM, //验证码倒计时
-      checkPhone,//使用验证码登录时，blur事件触发后会校验一次手机号码
+      checkPhone, //使用验证码登录时，blur事件触发后会校验一次手机号码
     };
   },
 });
@@ -382,86 +397,181 @@ $light_gray: #eee;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
   align-items: center;
   background: #5dd5c8 url(~@/assets/images/newbg1.png) center bottom no-repeat;
-  .login-box {
-    overflow: hidden;
-    height: 460px;
-    width: 350px;
-    max-width: 350px;
-    position: relative;
-    margin: 0 auto;
-    background: #fff url(~@/assets/images/logbg.jpg) no-repeat bottom;
-    border-radius: 8px;
-    box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.3);
-    backface-visibility: hidden;
-    text-align: center;
-    transition-duration: 0.3s;
-    z-index: 8;
-    .logo {
-      width: 55px;
-      margin: 40px 0 40px;
-    }
-    .login-form {
-      width: 300px;
-      margin: 4em auto;
-      .login-input {
-        position: relative;
-        width: 100%;
-        z-index: 1;
-        margin-bottom: 10px;
-        .login-text {
-          font-size: 14px;
-          color: #666;
-          width: 100%;
-        }
+  @media only screen and (min-width: 769px) {
+    .login-box {
+      overflow: hidden;
+      height: 460px;
+      width: 350px;
+      max-width: 350px;
+      position: relative;
+      margin: 0 auto;
+      background: #fff url(~@/assets/images/logbg.jpg) no-repeat bottom;
+      border-radius: 8px;
+      box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.3);
+      backface-visibility: hidden;
+      text-align: center;
+      transition-duration: 0.3s;
+      z-index: 8;
+      .logo {
+        width: 55px;
+        margin: 40px 0 40px;
       }
-      .login-footer {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding-top: 10px;
-        .login-btn-wrap {
+      .login-form {
+        width: 300px;
+        margin: 4em auto;
+        .login-input {
+          position: relative;
+          width: 100%;
+          z-index: 1;
+          margin-bottom: 10px;
+          .login-text {
+            font-size: 14px;
+            color: #666;
+            width: 100%;
+          }
+        }
+        .login-footer {
           width: 100%;
           display: flex;
-          position: relative;
-          z-index: 1;
-          overflow: hidden;
-          margin: 0 auto;
-          .login-btn {
-            font-size: 15px;
-            line-height: 1.5;
-            flex-grow: 8;
-            height: 42px;
-            border-radius: 3px;
-            background: #5dd5c8;
-            border: 0;
-            color: #fff;
-          }
-          .ctcode-btn {
-            flex-grow: 1;
-            font-size: 12px;
-            line-height: 1.5;
-            height: 42px;
-            border-radius: 3px;
-            margin-left: 10px;
-            border: 0;
-            border: #ccc 1px solid;
-            color: #666;
-            width: 60px;
+          flex-wrap: wrap;
+          justify-content: center;
+          padding-top: 10px;
+          .login-btn-wrap {
+            width: 100%;
+            display: flex;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            margin: 0 auto;
+            .login-btn {
+              font-size: 15px;
+              line-height: 1.5;
+              flex-grow: 8;
+              height: 42px;
+              border-radius: 3px;
+              background: #5dd5c8;
+              border: 0;
+              color: #fff;
+            }
+            .ctcode-btn {
+              flex-grow: 1;
+              font-size: 12px;
+              line-height: 1.5;
+              height: 42px;
+              border-radius: 3px;
+              margin-left: 10px;
+              border: 0;
+              border: #ccc 1px solid;
+              color: #666;
+              width: 60px;
+            }
           }
         }
       }
+      .fixedMsg {
+        position: absolute;
+        bottom: 4px;
+        right: 10px;
+        color: #f0f0f0;
+        p {
+          font-size: 4px;
+          cursor: default;
+        }
+      }
     }
-    .fixedMsg {
-      position: absolute;
-      bottom: 4px;
-      right: 10px;
-      color: #f0f0f0;
-      p {
-        font-size: 4px;
-        cursor: default;
+  }
+
+  @media only screen and (max-width: 768px) {
+    ::v-deep(.ant-form-item-explain){
+      display: none;
+    }
+    ::v-deep(.ant-form-item){
+      margin-bottom: 0;
+    }
+    .login-box {
+      overflow: hidden;
+      height: 460px;
+      width: 330px;
+      max-width: 350px;
+      padding: 0 30px;
+      position: relative;
+      margin: 0 auto;
+      background: #fff url(~@/assets/images/logbg.jpg) no-repeat bottom;
+      border-radius: 8px;
+      box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.3);
+      backface-visibility: hidden;
+      text-align: center;
+      transition-duration: 0.3s;
+      z-index: 8;
+
+      .logo {
+        width: 55px;
+        margin: 40px 0 40px;
+      }
+      .login-form {
+        width: 100%;
+        margin: 4em auto;
+        .login-input {
+          position: relative;
+          width: 100%;
+          z-index: 1;
+          margin-bottom: 10px;
+          .login-text {
+            font-size: 14px;
+            color: #666;
+            width: 100%;
+          }
+        }
+        .login-footer {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          padding-top: 10px;
+          .login-btn-wrap {
+            width: 100%;
+            display: flex;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            margin: 0 auto;
+            .login-btn {
+              font-size: 15px;
+              line-height: 1.5;
+              flex-grow: 8;
+              height: 42px;
+              border-radius: 3px;
+              background: #5dd5c8;
+              border: 0;
+              color: #fff;
+            }
+            .ctcode-btn {
+              flex-grow: 1;
+              font-size: 12px;
+              line-height: 1.5;
+              height: 42px;
+              border-radius: 3px;
+              margin-left: 10px;
+              border: 0;
+              border: #ccc 1px solid;
+              color: #666;
+              width: 60px;
+            }
+          }
+        }
+      }
+      .fixedMsg {
+        position: absolute;
+        bottom: 4px;
+        right: 10px;
+        color: #f0f0f0;
+        p {
+          font-size: 4px;
+          cursor: default;
+        }
       }
     }
   }

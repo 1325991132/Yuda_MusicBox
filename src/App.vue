@@ -4,7 +4,16 @@
       v-if="$route.meta.isLogin ? false : $route.meta.is404 ? false : true"
     >
     </my-header>
-    <router-view v-slot="{ Component }" :key="$route.query.id?$route.path+$route.query.id:$route.path">
+    <router-view
+      v-slot="{ Component }"
+      :key="
+        $route.query.id
+          ? $route.path + $route.query.id
+          : $route.query.keyword
+          ? $route.path + $route.query.keyword
+          : $route.path
+      "
+    >
       <transition name="fade">
         <component :is="Component" />
       </transition>

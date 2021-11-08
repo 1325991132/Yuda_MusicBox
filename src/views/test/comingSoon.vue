@@ -2,13 +2,13 @@
   <div>
     <div class="lightBtnWrapper">
       <lightBtn class="lightBtn" />
-      <h2>此界面正在制作中，敬请期待</h2>
+      <h2>界面正在制作中</h2>
     </div>
     <Bear style="margin-top: -50px; margin-bottom: -50px" />
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 
 import Bear from '@/components/demo/bear/index.vue';

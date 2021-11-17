@@ -5,7 +5,7 @@
 http://www.qyd123.cn
 ```
 
-### 后台api来自网易云音乐，node后台工程文件中的server文件夹中,进入该目录下，可运行后台接口
+### 后台api来自网易云音乐，node后台工程文件中的wyapi文件夹中,进入该目录下，可运行后台接口
 ```
 yarn install
 yarn start

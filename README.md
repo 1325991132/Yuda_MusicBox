@@ -10,7 +10,7 @@ http://www.qyd123.cn
 yarn install
 yarn start
 ```
-### 前端使用vue3
+### 前端技术栈 （vue3,vue-router4,vueX4,sass）
 ## Project setup
 ```
 yarn install

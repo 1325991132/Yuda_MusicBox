@@ -1,4 +1,9 @@
-# vue3-test
+# YD Music Box
+
+### 后台api来自网易云音乐，node后台工程文件中的server文件夹中,进入该目录下
+```
+yarn start
+```
 
 ## Project setup
 ```

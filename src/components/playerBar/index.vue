@@ -606,17 +606,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  @media only screen and (min-width: 769px) {
+@mixin playerBar() {
+  width: 100%;
+  height: 4.5rem;
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  padding: 0 10px 0 20px;
+}
+@media only screen and (min-width: 769px) {
   .player-bar {
-    width: 100%;
-    height: 4.5rem;
-    background-color: #fff;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding: 0 10px 0 20px;
+    @include playerBar;
     justify-content: space-between;
     .avatar {
       width: 3.75rem;
@@ -892,18 +895,9 @@ export default defineComponent({
 }
 
 // phone
- @media only screen and (max-width: 768px) {
+@media only screen and (max-width: 768px) {
   .player-bar {
-    width: 100%;
-    height: 4.5rem;
-    background-color: #fff;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding: 0 10px 0 20px;
-
+    @include playerBar;
     .avatar {
       width: 3rem;
       height: 3rem;
@@ -919,6 +913,10 @@ export default defineComponent({
       margin-right: 15px;
       width: 80%;
       text-align: left;
+      overflow: hidden;
+      max-width: 200px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       h2 {
         display: inline;
         font-size: 0.875rem;

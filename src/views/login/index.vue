@@ -128,12 +128,14 @@
               </div>
             </a-form>
           </div>
-          <div class="fixedMsg" v-if="parallax.length > 0">
-            <p>@请使用网易云音乐账号登录</p>
+          <!-- <div class="fixedMsg" v-if="parallax.length > 0"> -->
+          <div class="fixedMsg" >
+            <p ref="reveal" class="reveal">@请使用网易云音乐账号登录</p>
           </div>
         </div>
       </kinesis-element>
     </div>
+    
   </kinesis-container>
 </template>
 <script lang="ts">
@@ -364,6 +366,26 @@ export default defineComponent({
       }
     };
 
+    // 文字内容及动效
+    const reveal: any = ref(null);
+    onMounted(() => {
+      const delay = 0.8;
+      let revealText = reveal.value.textContent;
+      console.log(revealText);
+      let letters = revealText.split("");
+      reveal.value.textContent = "";
+      let middle = letters.filter((letter) => letter !== " ").length / 2;
+      letters.forEach((letter, index) => {
+        let span = document.createElement("span");
+        span.textContent = letter;
+        span.className = "revealletter";
+        span.style.animationDelay = `${
+          delay + Math.abs(index - middle) * 0.1
+        }s`;
+        reveal.value.appendChild(span);
+      });
+    });
+
     return {
       layout,
       formState,
@@ -382,6 +404,7 @@ export default defineComponent({
       showSendCtcodeLoading, //显示获取验证码的按钮Loading
       timeForYZM, //验证码倒计时
       checkPhone, //使用验证码登录时，blur事件触发后会校验一次手机号码
+      reveal, //title文字dom
     };
   },
 });
@@ -390,6 +413,90 @@ export default defineComponent({
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
+
+@import "./textAnimate.scss";
+
+@mixin loginInput() {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  margin-bottom: 10px;
+  .login-text {
+    font-size: 14px;
+    color: #666;
+    width: 100%;
+  }
+}
+
+@mixin loginFooter() {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 10px;
+  .login-btn-wrap {
+    width: 100%;
+    display: flex;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    margin: 0 auto;
+    .login-btn {
+      font-size: 15px;
+      line-height: 1.5;
+      flex-grow: 8;
+      height: 42px;
+      border-radius: 3px;
+      background: #5dd5c8;
+      border: 0;
+      color: #fff;
+    }
+    .ctcode-btn {
+      flex-grow: 1;
+      font-size: 12px;
+      line-height: 1.5;
+      height: 42px;
+      border-radius: 3px;
+      margin-left: 10px;
+      border: 0;
+      border: #ccc 1px solid;
+      color: #666;
+      width: 60px;
+    }
+  }
+}
+
+@mixin loginBox($height, $width, $maxWidth) {
+  // overflow: hidden;
+  height: $height;
+  width: $width;
+  max-width: $width;
+  position: relative;
+  margin: 0 auto;
+  background: #fff url(~@/assets/images/logbg.jpg) no-repeat bottom;
+  border-radius: 8px;
+  box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.3);
+  backface-visibility: hidden;
+  text-align: center;
+  transition-duration: 0.3s;
+  z-index: 8;
+}
+
+@mixin logo() {
+  width: 55px;
+  margin: 40px 0 40px;
+}
+
+@mixin fixedMsg() {
+  position: absolute;
+  bottom: 4px;
+  right: 10px;
+  color: #f0f0f0;
+  p {
+    font-size:12px;
+    cursor: default;
+  }
+}
 
 .login-wrap {
   width: 100%;
@@ -400,180 +507,57 @@ $light_gray: #eee;
 
   align-items: center;
   background: #5dd5c8 url(~@/assets/images/newbg1.png) center bottom no-repeat;
+  
   @media only screen and (min-width: 769px) {
     .login-box {
-      overflow: hidden;
-      height: 460px;
-      width: 350px;
-      max-width: 350px;
-      position: relative;
-      margin: 0 auto;
-      background: #fff url(~@/assets/images/logbg.jpg) no-repeat bottom;
-      border-radius: 8px;
-      box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.3);
-      backface-visibility: hidden;
-      text-align: center;
-      transition-duration: 0.3s;
-      z-index: 8;
+      @include loginBox(460px, 350px, 350px);
       .logo {
-        width: 55px;
-        margin: 40px 0 40px;
+        @include logo;
       }
       .login-form {
         width: 300px;
         margin: 4em auto;
         .login-input {
-          position: relative;
-          width: 100%;
-          z-index: 1;
-          margin-bottom: 10px;
-          .login-text {
-            font-size: 14px;
-            color: #666;
-            width: 100%;
-          }
+          @include loginInput;
         }
         .login-footer {
-          width: 100%;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          padding-top: 10px;
-          .login-btn-wrap {
-            width: 100%;
-            display: flex;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-            margin: 0 auto;
-            .login-btn {
-              font-size: 15px;
-              line-height: 1.5;
-              flex-grow: 8;
-              height: 42px;
-              border-radius: 3px;
-              background: #5dd5c8;
-              border: 0;
-              color: #fff;
-            }
-            .ctcode-btn {
-              flex-grow: 1;
-              font-size: 12px;
-              line-height: 1.5;
-              height: 42px;
-              border-radius: 3px;
-              margin-left: 10px;
-              border: 0;
-              border: #ccc 1px solid;
-              color: #666;
-              width: 60px;
-            }
-          }
+          @include loginFooter;
         }
       }
       .fixedMsg {
-        position: absolute;
-        bottom: 4px;
-        right: 10px;
-        color: #f0f0f0;
-        p {
-          font-size: 4px;
-          cursor: default;
-        }
+        @include fixedMsg;
       }
     }
   }
 
   @media only screen and (max-width: 768px) {
-    ::v-deep(.ant-form-item-explain){
+    ::v-deep(.ant-form-item-explain) {
       display: none;
     }
-    ::v-deep(.ant-form-item){
+    ::v-deep(.ant-form-item) {
       margin-bottom: 0;
     }
     .login-box {
-      overflow: hidden;
-      height: 460px;
-      width: 330px;
-      max-width: 350px;
+      @include loginBox(460px, 330px, 350px);
       padding: 0 30px;
-      position: relative;
-      margin: 0 auto;
-      background: #fff url(~@/assets/images/logbg.jpg) no-repeat bottom;
-      border-radius: 8px;
-      box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.3);
-      backface-visibility: hidden;
-      text-align: center;
-      transition-duration: 0.3s;
-      z-index: 8;
-
       .logo {
-        width: 55px;
-        margin: 40px 0 40px;
+        @include logo;
       }
       .login-form {
         width: 100%;
         margin: 4em auto;
         .login-input {
-          position: relative;
-          width: 100%;
-          z-index: 1;
-          margin-bottom: 10px;
-          .login-text {
-            font-size: 14px;
-            color: #666;
-            width: 100%;
-          }
+          @include loginInput;
         }
         .login-footer {
-          width: 100%;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          padding-top: 10px;
-          .login-btn-wrap {
-            width: 100%;
-            display: flex;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-            margin: 0 auto;
-            .login-btn {
-              font-size: 15px;
-              line-height: 1.5;
-              flex-grow: 8;
-              height: 42px;
-              border-radius: 3px;
-              background: #5dd5c8;
-              border: 0;
-              color: #fff;
-            }
-            .ctcode-btn {
-              flex-grow: 1;
-              font-size: 12px;
-              line-height: 1.5;
-              height: 42px;
-              border-radius: 3px;
-              margin-left: 10px;
-              border: 0;
-              border: #ccc 1px solid;
-              color: #666;
-              width: 60px;
-            }
-          }
+          @include loginFooter;
         }
       }
       .fixedMsg {
-        position: absolute;
-        bottom: 4px;
-        right: 10px;
-        color: #f0f0f0;
-        p {
-          font-size: 4px;
-          cursor: default;
-        }
+        @include fixedMsg;
       }
     }
   }
 }
+
 </style>

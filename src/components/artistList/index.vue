@@ -8,12 +8,12 @@
     <table class="artist-table">
       <thead>
         <tr>
-          <th class="th-index">序号</th>
+          <th class="th-index" >序号</th>
           <th class="th-name">歌曲</th>
           <th class="th-artist">歌手</th>
-          <th class="th-album">专辑</th>
-          <th class="th-duration">时长</th>
-          <th class="th-info">选项</th>
+          <th class="th-album" v-if="getUserDevice==='window'">专辑</th>
+          <th class="th-duration" v-if="getUserDevice==='window'">时长</th>
+          <th class="th-info" >选项</th>
         </tr>
       </thead>
       <tbody>
@@ -21,6 +21,7 @@
           v-for="(item, index) in songs"
           :key="index"
           :class="currentSong.id == item.id && playing ? 'playing' : ''"
+          @click="playSong(item,index)"
         >
           <td>
             <div class="index-container flex-center">
@@ -33,8 +34,8 @@
                 <div class="line" style="animation-delay: -0.6s"></div>
               </div>
               <i
-                class="iconfont nicebofang2 play-btn"
-                @click="playSong(item, index)"
+                class="iconfont nicebofang2 play-btn" 
+                @click.stop="playSong(item, index)"
               ></i>
               <i
                 class="iconfont nicezanting1 pause-btn"
@@ -44,7 +45,7 @@
           </td>
           <td>
             <div class="name-container">
-              <div class="avatar">
+              <div class="avatar" v-if="getUserDevice==='window'">
                 <el-image
                   :key="item.image + '?param=100y100'"
                   :src="item.image + '?param=100y100'"
@@ -66,28 +67,28 @@
               </p>
             </div>
           </td>
-          <td>
-            <div class="album-container">
+          <td v-if="getUserDevice==='window'"> 
+            <div class="album-container" > 
               <p :title="item.album" class="ellipsis">{{ item.album }}</p>
             </div>
           </td>
-          <td>
+          <td  v-if="getUserDevice==='window'">
             <div class="duration-container">
               <p>{{ utils.formatSecondTime(item.duration) }}</p>
             </div>
           </td>
-          <td>
+          <td >
             <div class="info-container">
               <div class="song-tools">
                 <i
                   class="iconfont icon-heart"
-                  @click="likeThisSong(item.id, true)"
-                  v-if="likeSongsList.indexOf(item.id)==-1"
+                  @click.stop="likeThisSong(item.id, true)"
+                  v-if="likeSongsList.indexOf(item.id) == -1"
                   title="您暂未喜欢此音乐"
                 ></i>
                 <i
                   class="iconfont icon-heart1"
-                  @click="likeThisSong(item.id, false)"
+                  @click.stop="likeThisSong(item.id, false)"
                   v-else
                   title="您喜欢了此音乐"
                 ></i>
@@ -107,7 +108,7 @@
   </div>
 </template>
 
-<script >
+<script>
 import { defineComponent, toRaw, computed } from "vue";
 import { useStore } from "vuex";
 import utils from "@/utils/index.js";
@@ -123,12 +124,16 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const likeSongsList = computed(() => store.getters.likeSongsList); //获取喜欢列表
-
-    console.log('likeSongsList',likeSongsList)
+    const getUserDevice = computed(() => store.getters.getUserDevice); //获取用户设备
+    console.log("likeSongsList", likeSongsList);
     const playSong = (item, index) => {
+      console.log('----',item,index)
       store.dispatch("selectPlay", { list: toRaw(props.songs), index });
     };
-
+    // const modilePlay = (item, index) => {
+    //   console.log(item,index)
+    //   // store.dispatch("selectPlay", { list: toRaw(props.songs), index });
+    // };
     const playAllSong = () => {
       store.dispatch("playAll", { list: toRaw(props.songs) });
     };
@@ -141,7 +146,7 @@ export default defineComponent({
     const qydgetUserLike = async (id) => {
       try {
         let res = await getLikeList(id);
-        if (res.code !== 200) return
+        if (res.code !== 200) return;
         store.commit("SET_LIKE_SONGS", res.ids);
       } catch (err) {
         console.log(err);
@@ -153,11 +158,8 @@ export default defineComponent({
       console.log(id, like);
       const res = await likeSong(id, like);
       console.log(res);
-      qydgetUserLike(id)
+      qydgetUserLike(id);
     };
-
-
-
 
     return {
       playSong,
@@ -167,7 +169,8 @@ export default defineComponent({
       playing: computed(() => store.getters.playing),
       utils,
       likeThisSong,
-      likeSongsList,//喜欢列表id
+      likeSongsList, //喜欢列表id
+      getUserDevice, //用户设备
     };
   },
 });
@@ -175,219 +178,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 $color-theme: red;
-.artist-box {
-  width: 100%;
-  .tool-head {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin: 0.9375rem 0;
-    .item {
-      background: #f2f2f2;
-      color: #333;
-      padding: 0.4375rem 0.9375rem;
-      border-radius: 50px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.4s;
-      i {
-        margin-right: 0.3125rem;
-      }
-    }
-    .play-item {
-      background-color: $color-theme;
-      color: #fff;
-    }
-  }
-  .artist-table {
-    width: 100%;
-    thead {
-      width: 100%;
-      height: 3.125rem;
-      line-height: 3.125rem;
-      background-color: #fafafa;
-      color: #999;
-      th {
-        padding: 0 0.5625rem;
-        text-align: left;
-        font-weight: 300;
-        &.th-index {
-          width: 10%;
-          text-align: center;
-        }
-        &.th-name {
-          width: 40%;
-        }
-        &.th-artist {
-          width: 25%;
-        }
-        &.th-album {
-          width: 15%;
-        }
-        &.th-duration {
-          width: 15%;
-          text-align: right;
-          padding-right: 40px;
-        }
-        &.th-info {
-          width: 8%;
-        }
-      }
-    }
-    tbody {
-      width: 100%;
-      tr {
-        height: 50px;
-        line-height: 50px;
-        transition: background-color 0.2s ease-in-out;
-        td {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          text-align: left;
-          vertical-align: middle;
-        }
-        .index-container {
-          .num {
-            color: #4a4a4a;
-            font-weight: 500;
-          }
-          .play-icon {
-            height: 1rem;
-            max-width: 20px;
-            overflow: hidden;
-            display: none;
-            .line {
-              width: 2px;
-              height: 100%;
-              margin-left: 2px;
-              background-color: #ff410f;
-              animation: play 0.9s linear infinite alternate;
-            }
-          }
-          .play-btn {
-            color: $color-theme;
-            font-size: 30px;
-            display: none;
-            text-align: left;
-            cursor: pointer;
-          }
-          .pause-btn {
-            color: $color-theme;
-            font-size: 30px;
-            display: none;
-            text-align: left;
-            cursor: pointer;
-          }
-        }
-        .name-container {
-          display: flex;
-          align-items: center;
-          .avatar {
-            width: 35px;
-            height: 35px;
-            flex-shrink: 0;
-            border-radius: 5px;
-            margin-right: 10px;
-            .el-image {
-              height: 100%;
-              width: 100%;
-              border-radius: 5px;
-            }
-          }
-          p {
-            max-width: 21.875rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-        }
-        .artist-container {
-          p {
-            padding-left: 10px;
-            max-width: 21.875rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-        }
-        .album-container {
-          p {
-            padding-left: 10px;
-            max-width: 21.875rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-        }
-        .duration-container {
-          text-align: right;
-          padding-right: 15px;
-          position: relative;
-          p {
-            padding-right: 15px;
-          }
-        }
-        .info-container {
-          .song-tools {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding-left: 10px;
-            .iconfont {
-              font-size: 14px;
-              cursor: pointer;
-              color: #ff410f;
-            }
-          }
-        }
-        &.playing {
-          p {
-            color: $color-theme;
-          }
-          i {
-            color: $color-theme;
-          }
-          .index-container {
-            .num {
-              display: none;
-            }
-            .play-icon {
-              display: flex;
-            }
-            .play-btn {
-              display: none;
-            }
-          }
-        }
-        &:hover {
-          background: #e8e9ed;
-          .index-container {
-            .num {
-              display: none;
-            }
-            .play-btn {
-              display: block;
-            }
-          }
-          &.playing {
-            .index-container {
-              .play-btn {
-                display: none;
-              }
-              .play-icon {
-                display: none;
-              }
-              .pause-btn {
-                display: block;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+@import './style/pc.scss';
+@import './style/mobile.scss'
 </style>

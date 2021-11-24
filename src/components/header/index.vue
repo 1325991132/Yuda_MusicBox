@@ -34,7 +34,7 @@
       </div>
       <div class="userbox">
         <div class="line"></div>
-        <div class="is-login flex-row" v-if="state.loginState">
+        <div class="is-login flex-row" v-if="state.loginState && getUserDevice=='window'">
           <el-avatar
             class="avatar"
             shape="circle"
@@ -45,6 +45,38 @@
             <span class="el-dropdown-link">
               {{ userInfo.nickname
               }}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item icon="el-icon-user" command="personal"
+                  >个人主页</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-medal" command="level"
+                  >我的等级</el-dropdown-item
+                >
+                <el-dropdown-item icon="el-icon-setting" command="setting"
+                  >个人设置</el-dropdown-item
+                >
+                <el-dropdown-item
+                  divided
+                  icon="el-icon-switch-button"
+                  command="logout"
+                  >退出登录</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+        <div class="is-login flex-row" v-else-if="state.loginState && getUserDevice!=='window'">
+          <el-avatar
+            class="avatar"
+            shape="circle"
+            :size="30"
+            :src="userInfo.avatarUrl"
+          ></el-avatar>
+          <el-dropdown trigger="click" @command="handleCommand">
+            <span class="el-dropdown-link">
+              <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -126,6 +158,8 @@ export default defineComponent({
     });
     let userInfo;
     let temp_userInfo = computed(() => store.getters.userInfo).value; //获取vuex中的用户信息
+    const getUserDevice = computed(() => store.getters.getUserDevice); //获取用户设备
+
     store.commit("SET_PLAYLIST", []); //登录时初始化播放列表，隐藏playBar
 
     // 获取用户的喜欢歌单，准备后续使用
@@ -207,6 +241,7 @@ export default defineComponent({
       routerToLogin,
       search,
       userInfo,
+      getUserDevice//用户设备
     };
   },
 });
@@ -214,6 +249,45 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 $color-theme: #fa2800;
+@mixin logo($width, $height) {
+  width: $width;
+  height: $height;
+  display: flex;
+  align-items: center;
+  a {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: block;
+    background: #fff center no-repeat url(~@/assets/logo/yd3.png);
+    background-size: 100%;
+  }
+}
+
+@mixin nav_li_a($width, $height) {
+  position: relative;
+  transition: all 0.4s;
+  &.router-link-active {
+    color: $color-theme;
+    &::after {
+      content: "";
+      position: absolute;
+      background: $color-theme;
+      left: 0;
+      right: 0;
+      bottom: -12px;
+      width: $width;
+      height: $height;
+      border-radius: 50%;
+      margin: 0 auto;
+      opacity: 1;
+    }
+  }
+  &:hover {
+    color: $color-theme;
+  }
+}
+
 .header {
   width: 100%;
   height: 70px;
@@ -224,18 +298,7 @@ $color-theme: #fa2800;
   z-index: 200;
   @media only screen and (min-width: 769px) {
     .logo {
-      width: 145px;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      a {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: block;
-        background: #fff center no-repeat url(~@/assets/logo/yd3.png);
-        background-size: 100%;
-      }
+      @include logo(145px, 70px);
     }
     .nav {
       flex: 1;
@@ -244,27 +307,7 @@ $color-theme: #fa2800;
         height: 100%;
         padding: 0 15px;
         a {
-          position: relative;
-          transition: all 0.4s;
-          &.router-link-active {
-            color: $color-theme;
-            &::after {
-              content: "";
-              position: absolute;
-              background: $color-theme;
-              left: 0;
-              right: 0;
-              bottom: -12px;
-              width: 4px;
-              height: 4px;
-              border-radius: 50%;
-              margin: 0 auto;
-              opacity: 1;
-            }
-          }
-          &:hover {
-            color: $color-theme;
-          }
+          @include nav_li_a(4px, 4px);
         }
       }
     }
@@ -272,18 +315,7 @@ $color-theme: #fa2800;
   // phone
   @media only screen and (max-width: 768px) {
     .logo {
-      width: 70px;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      a {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: block;
-        background: #fff center no-repeat url(~@/assets/logo/yd3.png);
-        background-size: 100%;
-      }
+      @include logo(70px, 70px);
     }
     .nav {
       width: 40%;
@@ -292,27 +324,7 @@ $color-theme: #fa2800;
         width: 4rem;
         text-align: center;
         a {
-          position: relative;
-          transition: all 0.4s;
-          &.router-link-active {
-            color: $color-theme;
-            &::after {
-              content: "";
-              position: absolute;
-              background: $color-theme;
-              left: 0;
-              right: 0;
-              bottom: -12px;
-              width: 0px;
-              height: 0px;
-              border-radius: 50%;
-              margin: 0 auto;
-              opacity: 1;
-            }
-          }
-          &:hover {
-            color: $color-theme;
-          }
+          @include nav_li_a(0px, 0px);
         }
       }
     }
@@ -329,30 +341,36 @@ $color-theme: #fa2800;
     }
   }
 
+  @mixin userbox {
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    position: relative;
+    .no-login {
+      font-size: 14px;
+      cursor: pointer;
+      &:hover {
+        color: $color-theme;
+      }
+    }
+    .is-login {
+      font-size: 14px;
+      cursor: pointer;
+      &:hover {
+        color: $color-theme;
+      }
+    }
+  }
+  @mixin line {
+    height: 22px;
+    background-color: #e1e1e1;
+    width: 1px;
+  }
   @media only screen and (min-width: 769px) {
     .userbox {
-      display: flex;
-      align-items: center;
-      padding-left: 20px;
-      position: relative;
+      @include userbox;
       .line {
-        height: 22px;
-        background-color: #e1e1e1;
-        width: 1px;
-      }
-      .no-login {
-        font-size: 14px;
-        cursor: pointer;
-        &:hover {
-          color: $color-theme;
-        }
-      }
-      .is-login {
-        font-size: 14px;
-        cursor: pointer;
-        &:hover {
-          color: $color-theme;
-        }
+        @include line;
       }
       .avatar {
         margin-left: 20px;
@@ -361,38 +379,19 @@ $color-theme: #fa2800;
     }
   }
 
- @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 768px) {
     .userbox {
-      display: flex;
-      align-items: center;
-      padding-left: 20px;
-      position: relative;
+      @include userbox;
       .line {
-        height: 22px;
-        background-color: #e1e1e1;
-        width: 1px;
+        display: none;
+        @include line;
         margin-right: 15px;
-      }
-      .no-login {
-        font-size: 14px;
-        cursor: pointer;
-        &:hover {
-          color: $color-theme;
-        }
-      }
-      .is-login {
-        font-size: 14px;
-        cursor: pointer;
-        &:hover {
-          color: $color-theme;
-        }
       }
       .avatar {
-        display: none;
         margin-left: 20px;
         margin-right: 15px;
-        width:50px;
-        height:50px;
+        width: 50px;
+        height: 50px;
       }
     }
   }

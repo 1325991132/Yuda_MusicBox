@@ -127,13 +127,8 @@ export default defineComponent({
     const getUserDevice = computed(() => store.getters.getUserDevice); //获取用户设备
     console.log("likeSongsList", likeSongsList);
     const playSong = (item, index) => {
-      console.log('----',item,index)
       store.dispatch("selectPlay", { list: toRaw(props.songs), index });
     };
-    // const modilePlay = (item, index) => {
-    //   console.log(item,index)
-    //   // store.dispatch("selectPlay", { list: toRaw(props.songs), index });
-    // };
     const playAllSong = () => {
       store.dispatch("playAll", { list: toRaw(props.songs) });
     };

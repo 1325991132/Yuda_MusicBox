@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="lightBtnWrapper">
-      <lightBtn class="lightBtn" />
+      <!-- <lightBtn class="lightBtn" /> -->
       <h2>界面正在制作中</h2>
     </div>
     <Bear style="margin-top: -50px; margin-bottom: -50px" />
@@ -12,11 +12,11 @@
 import { defineComponent } from "vue";
 
 import Bear from '@/components/demo/bear/index.vue';
-import lightBtn from '@/components/demo/lightBtn/index.vue';
+// import lightBtn from '@/components/demo/lightBtn/index.vue';
 
 export default defineComponent({
   components: {
-    lightBtn,
+    // lightBtn,
     Bear
   },
   setup() {

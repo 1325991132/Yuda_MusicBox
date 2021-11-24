@@ -73,6 +73,15 @@ export const getUserFollows = (uid, limit = 30, offset = 0) => api.get(`/user/fo
 
 
 /**
+ * @method 获取用户粉丝列表
+ * @params uid 用户 id
+ * @params limit 返回数量
+ * @params offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
+ */
+ export const getUserFolloweds = (uid, limit = 30, offset = 0) => api.get(`/user/followeds?uid=${uid}&limit=${limit}&offset=${offset}`, {})
+
+
+/**
 * @method 获取喜欢列表
 */
 export const getLikeList = uid => api.get(`/likelist?uid=${uid}`, {})

@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="player-bar shadow flex-row" v-show="playList.length">
+    <div class="player-bar shadow flex-row" @click.stop="state.showPlaylist = false;" v-show="playList.length">
       <div class="avatar">
         <img :src="currentSong && currentSong.image" alt="nicemusic" />
       </div>
@@ -9,13 +9,13 @@
         <p class="ellipsis">{{ currentSong.singer }}</p>
       </div>
       <div class="player-btn">
-        <i class="iconfont icon-prev niceshangyishou" @click="prevSong"></i>
+        <i class="iconfont icon-prev niceshangyishou" @click.stop="prevSong"></i>
         <i
           class="iconfont icon-play nicebofang2"
           :class="playIcon"
-          @click="togglePlaying"
+          @click.stop="togglePlaying"
         ></i>
-        <i class="iconfont icon-next nicexiayishou" @click="nextSong"></i>
+        <i class="iconfont icon-next nicexiayishou" @click.stop="nextSong"></i>
       </div>
       <div class="process-wrap" ref="process-wrap">
         <p class="current-time">{{ formatTime(state.currentTime) }}</p>
@@ -30,7 +30,7 @@
       <div class="volume-wrap">
         <i
           class="iconfont volume-icon"
-          @click="changeMuted"
+          @click.stop="changeMuted"
           :class="state.isMuted ? 'nicejingyin1' : 'niceshengyin1'"
         ></i>
         <div class="process-bar">
@@ -45,26 +45,26 @@
         </div>
       </div>
       <div class="tool">
-        <span class="iconfont" @click="downloadMusic"
+        <span class="iconfont" @click.stop="downloadMusic"
           ><i class="el-icon-download" :style="{ transform: 'scale(0.8)' }"></i
         ></span>
         <i
           class="iconfont icon-heart"
           style="font-size: 16px; color: red"
-          @click="likeThisSong(currentSong.id, true)"
+          @click.stop="likeThisSong(currentSong.id, true)"
           v-if="likeSongsList.indexOf(currentSong.id) == -1"
           title="您暂未喜欢此音乐"
         ></i>
         <i
           style="font-size: 16px; color: red"
           class="iconfont icon-heart1"
-          @click="likeThisSong(currentSong.id, false)"
+          @click.stop="likeThisSong(currentSong.id, false)"
           v-else
           title="您喜欢了此音乐"
         ></i>
-        <i class="iconfont" :class="modeIcon" @click="changeMode"></i>
-        <i class="iconfont nicegeci32" @click="openLyric"></i>
-        <i class="iconfont nicebofangliebiao24" @click="openPlaylist"></i>
+        <i class="iconfont" :class="modeIcon" @click.stop="changeMode"></i>
+        <i class="iconfont nicegeci32" @click.stop="openLyric"></i>
+        <i class="iconfont nicebofangliebiao24" @click.stop="openPlaylist"></i>
       </div>
       <audio
         ref="audio"
@@ -110,7 +110,7 @@
               class="iconfont nicelajitong"
               alt="清空"
               title="清空"
-              @click="clearHistory"
+              @click.stop="clearHistory"
             ></i>
           </div>
           <div class="list">
@@ -131,17 +131,17 @@
                 </div>
                 <i
                   class="iconfont nicebofang2 play-btn"
-                  @click="playSong(index)"
+                  @click.stop="playSong(index)"
                 ></i>
                 <i
                   class="iconfont nicezanting1 pause-btn"
-                  @click="pauseSong"
+                  @click.stop="pauseSong"
                 ></i>
               </div>
               <p class="ellipsis">{{ item.name }}</p>
               <i
                 class="iconfont niceIcon_cloose"
-                @click="deleteHistoryItem(item)"
+                @click.stop="deleteHistoryItem(item)"
               ></i>
             </div>
           </div>
@@ -617,576 +617,9 @@ export default defineComponent({
   z-index: 9999;
   padding: 0 10px 0 20px;
 }
-@media only screen and (min-width: 769px) {
-  .player-bar {
-    @include playerBar;
-    justify-content: space-between;
-    .avatar {
-      width: 3.75rem;
-      height: 3.75rem;
-      border-radius: 5px;
-      margin-right: 1.875rem;
-      img {
-        width: 3.75rem;
-        height: 3.75rem;
-        border-radius: 5px;
-      }
-    }
-    .info {
-      margin-right: 15px;
-      width: 7.5rem;
-      h2 {
-        font-size: 0.875rem;
-        color: #333;
-        margin-bottom: 0.9375rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      p {
-        font-size: 0.75rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
 
-        color: #999;
-      }
-    }
-    .player-btn {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      i {
-        cursor: pointer;
-        &:hover {
-          opacity: 0.8;
-        }
-      }
-      .icon-prev {
-        font-size: 40px;
-      }
-      .icon-play {
-        font-size: 60px;
-        margin: 0 10px;
-      }
-      .icon-next {
-        font-size: 40px;
-      }
-    }
-    .process-wrap {
-      display: flex;
-      width: 40.625rem;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      margin-left: 5rem;
-      flex: 1;
-      p {
-        font-size: 0.875rem;
-      }
-    }
-    .volume-wrap {
-      width: 11.25rem;
-      margin: 0 5rem 0 2.5rem;
-      display: flex;
-      align-items: center;
-      .volume-icon {
-        font-size: 26px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .process-bar {
-        position: relative;
-        width: 100%;
-        flex: 1;
-        height: 2px;
-        background-color: rgba(0, 0, 0, 0.05);
-        border-radius: 2px;
-        cursor: pointer;
-        margin-left: 10px;
-        .bar-inner {
-          position: absolute;
-          top: 0;
-          left: 0;
-          display: flex;
-          align-items: center;
-          .progress {
-            width: 50px;
-            background: $color-theme;
-            height: 2px;
-            border-radius: 2px;
-          }
-          .progress-btn {
-            position: absolute;
-            z-index: 100;
-            right: -4px;
-            width: 10px;
-            height: 10px;
-            top: -4.5px;
-            background: $color-theme;
-            box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
-            border-radius: 50%;
-            &::after {
-              position: absolute;
-              content: " ";
-              top: 50%;
-              left: 50%;
-              margin: -3px 0 0 -3px;
-              width: 6px;
-              height: 6px;
-              background: #ffffff;
-              border-radius: 50%;
-            }
-          }
-        }
-      }
-    }
-    .tool {
-      .iconfont {
-        font-size: 1.5rem;
-        margin: 0 10px;
-        cursor: pointer;
-        &:active {
-          opacity: 0.7;
-        }
-      }
-    }
-    .lyric-box {
-      width: 360px;
-      height: 36.25rem;
-      position: absolute;
-      right: 0;
-      bottom: 70px;
-      border-radius: 3px;
-      padding: 1.875rem;
-      overflow: hidden;
-      .title {
-        font-weight: 500;
-        font-size: 1rem;
-        margin: 10px 0 30px;
-        overflow: hidden;
-      }
-      .lyric {
-        height: 26.875rem;
-        padding-bottom: 50px;
-        overflow: hidden;
-        width: 100%;
-        vertical-align: top;
-        .lyric-wrapper {
-          width: 100%;
-          margin: 0 auto;
-          overflow: hidden;
-          .lyric-text {
-            margin: 5px 0;
-            line-height: 24px;
-            font-size: 14px;
-            font-weight: 300;
-            &.active {
-              color: $color-theme;
-            }
-          }
-        }
-      }
-    }
-    .playlist-box {
-      width: 460px;
-      .list {
-        overflow-y: auto;
-        max-height: calc(100% - 90px);
-        .item {
-          padding: 8px 0;
-          height: 40px;
-          .index-container {
-            margin-right: 20px;
-            flex-shrink: 0;
-            width: 30px;
-            .num {
-              font-size: 14px;
-              color: #4a4a4a;
-            }
-            .play-icon {
-              display: none;
-              height: 16px;
-              min-width: 18px;
-              overflow: hidden;
-              .line {
-                width: 2px;
-                height: 16px;
-                margin-left: 2px;
-                background-color: $color-theme;
-                animation: play 0.9s linear infinite alternate;
-              }
-            }
-            .play-btn {
-              color: $color-theme;
-              font-size: 30px;
-              display: none;
-              text-align: left;
-              cursor: pointer;
-            }
-            .pause-btn {
-              color: $color-theme;
-              font-size: 30px;
-              display: none;
-              text-align: left;
-              cursor: pointer;
-            }
-          }
-          p {
-            cursor: pointer;
-            flex: 1;
-            margin-right: 20px;
-            text-align: left;
-            &.active {
-              color: $color-theme;
-            }
-          }
-          i {
-            font-size: 20px;
-            cursor: pointer;
-            &:hover {
-              color: $color-theme;
-            }
-          }
-          &.playing {
-            p,
-            i {
-              color: $color-theme;
-            }
-            .index-container {
-              .play-btn {
-                display: none;
-              }
-              .play-icon {
-                display: flex;
-              }
-              .num {
-                display: none;
-              }
-            }
-          }
-          &:hover {
-            .index-container {
-              .num {
-                display: none;
-              }
-              .play-btn {
-                display: block;
-              }
-            }
-            &.playing {
-              .index-container {
-                .play-btn {
-                  display: none;
-                }
-                .play-icon {
-                  display: none;
-                }
-                .pause-btn {
-                  display: block;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-// phone
-@media only screen and (max-width: 768px) {
-  .player-bar {
-    @include playerBar;
-    .avatar {
-      width: 3rem;
-      height: 3rem;
-      margin-right: 0.5rem;
-      border-radius: 50%;
-      img {
-        width: 3rem;
-        height: 3rem;
-        border-radius: 50%;
-      }
-    }
-    .info {
-      margin-right: 15px;
-      width: 80%;
-      text-align: left;
-      overflow: hidden;
-      max-width: 200px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      h2 {
-        display: inline;
-        font-size: 0.875rem;
-        color: #333;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      p {
-        font-size: 0.75rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        color: #999;
-      }
-    }
-    .player-btn {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      i {
-        cursor: pointer;
-        &:hover {
-          opacity: 0.8;
-        }
-      }
-      .icon-prev {
-        display: none;
-        font-size: 40px;
-      }
-      .icon-play {
-        font-size: 30px;
-      }
-      .icon-next {
-        display: none;
-        font-size: 40px;
-      }
-    }
-    .process-wrap {
-      display: none;
-      width: 40.625rem;
-      height: 100%;
-      align-items: center;
-      margin-left: 5rem;
-      flex: 1;
-      p {
-        font-size: 0.875rem;
-      }
-    }
-    .volume-wrap {
-      width: 11.25rem;
-      margin: 0 5rem 0 2.5rem;
-      display: none;
-      align-items: center;
-      .volume-icon {
-        font-size: 26px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .process-bar {
-        position: relative;
-        width: 100%;
-        flex: 1;
-        height: 2px;
-        background-color: rgba(0, 0, 0, 0.05);
-        border-radius: 2px;
-        cursor: pointer;
-        margin-left: 10px;
-        .bar-inner {
-          position: absolute;
-          top: 0;
-          left: 0;
-          display: flex;
-          align-items: center;
-          .progress {
-            width: 50px;
-            background: $color-theme;
-            height: 2px;
-            border-radius: 2px;
-          }
-          .progress-btn {
-            position: absolute;
-            z-index: 100;
-            right: -4px;
-            width: 10px;
-            height: 10px;
-            top: -4.5px;
-            background: $color-theme;
-            box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
-            border-radius: 50%;
-            &::after {
-              position: absolute;
-              content: " ";
-              top: 50%;
-              left: 50%;
-              margin: -3px 0 0 -3px;
-              width: 6px;
-              height: 6px;
-              background: #ffffff;
-              border-radius: 50%;
-            }
-          }
-        }
-      }
-    }
-    .tool {
-      display: flex;
-      flex-direction: row;
-      margin-left: 5px;
-      .iconfont {
-        font-size: 1.5rem;
-        margin: 0 2.2px;
-        cursor: pointer;
-        &:active {
-          opacity: 0.7;
-        }
-        display: none;
-        &:first-child {
-          display: block;
-        }
-        &:last-child {
-          display: block;
-        }
-      }
-    }
-    .lyric-box {
-      width: 360px;
-      height: 36.25rem;
-      position: absolute;
-      right: 0;
-      bottom: 70px;
-      border-radius: 3px;
-      padding: 1.875rem;
-      overflow: hidden;
-      .title {
-        font-weight: 500;
-        font-size: 1rem;
-        margin: 10px 0 30px;
-        overflow: hidden;
-      }
-      .lyric {
-        height: 26.875rem;
-        padding-bottom: 50px;
-        overflow: hidden;
-        width: 100%;
-        vertical-align: top;
-        .lyric-wrapper {
-          width: 100%;
-          margin: 0 auto;
-          overflow: hidden;
-          .lyric-text {
-            margin: 5px 0;
-            line-height: 24px;
-            font-size: 14px;
-            font-weight: 300;
-            &.active {
-              color: $color-theme;
-            }
-          }
-        }
-      }
-    }
-    .playlist-box {
-      width: 95%;
-      .list {
-        overflow-y: auto;
-        padding-right: 5px;
-        max-height: calc(100% - 90px);
-        .item {
-          padding: 8px 0;
-          height: 40px;
-          .index-container {
-            margin-right: 20px;
-            flex-shrink: 0;
-            width: 30px;
-            .num {
-              font-size: 14px;
-              color: #4a4a4a;
-            }
-            .play-icon {
-              display: none;
-              height: 16px;
-              min-width: 18px;
-              overflow: hidden;
-              .line {
-                width: 2px;
-                height: 16px;
-                margin-left: 2px;
-                background-color: $color-theme;
-                animation: play 0.9s linear infinite alternate;
-              }
-            }
-            .play-btn {
-              color: $color-theme;
-              font-size: 30px;
-              display: none;
-              text-align: left;
-              cursor: pointer;
-            }
-            .pause-btn {
-              color: $color-theme;
-              font-size: 30px;
-              display: none;
-              text-align: left;
-              cursor: pointer;
-            }
-          }
-          p {
-            cursor: pointer;
-            flex: 1;
-            margin-right: 20px;
-            text-align: left;
-            &.active {
-              color: $color-theme;
-            }
-          }
-          i {
-            font-size: 20px;
-            cursor: pointer;
-            &:hover {
-              color: $color-theme;
-            }
-          }
-          &.playing {
-            p,
-            i {
-              color: $color-theme;
-            }
-            .index-container {
-              .play-btn {
-                display: none;
-              }
-              .play-icon {
-                display: flex;
-              }
-              .num {
-                display: none;
-              }
-            }
-          }
-          &:hover {
-            .index-container {
-              .num {
-                display: none;
-              }
-              .play-btn {
-                display: block;
-              }
-            }
-            &.playing {
-              .index-container {
-                .play-btn {
-                  display: none;
-                }
-                .play-icon {
-                  display: none;
-                }
-                .pause-btn {
-                  display: block;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
+@import './style/pc.scss';
+@import './style/mobile.scss';
 .fade-enter {
   opacity: 0;
   transform: translate3d(0, 30px, 0);

@@ -1,5 +1,8 @@
 # YD Music Box (vue3)
 
+### 初衷：为了学习vue3写的小项目
+### 前端技术栈 （vue3,vue-router4,vuex4,sass）
+
 ### 演示网站，使用网易云音乐账号登录，开启属于你自己的音乐盒
 ```
 http://www.qyd123.cn
@@ -10,7 +13,7 @@ http://www.qyd123.cn
 yarn install
 yarn start
 ```
-### 前端技术栈 （vue3,vue-router4,vuex4,sass）
+
 ## Project setup
 ```
 yarn install

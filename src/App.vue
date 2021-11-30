@@ -58,6 +58,20 @@ export default {
     url("@/assets/images/music_wall.jpg") no-repeat 0 0/ 100% 100%;
   background-attachment: fixed;
 }
+
+@media only screen and (max-width: 768px) {
+  #app {
+    background-color: #f5f5f5;
+    // background: url("@/assets/images/music_wall.jpg");
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.8),
+        rgba(255, 255, 255, 0.9)
+      ),
+      url("@/assets/images/wall_mobile.jpg") no-repeat 0 0/ 100% 100%;
+    background-attachment: fixed;
+  }
+}
+
 .fly {
   pointer-events: none;
   position: fixed;

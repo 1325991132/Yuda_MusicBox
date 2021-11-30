@@ -3,10 +3,12 @@
 /**
  * Module dependencies.
  */
-
 var app = require('../app');
 var debug = require('debug')('qydserver:server');
 var http = require('http');
+
+var fs = require('fs'); // 文件系统模块
+let https = require("https");
 
 /**
  * Get port from environment and store in Express.
@@ -14,13 +16,16 @@ var http = require('http');
 
 var port = normalizePort(process.env.PORT || '3100');
 app.set('port', port);
-
+const httpsOption = {
+  key : fs.readFileSync("./https/6698447_www.qyd123.cn.key"),
+  cert: fs.readFileSync("./https/6698447_www.qyd123.cn.pem")
+}
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
-
+// var server = https.createServer(httpsOption, app);//https
 /**
  * Listen on provided port, on all network interfaces.
  */

@@ -1,5 +1,7 @@
 # YD Music Box (vue3)
 
+#### 第三方网易云播放器
+
 ### 初衷：为了学习vue3写的小项目
 ### 前端技术栈 （vue3,vue-router4,vuex4,sass）
 

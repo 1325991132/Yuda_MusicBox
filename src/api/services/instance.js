@@ -39,11 +39,18 @@ instance.interceptors.response.use(response => {
     if (status === 200) {
         return Promise.resolve(data)
     } else if (status === 301) {
-        console.log('请先登录!')
-        router.replace({
-            path: 'login'
-        })
-        return
+        message.info('请先登录')
+        // router.replace({
+        //     path: 'login'
+        // })
+        return Promise.reject(response)
+    }else if (status == 405) {
+        console.log('data.message',data.message)
+        message.info('操作过于频繁，请稍后操作')
+        // router.replace({
+        //     path: 'login'
+        // })
+        return Promise.reject(response)
     } else {
         return Promise.reject(response)
     }

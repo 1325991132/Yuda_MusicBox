@@ -544,7 +544,9 @@ export default defineComponent({
       console.log(id, like);
       const res = await likeSong(id, like);
       console.log(res);
-      qydgetUserLike(id);
+      if(res){
+        qydgetUserLike(id);
+      }
     };
 
     // 判断用户设备

@@ -10,6 +10,8 @@ const { cookieToJson } = require('./util/index')
 const fileUpload = require('express-fileupload')
 const decode = require('safe-decode-uri-component')
 
+// qyd 
+let https = require("https");
 
 // version check
 exec('npm info NeteaseCloudMusicApi version', (err, stdout, stderr) => {
@@ -142,8 +144,19 @@ const port = process.env.PORT || 3000
 const host = process.env.HOST || ''
 
 
-app.server = app.listen(port, host, () => {
+// qyd
+app.set('port', port);
+const httpsOption = {
+  key : fs.readFileSync("./https/6698447_www.qyd123.cn.key"),
+  cert: fs.readFileSync("./https/6698447_www.qyd123.cn.pem")
+}
+
+// online
+var server = https.createServer(httpsOption, app);//https
+app.server = server.listen(port, host, () => {
   console.log(`server running @ http://${host ? host : 'localhost'}:${port}`)
 })
+
+
 
 module.exports = app

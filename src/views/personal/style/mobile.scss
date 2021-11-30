@@ -214,8 +214,10 @@
     // 弹框内部样式
     .userFollowWrapper {
       max-height: 65vh;
-      overflow: hidden;
+      // overflow: hidden;
       transition: all 0.1s ease-in-out;
+      padding-right: 5px;
+      overflow: auto;
       .followItem {
         margin-top: 5px;
   
@@ -262,10 +264,6 @@
           color: #fa2800;
           cursor: pointer;
         }
-      }
-      &:hover {
-        padding-right: 5px;
-        overflow: auto;
       }
     }
   }

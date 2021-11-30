@@ -2,7 +2,7 @@
   <div>
     <div class="lightBtnWrapper">
       <!-- <lightBtn class="lightBtn" /> -->
-      <h2>界面正在制作中</h2>
+      <h2 >界面正在制作中</h2>
     </div>
     <Bear style="margin-top: -50px; margin-bottom: -50px" />
   </div>
@@ -30,11 +30,16 @@ export default defineComponent({
 <style lang="scss" scoped>
 .lightBtnWrapper{
     h2{
-        color: #1bcebf7a;
-        font-size: 30px;
+        color: #1bcebf;
+        font-size: 1.875rem;
         font-weight: 700;
+        position: fixed;
+        top:20vh;
+        width:100%;
+        text-align: center;        
     }
     position: absolute;
     width: 100%;
+    overflow: hidden;
 }
 </style>

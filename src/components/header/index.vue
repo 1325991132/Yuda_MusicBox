@@ -303,7 +303,7 @@ $color-theme: #fa2800;
     .nav {
       flex: 1;
       li {
-        font-size: 14px;
+        font-size: 0.875rem;
         height: 100%;
         padding: 0 15px;
         a {
@@ -335,7 +335,7 @@ $color-theme: #fa2800;
     display: flex;
     align-items: center;
     i {
-      font-size: 22px;
+      font-size: 1.375rem;
       color: #161e27;
       cursor: pointer;
     }
@@ -347,14 +347,14 @@ $color-theme: #fa2800;
     padding-left: 20px;
     position: relative;
     .no-login {
-      font-size: 14px;
+      font-size: 0.875rem;
       cursor: pointer;
       &:hover {
         color: $color-theme;
       }
     }
     .is-login {
-      font-size: 14px;
+      font-size: 0.875rem;
       cursor: pointer;
       &:hover {
         color: $color-theme;

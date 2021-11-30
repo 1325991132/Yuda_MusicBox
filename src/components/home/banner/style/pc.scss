@@ -1,0 +1,19 @@
+@media only screen and (min-width: 769px) {
+    .banner {
+      display: block;
+      position: relative;
+      height: 10.5rem;
+      width: 100%;
+      padding: 0 1.25rem;
+      .swiper-container {
+        height: 100%;
+      }
+      .swiper-slide {
+        height: 100%;
+        img {
+          height: 100%;
+          border-radius: 3px;
+        }
+      }
+    }
+  }

@@ -1,0 +1,52 @@
+@media only screen and (max-width: 768px) {
+    .banner {
+      display: block;
+      position: relative;
+      height: 9rem;
+      width: 100%;
+      padding: 0 0.75rem;
+      .swiper-container {
+        height: 100%;
+        border-radius: 10px;
+      }
+      .swiper-slide {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        border-radius: 10px;
+        img {
+          width: 100%;
+          border-radius: 3px;
+        }
+      }
+      ::v-deep(.swiper-pagination-bullet) {
+        display: none;
+      }
+  
+      ::v-deep(.swiper-button-next) {
+        display: none;
+      }
+  
+      ::v-deep(.swiper-button-prev) {
+        display: none;
+      }
+    }
+  }
+  .swiper-pagination {
+    width: 100%;
+    bottom: -20px;
+    .swiper-pagination-bullet {
+      width: 6px;
+      height: 6px;
+      background: #a3a3ac;
+      opacity: 0.8;
+      border-radius: 50%;
+      margin: 0 5px;
+      &.swiper-pagination-bullet-active {
+        opacity: 1;
+        width: 15px;
+        border-radius: 4px;
+        background: $color-theme;
+      }
+    }
+  }

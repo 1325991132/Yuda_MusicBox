@@ -9,9 +9,11 @@
         </div>
         <a class="a2" href="https://music.163.com/" target="_blank"></a>
       </div>
-      <span style="color: #ccc"
-        >WELCOME!&nbsp;&nbsp;本网站的音乐资源均来自网易云音乐</span
+      <p style="color: #ccc;font-size:1rem;font-weight:700;">欢 迎 光 临 小 站</p>
+      <span style="color: #ccc;font-size:0.4rem;"
+        >PS: 感谢 Netease Cloud Music 提供的后台接口</span
       >
+      <!-- <p style="color: #ccc;margin-top:10px;">京ICP备2021023141号-1</p> -->
     </div>
   </div>
 </template>

@@ -181,7 +181,7 @@ export default defineComponent({
       display: flex;
       align-items: center;
       padding-left: 15px;
-      font-size: 13px;
+      font-size: 0.8125rem;
       .block {
         width: 6px;
         height: 6px;

@@ -212,7 +212,7 @@ export default defineComponent({
     overflow: hidden;
 
     &__oops {
-      font-size: 32px;
+      font-size: 2rem;
       font-weight: bold;
       line-height: 40px;
       color: #1482f0;
@@ -224,7 +224,7 @@ export default defineComponent({
     }
 
     &__headline {
-      font-size: 20px;
+      font-size: 1.25rem;
       line-height: 24px;
       color: #222;
       font-weight: bold;
@@ -237,7 +237,7 @@ export default defineComponent({
     }
 
     &__info {
-      font-size: 13px;
+      font-size: 0.8125rem;
       line-height: 21px;
       color: grey;
       opacity: 0;
@@ -258,7 +258,7 @@ export default defineComponent({
       text-align: center;
       color: #ffffff;
       opacity: 0;
-      font-size: 14px;
+      font-size: 0.875rem;
       line-height: 36px;
       cursor: pointer;
       animation-name: slideUp;

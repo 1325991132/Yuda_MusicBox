@@ -50,13 +50,13 @@
         ></span>
         <i
           class="iconfont icon-heart"
-          style="font-size: 16px; color: red"
+          style="font-size: 1rem; color: red"
           @click.stop="likeThisSong(currentSong.id, true)"
           v-if="likeSongsList.indexOf(currentSong.id) == -1"
           title="您暂未喜欢此音乐"
         ></i>
         <i
-          style="font-size: 16px; color: red"
+          style="font-size: 1rem; color: red"
           class="iconfont icon-heart1"
           @click.stop="likeThisSong(currentSong.id, false)"
           v-else
@@ -138,7 +138,7 @@
                   @click.stop="pauseSong"
                 ></i>
               </div>
-              <p class="ellipsis">{{ item.name }}</p>
+              <p class="ellipsis" @click.stop="playSong(index)">{{ item.name }}</p>
               <i
                 class="iconfont niceIcon_cloose"
                 @click.stop="deleteHistoryItem(item)"
@@ -364,7 +364,7 @@ export default defineComponent({
       let fileName = currentSong.value.name + ".mp3";
       let link = document.createElement("a");
       link.style.display = "none";
-      link.setAttribute("target", "_blank");
+      // link.setAttribute("target", "_blank");
       link.href = url;
       link.setAttribute("download", fileName);
       togglePlaying();

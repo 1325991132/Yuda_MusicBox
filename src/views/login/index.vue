@@ -87,7 +87,7 @@
                       position: absolute;
                       right: 0;
                       top: 0;
-                      font-size: 10px;
+                      font-size: 0.625rem;
                       padding: 0 10px;
                       width: 95px;
                     "
@@ -100,7 +100,7 @@
                       position: absolute;
                       right: 0;
                       top: 0;
-                      font-size: 10px;
+                      font-size: 0.625rem;
                       padding: 0 10px;
                       width: 95px;
                     "
@@ -422,7 +422,7 @@ $light_gray: #eee;
   z-index: 1;
   margin-bottom: 10px;
   .login-text {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: #666;
     width: 100%;
   }
@@ -442,7 +442,7 @@ $light_gray: #eee;
     overflow: hidden;
     margin: 0 auto;
     .login-btn {
-      font-size: 15px;
+      font-size: 0.9375rem;
       line-height: 1.5;
       flex-grow: 8;
       height: 42px;
@@ -453,7 +453,7 @@ $light_gray: #eee;
     }
     .ctcode-btn {
       flex-grow: 1;
-      font-size: 12px;
+      font-size: 0.75rem;
       line-height: 1.5;
       height: 42px;
       border-radius: 3px;
@@ -493,7 +493,7 @@ $light_gray: #eee;
   right: 10px;
   color: #f0f0f0;
   p {
-    font-size:12px;
+    font-size:0.75rem;
     cursor: default;
   }
 }

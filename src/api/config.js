@@ -6,7 +6,7 @@ console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'development') {
   api_base_url = 'http://localhost:3000'
 } else if (process.env.NODE_ENV === 'production') {
-  api_base_url = 'http://www.qyd123.cn:3000/'
+  api_base_url = 'https://www.qyd123.cn:3000/'
 }
 
 export default { api_base_url }

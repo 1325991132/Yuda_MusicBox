@@ -16,4 +16,7 @@
         }
       }
     }
+    ::v-deep(.swiper-pagination-bullet-active){
+      background-color:$color-theme;
+    }
   }

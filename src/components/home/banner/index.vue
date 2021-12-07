@@ -10,7 +10,7 @@
       :pagination="{
         clickable: true,
       }"
-      :navigation="true"
+      :navigation="false"
       class="mySwiper"
     >
       <swiper-slide v-for="item of state.bannerList" :key="item.imageUrl">

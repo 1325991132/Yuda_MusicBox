@@ -50,13 +50,13 @@
         ></span>
         <i
           class="iconfont icon-heart"
-          style="font-size: 1rem; color: red"
+          style="font-size: 1.1rem; color: red;"
           @click.stop="likeThisSong(currentSong.id, true)"
           v-if="likeSongsList.indexOf(currentSong.id) == -1"
           title="您暂未喜欢此音乐"
         ></i>
         <i
-          style="font-size: 1rem; color: red"
+          style="font-size: 1.1rem; color: red;"
           class="iconfont icon-heart1"
           @click.stop="likeThisSong(currentSong.id, false)"
           v-else

@@ -123,6 +123,9 @@
         }
       }
       .tool {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
         .iconfont {
           font-size: 1.5rem;
           margin: 0 10px;

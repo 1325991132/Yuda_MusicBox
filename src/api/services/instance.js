@@ -40,9 +40,9 @@ instance.interceptors.response.use(response => {
         return Promise.resolve(data)
     } else if (status === 301) {
         message.info('请先登录')
-        // router.replace({
-        //     path: 'login'
-        // })
+        router.replace({
+            path: 'login'
+        })
         return Promise.reject(response)
     }else if (status == 405) {
         console.log('data.message',data.message)

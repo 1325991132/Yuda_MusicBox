@@ -18,11 +18,11 @@
         </div>
       </div>
     </div>
-    <div class="main container">
+    <div class="main container" v-loading="loading">
       <div class="tab flex-row" v-show="state.songs.length>0">
         <h2>搜索结果</h2>
       </div>
-      <div class="tab flex-row" :style="{justifyContent:'center',backgroundColor:'#f5f5f5',borderRadius:'10px'}" v-show="!state.songs.length>0">
+      <div class="tab flex-row" :style="{justifyContent:'center',backgroundColor:'#f5f5f5',borderRadius:'10px'}" v-show="musicNull">
         <img :style="{width:'50px'}" src="~@/assets/logo/yd.png" alt="">
         <p >暂未找到音源...</p>
       </div>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { computed, defineComponent, reactive, onMounted } from "vue";
+import { computed, defineComponent, reactive, onMounted,ref } from "vue";
 import { useRoute } from "vue-router";
 import { search, getSongDetail } from "@/api/services/api";
 import { createSong } from "@/model/song";
@@ -51,13 +51,18 @@ export default defineComponent({
       type: 1,
       songs: [],
     });
+    const loading = ref(false)
+    const musicNull = ref(false)
     // 判断是否为空
     const isKeyword = computed(() => {
       return state.keyword.split(" ").join("").length == 0;
     });
     // 搜索
     const search_key = async (type) => {
+      musicNull.value = false
+      loading.value = true
       let res = await search(state.keyword, state.limit, state.offset, type);
+      console.log(res.code)
       if (res.code === 200) {
         switch (type) {
           case 1: {
@@ -72,6 +77,9 @@ export default defineComponent({
             break;
           }
         }
+      }else{
+        loading.value = false
+        musicNull.value = true
       }
     };
 
@@ -90,6 +98,7 @@ export default defineComponent({
         }  
         let res = await getSongDetail(sliceArr.join(","), new Date().valueOf());
         state.songs = normalizeSongs(res.songs);
+        loading.value = false
       } catch (e) {
         console.log(e);
       }
@@ -109,6 +118,7 @@ export default defineComponent({
       isKeyword,
       search_key,
       state,
+      loading
     };
   },
   components: {

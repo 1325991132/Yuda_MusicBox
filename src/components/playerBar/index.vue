@@ -1,6 +1,10 @@
 <template>
   <transition name="fade">
-    <div class="player-bar shadow flex-row" @click.stop="state.showPlaylist = false;" v-show="playList.length">
+    <div
+      class="player-bar shadow flex-row"
+      @click.stop="state.showPlaylist = false"
+      v-show="playList.length"
+    >
       <div class="avatar">
         <img :src="currentSong && currentSong.image" alt="nicemusic" />
       </div>
@@ -9,7 +13,10 @@
         <p class="ellipsis">{{ currentSong.singer }}</p>
       </div>
       <div class="player-btn">
-        <i class="iconfont icon-prev niceshangyishou" @click.stop="prevSong"></i>
+        <i
+          class="iconfont icon-prev niceshangyishou"
+          @click.stop="prevSong"
+        ></i>
         <i
           class="iconfont icon-play nicebofang2"
           :class="playIcon"
@@ -50,13 +57,13 @@
         ></span>
         <i
           class="iconfont icon-heart"
-          style="font-size: 1.1rem; color: red;"
+          style="font-size: 1.1rem; color: red"
           @click.stop="likeThisSong(currentSong.id, true)"
           v-if="likeSongsList.indexOf(currentSong.id) == -1"
           title="您暂未喜欢此音乐"
         ></i>
         <i
-          style="font-size: 1.1rem; color: red;"
+          style="font-size: 1.1rem; color: red"
           class="iconfont icon-heart1"
           @click.stop="likeThisSong(currentSong.id, false)"
           v-else
@@ -138,7 +145,9 @@
                   @click.stop="pauseSong"
                 ></i>
               </div>
-              <p class="ellipsis" @click.stop="playSong(index)">{{ item.name }}</p>
+              <p class="ellipsis" @click.stop="playSong(index)">
+                {{ item.name }}
+              </p>
               <i
                 class="iconfont niceIcon_cloose"
                 @click.stop="deleteHistoryItem(item)"
@@ -247,8 +256,14 @@ export default defineComponent({
         clearTimeout(state.timer);
       }
       state.songReady = true;
-      message.error("该歌曲无音源，已为您播放下一首歌曲");
-      nextSong();
+      console.log('audio.value.error.code',audio.value.error)
+      if(audio.value.error.message == 'MEDIA_ELEMENT_ERROR: Format error'){
+        message.error("当前网络环境存在问题，请稍后重试");
+        togglePlaying();
+      }else if(audio.value.error.message == ''){
+        message.error("该歌曲无音源，已为您播放下一首歌曲");
+        nextSong();
+      }
     };
 
     // 播放时间改变
@@ -411,14 +426,16 @@ export default defineComponent({
           state.id = newSong.id;
         }
       });
+
       // 如果5s没播放，则认为超时，修改状态确保可以切换歌曲
+      console.log("state.timer", state.timer);
       if (state.timer) {
         clearTimeout(state.timer);
       }
       state.timer = setTimeout(() => {
         state.songReady = true;
+        qyd_getLyric(newSong.id);
       }, 5000);
-      qyd_getLyric(newSong.id);
     });
 
     //移动歌曲进度条
@@ -544,7 +561,7 @@ export default defineComponent({
       console.log(id, like);
       const res = await likeSong(id, like);
       console.log(res);
-      if(res){
+      if (res) {
         qydgetUserLike(id);
       }
     };
@@ -620,8 +637,8 @@ export default defineComponent({
   padding: 0 10px 0 20px;
 }
 
-@import './style/pc.scss';
-@import './style/mobile.scss';
+@import "./style/pc.scss";
+@import "./style/mobile.scss";
 .fade-enter {
   opacity: 0;
   transform: translate3d(0, 30px, 0);

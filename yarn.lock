@@ -4631,6 +4631,11 @@ nan@^2.12.1:
   resolved "https://registry.nlark.com/nan/download/nan-2.14.2.tgz#f5376400695168f4cc694ac9393d0c9585eeea19"
   integrity sha1-9TdkAGlRaPTMaUrJOT0MlYXu6hk=
 
+nan@^2.14.0:
+  version "2.15.0"
+  resolved "https://registry.nlark.com/nan/download/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
+  integrity sha1-PzSkc/8Y4VwbVia2KQO1rW5mX+4=
+
 nanoid@^3.1.23:
   version "3.1.23"
   resolved "https://registry.nlark.com/nanoid/download/nanoid-3.1.23.tgz#f744086ce7c2bc47ee0a8472574d5c78e4183a81"
@@ -4713,6 +4718,13 @@ node-ipc@^9.1.1:
     event-pubsub "4.3.0"
     js-message "1.0.7"
     js-queue "2.0.2"
+
+node-pty@^0.10.1:
+  version "0.10.1"
+  resolved "https://registry.npmmirror.com/node-pty/download/node-pty-0.10.1.tgz#cd05d03a2710315ec40221232ec04186f6ac2c6d"
+  integrity sha1-zQXQOicQMV7EAiEjLsBBhvasLG0=
+  dependencies:
+    nan "^2.14.0"
 
 node-releases@^1.1.71:
   version "1.1.73"
@@ -7091,6 +7103,16 @@ ws@^7.3.1:
   version "7.5.0"
   resolved "https://registry.nlark.com/ws/download/ws-7.5.0.tgz#0033bafea031fb9df041b2026fc72a571ca44691"
   integrity sha1-ADO6/qAx+53wQbICb8cqVxykRpE=
+
+ws@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.npmmirror.com/ws/download/ws-8.3.0.tgz#7185e252c8973a60d57170175ff55fdbd116070d"
+  integrity sha512-Gs5EZtpqZzLvmIM59w4igITU57lrtYVFneaa434VROv4thzJyV6UjIL3D42lslWlI+D4KzLYnxSwtfuiO79sNw==
+
+xterm@^4.15.0:
+  version "4.15.0"
+  resolved "https://registry.npmmirror.com/xterm/download/xterm-4.15.0.tgz#e52038507eba7e0d36d47f81e29fe548c82b9561"
+  integrity sha1-5SA4UH66fg021H+B4p/lSMgrlWE=
 
 y18n@^4.0.0:
   version "4.0.3"

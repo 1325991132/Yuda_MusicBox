@@ -4,9 +4,15 @@ function resolve(dir) {
 }
 const __DEV__ = process.env.NODE_ENV === 'development'
 module.exports = {
-    outputDir:'dist',
-    productionSourceMap:process.env.NODE_ENV!=='production',
+    outputDir: 'dist',
+    productionSourceMap: process.env.NODE_ENV !== 'production',
     chainWebpack: (config) => {
+        if (process.env.NODE_ENV === "production") {
+            config.optimization.minimizer("terser").tap((arg) => {
+              arg[0].terserOptions.compress.drop_console = true;
+              return arg;
+            });
+        }
         config.resolve.alias
             //set第一个参数：设置的别名，第二个参数：设置的路径
             .set('@', resolve('./src'))

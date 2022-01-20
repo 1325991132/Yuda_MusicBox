@@ -434,8 +434,8 @@ export default defineComponent({
       }
       state.timer = setTimeout(() => {
         state.songReady = true;
-        qyd_getLyric(newSong.id);
       }, 5000);
+      qyd_getLyric(newSong.id);
     });
 
     //移动歌曲进度条
@@ -476,7 +476,9 @@ export default defineComponent({
         const res = await getLyric(id);
         if (res.code === 200) {
           let lyric = res.lrc.lyric;
+          console.log('lyric',lyric)
           state.currentLyric = new Lyric(lyric, lyricHandle);
+          console.log('state.currentLyric',state.currentLyric)
           if (playing.value && state.canLyricPlay) {
             state.currentLyric.seek(state.currentTime * 1000);
           }

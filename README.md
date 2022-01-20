@@ -3,7 +3,7 @@
 #### 第三方网易云播放器
 
 ### 初衷：为了学习vue3写的小项目
-### （vue3,vue-router4,vuex4,sass）
+### （vue3,vue-router4,vuex4,sass,antd-vue）
 
 ### 演示网站，使用网易云音乐账号登录，开启属于你自己的音乐盒
 ```

@@ -322,8 +322,8 @@ export default defineComponent({
     // 给背景和头像赋值
     const setDom = () => {
       background.value.style.background = `url(${state.userProfile.backgroundUrl})`;
-      avatar.value.src = state.userProfile.avatarUrl;
-      avatarBig.value.src = state.userProfile.avatarUrl;
+      if(avatar.value) avatar.value.src = state.userProfile.avatarUrl;
+      if(avatarBig.value) avatarBig.value.src = state.userProfile.avatarUrl;
     };
 
     // 点击呈现头像大图
@@ -400,7 +400,7 @@ export default defineComponent({
         if (res.code !== 200) return;
         state.page.spinning = false;
         state.followedsList = utils.uniqueArr(
-          [...state.followedsList, ...res.follow],
+          [...state.followedsList, ...res.followeds],
           "userId"
         );
       }

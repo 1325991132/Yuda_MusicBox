@@ -47,9 +47,6 @@ instance.interceptors.response.use(response => {
     }else if (status == 405) {
         console.log('data.message',data.message)
         message.info('操作过于频繁，请稍后操作')
-        // router.replace({
-        //     path: 'login'
-        // })
         return Promise.reject(response)
     } else {
         return Promise.reject(response)

@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-    <div class="main container" v-loading="loading">
+    <div class="main container" v-loading="loading" element-loading-background="transparent">
       <div class="tab flex-row" v-show="state.songs.length>0">
         <h2>搜索结果</h2>
       </div>
@@ -130,4 +130,5 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import './style/pc.scss';
 @import './style/mobile.scss';
+
 </style>

@@ -175,8 +175,7 @@ import { useStore } from "vuex";
 import utils from "@/utils";
 import processBar from "@/components/processBar/index.vue";
 import { playMode } from "@/common/playConfig";
-import { getLyric, likeSong } from "@/api/services/api";
-import { getLikeList } from "@/api/services/user";
+import { getLyric } from "@/api/services/api";
 import Lyric from "lyric-parser";
 import { message } from "ant-design-vue";
 import Scroll from "@/components/scroll/index.vue";
@@ -547,25 +546,15 @@ export default defineComponent({
       clearHistoryList();
     };
 
-    // 获取喜欢列表
-    const qydgetUserLike = async (id) => {
-      try {
-        let res = await getLikeList(id);
-        if (res.code !== 200) return;
-        store.commit("SET_LIKE_SONGS", res.ids);
-      } catch (err) {
-        console.log(err);
-      }
-    };
 
     // 喜欢这首歌
-    const likeThisSong = async (id, like) => {
-      console.log(id, like);
-      const res = await likeSong(id, like);
-      console.log(res);
-      if (res) {
-        qydgetUserLike(id);
-      }
+    const likeThisSong = async (id, islike) => {
+      const songObj = { id, islike };
+      // spinning.value = true
+      let likelist = await store.dispatch("userLikeSongs", songObj);
+      console.log('likelist',likelist) //接口有些问题，有时操作不生效，需要进行后续测试
+      // spinning.value = false
+      console.log('此时的列表',likeSongsList.value)
     };
 
     // 判断用户设备

@@ -45,7 +45,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { chart, mounted, beforeDestroy, destroyed, activated, deactivated } =
+    const { chart, mounted, beforeDestroy, activated, deactivated } =
       resize();
     const setOptions = (chartData: LineChartData) => {
       if (chart.value) {

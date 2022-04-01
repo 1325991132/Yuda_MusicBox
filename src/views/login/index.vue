@@ -219,6 +219,15 @@ export default defineComponent({
       store.commit("SET_USER_DEVICE", utils.checkUserDevice());
       let name: any = document.getElementById("name");
       name.focus();
+
+      document.onkeydown = function (e) { // 回车提交表单
+      // 兼容FF和IE和Opera
+          var theEvent:any = window.event || e;
+          var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+          if (code == 13) {
+              handlelogin()
+          }
+      }
     });
 
     const checkPhone = () => {

@@ -17,7 +17,7 @@
       />
     </el-row>
     <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
+      <el-col :xs="24" :sm="24" :lg="8" >
         <div class="chart-wrapper">
           <RadarChart width="100%" height="300px" />
         </div>

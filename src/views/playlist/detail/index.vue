@@ -6,13 +6,23 @@
         <div class="avatar">
           <img
             ref="avatar"
+            :title="youLikeList"
+            @click="handleLikeThisList"
             :src="
-              detail.coverImgUrl
-                ? detail.coverImgUrl + '?param=200y200'
-                : ''
+              detail.coverImgUrl ? detail.coverImgUrl + '?param=200y200' : ''
             "
           />
+          <div :class="youLikeFlag ? 'isLike' : 'isNotLike'">
+            <!-- <i
+            class="iconfont icon-heart"
+            @click.stop="likeThisSong(item.id, true)"
+            v-if="likeSongsList.indexOf(item.id) == -1"
+            title="您暂未喜欢此音乐"
+          ></i> -->
+            <i class="iconfont icon-heart1" title="您喜欢了此音乐"></i>
+          </div>
         </div>
+
         <div class="info">
           <div class="title flex-between">
             <span>{{ detail.name }}</span>
@@ -47,6 +57,7 @@
             }}</a>
           </div>
           <div class="desc">
+            <!-- <pre class="ellipsis-two">{{detail.description}}</pre> -->
             <p class="ellipsis-two" v-html="detail.description"></p>
             <span
               @click="openDesc(detail.description)"
@@ -62,6 +73,7 @@
       <div class="content" v-loading="loading">
         <artist-list
           :songs="songs"
+          @initDetail="initDetail"
           :isPerson="ordered ? true : false"
           :subscribed="detail.subscribed"
         />
@@ -90,27 +102,33 @@
     v-model:visible="modalVisible"
     :closable="null"
     centered
+    width="900"
     @ok="modalVisible = false"
     :footer="null"
   >
-    <p>{{ detail.description }}</p>
+    <pre>{{ detail.description }}</pre>
   </a-modal>
 </template>
 
 <script>
-import { onMounted, reactive, toRefs } from "@vue/runtime-core";
+import { computed, onMounted, reactive, toRefs } from "@vue/runtime-core";
 import { useRouter, useRoute } from "vue-router";
 import {
   getPlayListDetail,
   getSubscribersPlaylist,
   getSongDetail,
+  collectPlaylist,
 } from "@/api/services/api";
+import { getUserArtist } from "@/api/services/user";
 import ArtistList from "@/components/artistList/index.vue";
 import { message } from "ant-design-vue";
 import { createSong } from "@/model/song";
+import { useStore } from "vuex";
 import utils from "@/utils";
+
 export default {
   setup() {
+    const store = useStore();
     const router = useRouter();
     const route = useRoute();
     const state = reactive({
@@ -136,9 +154,16 @@ export default {
       ordered: false,
       // 弹框
       modalVisible: false,
+      // 当前用户喜欢的列表
+      collectList: [],
+      youLikeList: null,
+      youLikeFlag: false,
     });
-    let id = "";
+    const userInfo = computed(
+      () => store.getters.userInfo || window.localStorage.getItem("userInfo")
+    );
 
+    let id = "";
     // 图片报错赋默认图
     const defaultImg = (e) => {
       e.target.src =
@@ -152,6 +177,44 @@ export default {
           id,
         },
       });
+    };
+
+    const qydgetUserArtist = async () => {
+      try {
+        let res = await getUserArtist(userInfo.value.userId);
+        if (res.code === 200) {
+          let list = res.playlist;
+          let myList = [];
+          let collectList = [];
+          list.map((item) => {
+            if (item.userId === userInfo.value.userId) {
+              myList.push(item);
+            } else {
+              collectList.push(item);
+            }
+          });
+
+          state.collectList = collectList;
+
+          let myCreated = myList.some((item) => {
+            return item.id == route.query.id;
+          });
+          if (myCreated) {
+            state.youLikeList = "你创建了此歌单";
+            state.youLikeFlag = true;
+          } else {
+            state.youLikeFlag =
+              collectList.filter((item) => {
+                return item.id == route.query.id;
+              }).length > 0;
+            state.youLikeList = state.youLikeFlag
+              ? "你喜欢了此歌单"
+              : "点击喜欢此歌单";
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     // 歌单详情
@@ -193,6 +256,22 @@ export default {
         let res = await getSubscribersPlaylist(params);
         if (res.code === 200) {
           state.subscribers = res.subscribers;
+        }
+      } catch (error) {
+        message.error(error);
+      }
+    };
+
+    // 点击喜欢此歌单
+    const handleLikeThisList = async ()=> {
+      let t = state.youLikeFlag ? 2 : 1;
+      try {
+        const res = await collectPlaylist(t, route.query.id);
+        if (res.code === 200) {
+          let str = t == 2 ? "移除收藏成功 ！" : "收藏成功 ！";
+          str+="操作已在队列中，受网络原因影响可能数据更新同步较慢，不要重复点击哦~"
+          message.success(str);
+          state.youLikeFlag = (t == 1?true:false)
         }
       } catch (error) {
         message.error(error);
@@ -256,12 +335,18 @@ export default {
       // qydgetCommentPlaylist(id)
     };
 
-    onMounted(() => {
+    const initDetail = function () {
+      console.log("执行init");
       id = route.query.id;
       state.artistId = id;
       if (id) {
         _initialize(id);
       }
+    };
+
+    onMounted(() => {
+      initDetail();
+      qydgetUserArtist();
     });
     return {
       utils,
@@ -269,6 +354,8 @@ export default {
       defaultImg,
       toUser,
       openDesc,
+      initDetail,
+      handleLikeThisList,
     };
   },
   components: { ArtistList },
@@ -276,6 +363,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './style/pc.scss';
-@import './style/mobile.scss';
+@import "./style/pc.scss";
+@import "./style/mobile.scss";
 </style>

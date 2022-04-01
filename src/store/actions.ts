@@ -3,6 +3,9 @@ import * as types from './mutations-type'
 import { playMode } from '@/common/playConfig'
 import { saveSearch, saveHistory, clearHistory, deleteHistory } from '@/common/cache'
 import utils from '@/utils'
+import * as getters from './getters'
+import { getLikeList } from "@/api/services/user";
+import { likeSong } from "@/api/services/api";
 
 // 保存搜索历史
 export const saveSearchHistory = function ({ commit }, query) {
@@ -57,3 +60,19 @@ export const deleteHistoryList = function ({ commit }, song) {
 export const clearHistoryList = function ({ commit }) {
     commit(types.SET_HISTORY_LIST, clearHistory())
 }
+
+// 喜欢/不喜欢某一歌曲
+export const userLikeSongs = async function ({ commit }, songObj) {
+    const likeOk = await likeSong(songObj.id, songObj.islike);
+    let songsList = []
+    if (likeOk.code === 200) {
+        let res = await getLikeList(songObj.id);
+        if (res.code !== 200) return;
+        commit(types.SET_LIKE_SONGS, [])
+        songsList = res.ids
+        commit(types.SET_LIKE_SONGS, songsList)
+    }
+    return new Promise((resolve, reject) => { resolve(songsList) }).then(res => res)
+}
+
+

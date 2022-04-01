@@ -2,7 +2,7 @@ import Home from '@/views/home/index.vue';
 import Login from '@/views/login/index.vue';
 import Search from '@/views/search/index.vue';
 import error from '@/views/404/index.vue';
-// import PersonalChart from '@/views/personal/chart.vue'
+import PersonalChart from '@/views/personal/chart.vue'
 import Personal from '@/views/personal/index.vue'
 // const Login = () => import('@/views/login/index.vue')
 import UserProfile from '../views/detail/index.vue';
@@ -24,6 +24,9 @@ export const pageError: any = {
     component: error
 }
 
+
+
+
 /**
 * 登录注册
 */
@@ -37,6 +40,16 @@ export const loginRouter: Array<any> = [
             transition: 'fade'
         },
         component: Login
+    },
+    {
+        path: '/test',
+        name: 'test',
+        meta: {
+            title: '测试',
+            isLogin: true,
+            transition: 'fade'
+        },
+        component: PersonalChart
     }
 ]
 

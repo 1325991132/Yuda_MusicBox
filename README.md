@@ -2,8 +2,8 @@
 
 #### 第三方网易云播放器
 
-### 初衷：为了学习vue3写的小项目
-### 前端技术栈 （vue3,vue-router4,vuex4,sass）
+### 初衷：vue3练手小项目
+### （vue3,vue-router4,vuex4,sass,antd-vue）
 
 ### 演示网站，使用网易云音乐账号登录，开启属于你自己的音乐盒
 ```
@@ -23,5 +23,5 @@ yarn serve
 ```
 
 <!-- node modules -->
-由于 lyric-parser 过滤的歌词顺序有时会发生问题，所以作如下处理，将 node modules 下 lyric-parser 中 dist 文件夹内 lyric.js 中的第482行，注释掉并稍做处理:
+由于 lyric-parser 过滤的歌词顺序有时会发生问题，所以作如下处理，将 node modules 下 lyric-parser 中 dist 文件夹内 lyric.js 中的第482行稍做处理:
 time: result[1] * 60 * 1000 + result[2] * 1000 + (parseInt(result[3]) || 0)

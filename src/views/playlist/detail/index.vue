@@ -178,13 +178,12 @@ export default {
         },
       });
     };
-
+    let myList = [];
     const qydgetUserArtist = async () => {
       try {
         let res = await getUserArtist(userInfo.value.userId);
         if (res.code === 200) {
           let list = res.playlist;
-          let myList = [];
           let collectList = [];
           list.map((item) => {
             if (item.userId === userInfo.value.userId) {
@@ -193,7 +192,6 @@ export default {
               collectList.push(item);
             }
           });
-
           state.collectList = collectList;
 
           let myCreated = myList.some((item) => {
@@ -264,6 +262,13 @@ export default {
 
     // 点击喜欢此歌单
     const handleLikeThisList = async ()=> {
+      let myCreated = myList.some((item) => {
+            return item.id == route.query.id;
+      });
+      if(myCreated){
+        message.info('不能取消收藏自己创建的歌单哦~');
+        return
+      }
       let t = state.youLikeFlag ? 2 : 1;
       try {
         const res = await collectPlaylist(t, route.query.id);

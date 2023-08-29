@@ -146,12 +146,12 @@ export const appRouter: Array<any> = [
               },
         ]
     },
-    {
-        path: '/about',
-        name: 'About',
-        meta: { transition: 'slide-right-enter' },
-        component: () => import('@/views/About.vue')
-    },
+    // {
+    //     path: '/about',
+    //     name: 'About',
+    //     meta: { transition: 'slide-right-enter' },
+    //     component: () => import('@/views/About.vue')
+    // },
     {
         path: '/user/:id',
         name: 'User',

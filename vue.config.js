@@ -40,7 +40,7 @@ module.exports = {
     devServer: {
         port: 8088,
         open: true,
-        hotOnly: true,
+        hot: true,
         proxy: {
             '/api': {
                 target: 'https://music.163.com/song/media/outer/url',

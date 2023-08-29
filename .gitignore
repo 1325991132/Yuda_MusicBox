@@ -2,6 +2,7 @@
 node_modules
 /dist
 /wyapi/https
+/wyapi
 
 # local env files
 .env.local

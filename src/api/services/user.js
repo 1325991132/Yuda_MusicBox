@@ -2,6 +2,25 @@
 import api from './instance'
 
 /**
+ * @method 手机二维码登录
+ * @params phone 用户id
+ */
+export const loginqr = (phone, password) =>
+  api.get(`/login/qr/key`, {
+    withCredentials: true
+})
+export const loginqr2 = (key) =>
+api.get(`/login/qr/create?key=${key}&qrimg=1`, {
+  withCredentials: true
+})
+export const loginqr3 = (key) =>
+api.get(`/login/qr/check?key=${key}`, {
+  withCredentials: true
+})
+
+
+
+/**
  * @method 手机登录
  * @params phone 用户id
  */
@@ -9,6 +28,7 @@ export const login = (phone, password) =>
   api.get(`/login/cellphone?phone=${phone}&password=${password}`, {
     withCredentials: true
   })
+
 
 /**
 * @method 验证码登录
@@ -78,7 +98,7 @@ export const getUserFollows = (uid, limit = 30, offset = 0) => api.get(`/user/fo
  * @params limit 返回数量
  * @params offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
  */
- export const getUserFolloweds = (uid, limit = 30, offset = 0) => api.get(`/user/followeds?uid=${uid}&limit=${limit}&offset=${offset}`, {})
+export const getUserFolloweds = (uid, limit = 30, offset = 0) => api.get(`/user/followeds?uid=${uid}&limit=${limit}&offset=${offset}`, {})
 
 
 /**

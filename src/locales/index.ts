@@ -40,6 +40,7 @@ export const getLocale = () => {
 
 
 const i18n = createI18n({
+  legacy: false, //处理报错Uncaught (in promise) SyntaxError: Not available in legacy mode (at message-compiler.esm-bundler.js:54:19)
   locale: getLocale(),
   messages: messages
 })

@@ -3,7 +3,8 @@
     <div class="login-wrap">
       <kinesis-element :type="parallax">
         <div class="login-box">
-          <img src="~@/assets/logo/yd.png" class="logo" alt="" />
+          <img v-if="showDefaultImg" src="~@/assets/logo/yd.png" class="logo" alt="" />
+          <img v-else style="transform: scale(5);" :src="imgBase64" class="logo" alt="" />
           <div class="login-form">
             <a-form
               hideRequiredMark
@@ -124,13 +125,14 @@
                   <a-button class="ctcode-btn" ghost @click="changeLoginType">{{
                     pswLogin ? t("login.ctcodeLogin") : t("login.pswLogin")
                   }}</a-button>
+                  <a-button class="ctcode-btn" ghost  @click="changeQrLoginType">{{'二维码登录'}}</a-button>
                 </div>
               </div>
             </a-form>
           </div>
           <!-- <div class="fixedMsg" v-if="parallax.length > 0"> -->
           <div class="fixedMsg" >
-            <p ref="reveal" class="reveal">@请使用网易云音乐账号登录</p>
+            <p ref="reveal" class="reveal">@请使用网易云音1乐账号登录</p>
           </div>
         </div>
       </kinesis-element>
@@ -162,6 +164,9 @@ import {
 import { useRouter } from "vue-router";
 import {
   login,
+  loginqr,
+  loginqr2,
+  loginqr3,
   getUserDetail,
   getCtcode,
   checkCtcode,
@@ -202,11 +207,38 @@ export default defineComponent({
     };
     let pswLogin: Ref<boolean> = ref(false); //是否密码登录
     let showSendCtcodeLoading: Ref<boolean> = ref(false); //是否显示验证码上的loading
+    let unikey = ref(false);
+    const showDefaultImg = ref(true);
+    const imgBase64 = ref('');
+    const imgTimer = ref(null);
 
     let parallax: Ref<string> = ref("depth");
     const changeLoginType = () => {
       pswLogin.value = !pswLogin.value;
     };
+
+    const changeQrLoginType = async ()=>{
+      const query = {}
+      const res = await loginqr();
+      if (res.code === 200) {
+        console.log(res)
+        unikey.value = res.data.unikey
+        const key = res.data.unikey
+        const res2 = await loginqr2(key);
+        if(res2.code === 200){
+          console.log(res2)
+          imgBase64.value = res2.data.qrimg
+          showDefaultImg.value = false
+          if(imgTimer.value){
+            clearInterval(imgTimer.value)
+          }
+          setInterval(async ()=>{
+              const res3 = await loginqr3(key);
+              console.log(res3)
+            },2000)
+        }
+      }
+    }
     // 表单配置
     const formState: UnwrapRef<FormState> = reactive({
       name: "",
@@ -403,11 +435,15 @@ export default defineComponent({
       handlelogin,
       handleFinish,
       handleFinishFailed,
+      imgTimer,
       my_getUserDetail,
       formRef,
       label,
+      showDefaultImg,
+      imgBase64,
       t,
       changeLoginType, //更改登录模式
+      changeQrLoginType,
       pswLogin, //使用密码登录
       getUserCtcode,
       showSendCtcodeLoading, //显示获取验证码的按钮Loading

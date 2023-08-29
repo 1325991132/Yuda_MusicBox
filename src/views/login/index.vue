@@ -125,7 +125,7 @@
                   <a-button class="ctcode-btn" ghost @click="changeLoginType">{{
                     pswLogin ? t("login.ctcodeLogin") : t("login.pswLogin")
                   }}</a-button>
-                  <a-button class="ctcode-btn" ghost  @click="changeQrLoginType">{{'二维码登录'}}</a-button>
+                  <!-- <a-button class="ctcode-btn" ghost  @click="changeQrLoginType">{{'二维码登录'}}</a-button> -->
                 </div>
               </div>
             </a-form>
@@ -166,7 +166,7 @@ import {
   login,
   loginqr,
   loginqr2,
-  loginqr3,
+  // loginqr3,
   getUserDetail,
   getCtcode,
   checkCtcode,
@@ -219,6 +219,7 @@ export default defineComponent({
 
     const changeQrLoginType = async ()=>{
       const query = {}
+      console.log(query)
       const res = await loginqr();
       if (res.code === 200) {
         console.log(res)
@@ -229,13 +230,13 @@ export default defineComponent({
           console.log(res2)
           imgBase64.value = res2.data.qrimg
           showDefaultImg.value = false
-          if(imgTimer.value){
-            clearInterval(imgTimer.value)
-          }
-          setInterval(async ()=>{
-              const res3 = await loginqr3(key);
-              console.log(res3)
-            },2000)
+          // if(imgTimer.value){
+          //   clearInterval(imgTimer.value)
+          // }
+          // setInterval(async ()=>{
+          //     const res3 = await loginqr3(key);
+          //     console.log(res3)
+          //   },2000)
         }
       }
     }
